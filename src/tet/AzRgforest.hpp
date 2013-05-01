@@ -65,8 +65,11 @@ protected:
   bool doForceToRefreshAll; /* for debug */
   int s_tree_num;    /* # of latest trees to be searched */
   bool beVerbose; 
-  AzBytArr s_mem_policy; 
+  ///---------memory related
+  AzBytArr s_mem_policy; //?to learn
   bool beTight;
+
+
   AzBytArr s_temp_for_trees; 
   double f_ratio; 
   int f_pick; 
@@ -75,7 +78,7 @@ protected:
   /*---  work area  ---*/
   int l_num; 
   double py_adjust, lam_scale; /* for numerical stability for exp loss */
-  AzDvect v_p; /* prediction */
+  AzDvect v_p; /* prediction */// the result vector
   AzTimer test_timer, opt_timer, lmax_timer; 
   AzOut out; 
 

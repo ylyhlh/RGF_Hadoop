@@ -20,7 +20,7 @@
 #include "AzHelp.hpp"
 #include "AzRgf_kw.hpp"
 
-/*-------------------------------------------------------------------*/
+/*-----------call be AzTETproc to setup the trainer-------------------------------------------*/
 void AzRgforest::cold_start(const char *param, 
                         const AzSmat *m_x, 
                         const AzDvect *v_y, 
@@ -31,17 +31,17 @@ void AzRgforest::cold_start(const char *param,
   out = out_req; 
   s_config.reset(param); 
     
-  AzParam az_param(param); 
+  AzParam az_param(param); //?should learn it.
   int max_tree_num = resetParam(az_param); 
   setInput(az_param, m_x, featInfo);        
-  reg_depth->reset(az_param, out);  /* init regularizer on node depth */
-  v_p.reform(v_y->rowNum()); 
-  opt->cold_start(loss_type, data, reg_depth, /* initialize optimizer */
+  reg_depth->reset(az_param, out);  /* init regularizer on node depth *///?learn
+  v_p.reform(v_y->rowNum()); //?
+  opt->cold_start(loss_type, data, reg_depth, /* initialize optimizer *///?opt is something wired
                   az_param, v_y, v_fixed_dw, out, &v_p); 
   initTarget(v_y, v_fixed_dw);    
   initEnsemble(az_param, max_tree_num); /* initialize tree ensemble */
   fs->reset(az_param, reg_depth, out); /* initialize node search */
-  az_param.check(out); 
+  az_param.check(out);
   l_num = 0; /* initialize leaf node counter */
 
   if (!beVerbose) { 
@@ -49,7 +49,7 @@ void AzRgforest::cold_start(const char *param,
   }
 
   time_init(); /* initialize time measure ment */
-  end_of_initialization(); 
+  end_of_initialization(); //print out sum weight if weighted
 }
 
 /*-------------------------------------------------------------------*/
