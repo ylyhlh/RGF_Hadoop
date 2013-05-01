@@ -31,11 +31,11 @@ void AzRgforest::cold_start(const char *param,
   out = out_req; 
   s_config.reset(param); 
     
-  AzParam az_param(param); //?should learn it.
+  AzParam az_param(param); //@should learn it. Partly learned
   int max_tree_num = resetParam(az_param); 
   setInput(az_param, m_x, featInfo);        
   reg_depth->reset(az_param, out);  /* init regularizer on node depth *///?learn
-  v_p.reform(v_y->rowNum()); //?
+  v_p.reform(v_y->rowNum()); //resize the prediction results according to the target vector
   opt->cold_start(loss_type, data, reg_depth, /* initialize optimizer *///?opt is something wired
                   az_param, v_y, v_fixed_dw, out, &v_p); 
   initTarget(v_y, v_fixed_dw);    
@@ -144,7 +144,7 @@ void AzRgforest::warmupEnsemble(AzParam &az_param, int max_tree_num,
 }
 
 /*-------------------------------------------------------------------*/
-/* input: v_p */
+/* @setup the Target object which contains target(y) and weight */
 void AzRgforest::initTarget(const AzDvect *v_y, 
                             const AzDvect *v_fixed_dw)
 {
@@ -157,9 +157,10 @@ void AzRgforest::setInput(AzParam &p,
                           const AzSmat *m_x, 
                           const AzSvFeatInfo *featInfo)
 {
-  dflt_data.reset_data(out, m_x, p, beTight, featInfo); 
+  dflt_data.reset_data(out, m_x, p, beTight, featInfo); //?
   data = &dflt_data; 
 
+  /* @ set up feature sampling number -> f_pick*/
   f_pick = -1; 
   if (f_ratio > 0) {
     f_pick = (int)((double)data->featNum() * f_ratio); 
@@ -627,6 +628,7 @@ int AzRgforest::adjustTestInterval(int lnum_inc_test, int lnum_inc_opt)
 /*--------------------------------------------------------*/
 int AzRgforest::resetParam(AzParam &p)
 {
+  //@ various kw_* is macro from AzRgf_kw.hpp
   const char *eyec = "AzRgforest::resetParam"; 
 
   /*---  for storing data indexes in the trees to disk  ---*///?

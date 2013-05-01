@@ -23,14 +23,14 @@
 #include "AzLoss.hpp"
 #include "AzStrPool.hpp"
 #include "AzPrint.hpp"
-#include "AzTools.hpp"
+#include "AzTools.hpp" //@ many macros for kw_***=
 
-//! Parse parameters 
+//! Parse parameters @ in the format kw1=val1,kw2=val2
 class AzParam {
 protected:
-  const char *param; 
-  char dlm, kwval_dlm; 
-  AzStrPool sp_used_kw; 
+  const char *param; //@a string storing all paremeters and value
+  char dlm, kwval_dlm; //@?dlm? kind of splitor kw(keywotd)
+  AzStrPool sp_used_kw; //@ a pool to store all parameter has been used
   bool doCheck; /* check unknown/duplicated keywords */
 public:
   AzParam(const char *inp_param, 
@@ -45,6 +45,7 @@ public:
   }
 
   inline const char *c_str() const { return param; }
+
   inline void swOn(bool *swch, const char *kw, 
                    bool doCheckKw=true) {
     if (param == NULL) return; 
@@ -121,14 +122,16 @@ protected:
     const char *ptr = NULL; 
     const char *inp = inp_inp; 
     for ( ; ; ) {
-      ptr = strstr(inp, kw); 
+      ptr = strstr(inp, kw); //@find the substring
       if (ptr == NULL) return NULL; 
-      if (ptr == inp || *(ptr-1) == dlm) {
+      if (ptr == inp || *(ptr-1) == dlm) {//@if the begin of finded sustring is the begin of string or -1 char is dlm
         break; 
       }
-      inp = ptr + strlen(kw); 
+      inp = ptr + strlen(kw); // @this is not param we need, move the head pointer to skip the this kw 
     }
-    ptr += strlen(kw); 
+    std::cout<<"TESTTEST "<<ptr<<kw<<strlen(kw)<<std::endl;
+    ptr += strlen(kw); //@get the pointor to param value
+    std::cout<<"TESTTEST "<<ptr<<std::endl;
     return ptr; 
   }
   inline static const char *pointAt(const char *inp, const char *kw) {

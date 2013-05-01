@@ -26,7 +26,7 @@
 /*--------------------------------------------------------*/
 class AzTrTtarget {
 protected:
-  AzDvect v_tar_dw, v_dw;
+  AzDvect v_tar_dw, v_dw;//@?tar_dw <-imp_v_y  ?v_dw <-1
   AzDvect v_y; 
   AzDvect v_fixed_dw; /* data point weights assigned by users */
   double fixed_dw_sum; 
@@ -41,18 +41,18 @@ public:
              const AzDvect *inp_v_fixed_dw=NULL) {
     v_dw.reform(inp_v_y->rowNum()); 
     v_dw.set(1); 
-    v_tar_dw.set(inp_v_y); 
+    v_tar_dw.set(inp_v_y); //@copy from inp_v_y
     v_y.set(inp_v_y);
     fixed_dw_sum = -1; 
 
-    v_fixed_dw.reset(); 
+    v_fixed_dw.reset(); //@release the weight vector
     if (!AzDvect::isNull(inp_v_fixed_dw)) {
-      v_fixed_dw.set(inp_v_fixed_dw); 
-      if (v_fixed_dw.rowNum() != v_y.rowNum()) {
+      v_fixed_dw.set(inp_v_fixed_dw); //@copy from inp_v_fixed_dw
+      if (v_fixed_dw.rowNum() != v_y.rowNum()) {//@ verify the weight and target have same size
         throw new AzException(AzInputError, "AzTrTtarget::reset", 
                               "conlict in dimensionality: y and data point weights"); 
       }
-      fixed_dw_sum = v_fixed_dw.sum(); 
+      fixed_dw_sum = v_fixed_dw.sum(); //get the sum of weight
     }
   }
   inline bool isWeighted() const {

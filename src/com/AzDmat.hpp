@@ -79,7 +79,7 @@ public:
   AzDvect(AzFile *file) : num(0), elm(NULL) {
     _read(file); 
   }
-
+  /*@release the array memory*/
   void reset() {
     _release(); 
   }
@@ -136,6 +136,7 @@ public:
     elm[row] = val; 
   }
   void set(const double *inp, int inp_num); 
+  /*@set all elements in array as given val */
   void set(double val); 
 
   inline double get(int row) const {

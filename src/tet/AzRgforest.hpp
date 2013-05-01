@@ -38,7 +38,7 @@
 //! RGF main.  
 class AzRgforest : /* implements */ public virtual AzTETrainer {
 protected: 
-  AzBytArr s_config;//resetted by *_start function based on param from AzTETproc
+  AzBytArr s_config;//@resetted by *_start function based on param from AzTETproc
 
   AzRgfTreeEnsImp<AzRgfTree> dflt_ens;
   AzRgfTreeEnsemble *ens; 
@@ -52,7 +52,7 @@ protected:
   AzDataForTrTree dflt_data; 
   const AzDataForTrTree *data; /* This should be set in setInput */
   
-  AzTrTtarget target; 
+  AzTrTtarget target; //@ Targets and data point weights for node split search.  
 
   bool isOpt; 
 
@@ -65,18 +65,20 @@ protected:
   bool doForceToRefreshAll; /* for debug */
   int s_tree_num;    /* # of latest trees to be searched */
   bool beVerbose; 
-  ///---------memory related
-  AzBytArr s_mem_policy; //?to learn
+
+  //*-----@memory related
+  AzBytArr s_mem_policy; //@?to learn
   bool beTight;
 
 
-  AzBytArr s_temp_for_trees; 
-  double f_ratio; 
-  int f_pick; 
+  AzBytArr s_temp_for_trees; //@?
+
+  double f_ratio; //@in setInput function this will decide f_picl
+  int f_pick; //@ how many features should be picked or sampled
   bool doPassiveRoot; 
 
   /*---  work area  ---*/
-  int l_num; 
+  int l_num; //@leaf node counter
   double py_adjust, lam_scale; /* for numerical stability for exp loss */
   AzDvect v_p; /* prediction */// the result vector
   AzTimer test_timer, opt_timer, lmax_timer; 
@@ -89,7 +91,7 @@ protected:
   static const int max_lnum_dflt = 10000; 
   static const int lnum_inc_test_dflt = 500; 
   static const int s_tree_num_dflt = 1; 
-  static const AzLossType loss_type_dflt = AzLoss_Square; 
+  static const AzLossType loss_type_dflt = AzLoss_Square; //@? from "AzLoss.hpp"
 
 public:
   AzRgforest() : 
