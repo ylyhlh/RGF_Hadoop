@@ -42,3 +42,6 @@ all:
 
 clean: 
 	/bin/rm -f $(TARGET)
+
+run:
+	./bin/rgf train
