@@ -40,7 +40,7 @@ void AzRgforest::cold_start(const char *param,
   opt->cold_start(loss_type, data, reg_depth, /* initialize optimizer *///?opt is something wired
                   az_param, v_y, v_fixed_dw, out, &v_p); 
   initTarget(v_y, v_fixed_dw); //@ set AzTrTtarget target; Targets and data point weights for node split search.  
-  initEnsemble(az_param, max_tree_num); /* initialize tree ensemble *///?
+  initEnsemble(az_param, max_tree_num); /* initialize tree ensemble *///@Ensemble is an array of trees in the forest
   fs->reset(az_param, reg_depth, out); /* initialize node search *///?
   az_param.check(out);//@find out the unknown parameters and output
   l_num = 0; /* initialize leaf node counter */
@@ -138,7 +138,7 @@ void AzRgforest::warmupEnsemble(AzParam &az_param, int max_tree_num,
                   out, max_tree_num, s_tree_num, &v_p); 
 
   /*---  always have one unsplit root: represent the next tree  ---*/
-  rootonly_tree->reset(az_param); 
+  rootonly_tree->reset(az_param); //@reinit the tree and set the size related params
   rootonly_tree->makeRoot(data); 
 
   rootonly_tx = max_tree_num + 1;  /* any number that doesn't overlap other trees */
@@ -161,7 +161,7 @@ void AzRgforest::setInput(AzParam &p,
   dflt_data.reset_data(out, m_x, p, beTight, featInfo); //?
   data = &dflt_data; 
 
-  /* @ set up feature sampling number -> f_pick*/
+  /* @ set up feature sampling number * f_ratio-> f_pick*/
   f_pick = -1; 
   if (f_ratio > 0) {
     f_pick = (int)((double)data->featNum() * f_ratio); 
@@ -341,6 +341,7 @@ void AzRgforest::searchBestSplit(AzTrTsplit *best_split) /* must be initialize b
     doRefreshAll = true; 
   }
 
+  //@tx is the index of tree
   int last_tx = ens->lastIndex(); 
 
   /*---  decide which trees should be searched  ---*/
@@ -365,16 +366,20 @@ void AzRgforest::searchBestSplit(AzTrTsplit *best_split) /* must be initialize b
     tar = &my_tar; 
   }
 
+  /*@ this is to sample features if needed, see f_pick*/
   if (f_pick > 0) {
     fs->pickFeats(f_pick, data->featNum()); 
   }
 
   AzRgf_FindSplit_input input(-1, data, tar, lam_scale, nn); 
+
+  /*@ each tree need to search do findSplit*/
   int tx; 
   for (tx = my_first; tx <= last_tx; ++tx) {
     input.tx = tx; 
     ens->tree_u(tx)->findSplit(fs, input, doRefreshAll, best_split);
   }
+
   /*---  rootonly tree  ---*/
   if (!doPassiveRoot || 
       best_split->tx < 0 || best_split->fx < 0) {

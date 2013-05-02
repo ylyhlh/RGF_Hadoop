@@ -41,18 +41,19 @@ class AzTrTree
 {
 protected:
   int root_nx; 
-  int nodes_used; 
+  int nodes_used; //@The number of nodes used in arrary. After it are empty nodes
   AzTrTreeNode *nodes; 
   AzObjArray<AzTrTreeNode> a_node; 
 
   AzIntArr ia_root_dx; /*!!! Do NOT add components after generating the root.  */
                        /*!!! All the nodes refer to the components by pointer. */
 
+  /*@ Pointer Array of split on each node, one node one split*/
   AzTrTsplit **split;  
   AzObjPtrArray<AzTrTsplit> a_split; 
 
   AzSortedFeatArr **sorted_arr; 
-  AzObjPtrArray<AzSortedFeatArr> a_sorted_arr; 
+  AzObjPtrArray<AzSortedFeatArr> a_sorted_arr; //@??important??
 
   int curr_min_pop, curr_max_depth; 
   bool isBagging; 

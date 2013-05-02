@@ -49,7 +49,7 @@ double AzTrTree::getRule(int inp_nx,
   for ( ; ; ) {
     if (nx < 0) break; 
 
-    /*---  feat#, isLE, border_val  ---*/
+    /*---  feat#, isLE, borde1r_val  ---*/
     bool isLE = false; 
     if (child_nx == nodes[nx].le_nx) {
       isLE = true; 
@@ -100,7 +100,7 @@ void AzTrTree::_genRoot(int max_size,
   root_np->dxs_offset = 0; 
 }
 
-/*--------------------------------------------------------*/
+/*-----@add a new node into the tree and it's split and sorted_arr----------------------------------*/
 int AzTrTree::_newNode(int max_size)
 {
   const char *eyec = "AzTrTree::_newNode"; 

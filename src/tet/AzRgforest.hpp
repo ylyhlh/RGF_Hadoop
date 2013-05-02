@@ -75,8 +75,9 @@ protected:
   AzBytArr s_temp_for_trees; //@?
 
   double f_ratio; //@in setInput function this will decide f_picl
-  int f_pick; //@ how many features should be picked or sampled
+  //@ how many features should be picked or sampled， <0 means all features
   bool doPassiveRoot; 
+  int f_pick; 
 
   /*---  work area  ---*/
   int l_num; //@leaf node counter

@@ -32,7 +32,9 @@ void AzRgfTree::findSplit(AzRgf_FindSplit *fs,
     return; 
   }
 
-  AzTrTree::_checkNodes(eyec); 
+  AzTrTree::_checkNodes(eyec); /*@check whether there is node, ?nodes_used*/
+
+  /*@ If the tree already has max_leaf_num leaves, then do nothing*/
   int leaf_num = leafNum(); 
   if (max_leaf_num > 0) {
     if (leaf_num >= max_leaf_num) {
@@ -40,20 +42,22 @@ void AzRgfTree::findSplit(AzRgf_FindSplit *fs,
     }
   }
 
+  /*@ Begin to search*/
   _findSplit_begin(fs, inp); 
 
-  int nx; 
+  int nx; //@the index of node
   for (nx = 0; nx < nodes_used; ++nx) {
-    if (!nodes[nx].isLeaf()) continue; 
+    if (!nodes[nx].isLeaf()) continue; //@if not lead then next node
 
-    /*---  ---*/
+    /*---@Check the tree construction rules---*/
     if (max_depth > 0 && nodes[nx].depth >= max_depth) {
-      continue; 
+      continue;
     }
     if (min_size > 0 && nodes[nx].dxs_num < min_size*2) {
-      continue; 
+      continue;
     }
 
+    /*@!!!!really find the split on a node*/
     _findSplit(fs, nx, doRefreshAll); 
 
     if (split[nx]->fx >= 0 && 
@@ -75,7 +79,9 @@ void AzRgfTree::removeSplitAssessment()
   }
 }
 
-/*--------------------------------------------------------*/
+/**@
+ * adjusting the max_leaf_num according to max_leaf_num and max_depth
+ */
 void AzRgfTree::adjustParam()
 {
   if (max_depth > 0) {
@@ -189,8 +195,9 @@ void AzRgfTree::restoreDataIndexes()
   }
 }
 
-/*--------------------------------------------------------*/
-/*--------------------------------------------------------*/
+/**@
+ * reset the paramenters: max_depth, max_leaf_num, min_size
+ */
 void AzRgfTree::resetParam(AzParam &p)
 {
   p.vInt(kw_max_depth, &max_depth); 

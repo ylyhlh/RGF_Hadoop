@@ -31,8 +31,8 @@ protected:
 
 public:
   int dxs_offset;  /* position in the data indexes at the root */
-  int dxs_num; 
-  int depth; //!< node depth 
+  int dxs_num; //@the number of examples arrived this node.
+  int depth; //!< node depth
 
   AzTrTreeNode() : depth(-1), dxs(NULL), dxs_offset(-1), dxs_num(-1) {}
   void reset() {

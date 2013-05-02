@@ -58,8 +58,9 @@ public:
 class AzRgfTree : /* extends */ public virtual AzTrTree
 {
 protected:
-  int max_depth, max_leaf_num, min_size; 
   bool doUseInternalNodes; 
+  //@the rules of tree: min_size is the min number of examples a node must have
+  int max_depth, max_leaf_num, min_size; 
   AzOut out, my_dmp_out; 
   bool beVerbose; 
 
@@ -114,6 +115,7 @@ public:
     return root_nx; 
   }
 
+  /*@ really split the node, using the function from AzTrTree*/
   inline virtual void splitNode(const AzDataForTrTree *data, 
                                 const AzTrTsplit *split) {
     AzTrTree::_splitNode(data, max_leaf_num, 
