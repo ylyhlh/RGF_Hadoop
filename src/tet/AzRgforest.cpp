@@ -13,14 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with this progr.  If not, see <http://www.gnu.org/licenses/>.
  * * * * */
 
 #include "AzRgforest.hpp"
 #include "AzHelp.hpp"
 #include "AzRgf_kw.hpp"
 
-/*-----------call be AzTETproc to setup the trainer-------------------------------------------*/
+/*-----------call by AzTETproc to setup the trainer-------------------------------------------*/
 void AzRgforest::cold_start(const char *param, 
                         const AzSmat *m_x, 
                         const AzDvect *v_y, 
@@ -32,16 +32,17 @@ void AzRgforest::cold_start(const char *param,
   s_config.reset(param); 
     
   AzParam az_param(param); //@should learn it. Partly learned
+  
   int max_tree_num = resetParam(az_param); 
-  setInput(az_param, m_x, featInfo);        
-  reg_depth->reset(az_param, out);  /* init regularizer on node depth *///?learn
-  v_p.reform(v_y->rowNum()); //resize the prediction results according to the target vector
+  setInput(az_param, m_x, featInfo); //@ data part decide Sparse or not, do transpose
+  reg_depth->reset(az_param, out);  /* init regularizer on node depth *///?learn regularizer is gamma
+  v_p.reform(v_y->rowNum()); // @resize the prediction results according to the target vector
   opt->cold_start(loss_type, data, reg_depth, /* initialize optimizer *///?opt is something wired
                   az_param, v_y, v_fixed_dw, out, &v_p); 
-  initTarget(v_y, v_fixed_dw);    
-  initEnsemble(az_param, max_tree_num); /* initialize tree ensemble */
-  fs->reset(az_param, reg_depth, out); /* initialize node search */
-  az_param.check(out);
+  initTarget(v_y, v_fixed_dw); //@ set AzTrTtarget target; Targets and data point weights for node split search.  
+  initEnsemble(az_param, max_tree_num); /* initialize tree ensemble *///?
+  fs->reset(az_param, reg_depth, out); /* initialize node search *///?
+  az_param.check(out);//@find out the unknown parameters and output
   l_num = 0; /* initialize leaf node counter */
 
   if (!beVerbose) { 
@@ -179,7 +180,7 @@ void AzRgforest::initEnsemble(AzParam &az_param, int max_tree_num)
                           "max# must be positive"); 
   }
 
-  ens->cold_start(az_param, &s_temp_for_trees, data->dataNum(), 
+  ens->cold_start(az_param, &s_temp_for_trees/*@??that's what?*/, data->dataNum(), 
                   out, max_tree_num, data->featNum()); 
 
   /*---  always have one unsplit root: represent the next tree  ---*/
@@ -207,10 +208,10 @@ AzRgfTree *AzRgforest::tree_to_grow(int &best_tx,  /* inout */
   }
 }
 
-/*-------------------------------------------------------------------*/
+/*-------@call by AzTETproc to do train and of course return when time to test or convergence reached*/
 AzTETrainer_Ret AzRgforest::proceed_until()
 {
-  AzTETrainer_Ret ret = AzTETrainer_Ret_Exit; 
+  AzTETrainer_Ret ret = AzTETrainer_Ret_Exit; //@ from test
   for ( ; ; ) {
     /*---  grow the forest  ---*/
     bool doExit = growForest(); 

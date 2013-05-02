@@ -23,6 +23,7 @@
 #include "AzTrTreeEnsemble.hpp"
 
 //! implement AzRgfTreeEnsemble.  T must be AzRgfTree or its extension.  
+//@ this is just a adaptor class to using AzTrTreeEnsemble<T> does every thing
 template<class T>
 class AzRgfTreeEnsImp : /*implements */public virtual AzRgfTreeEnsemble
 {

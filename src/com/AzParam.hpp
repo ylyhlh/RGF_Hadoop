@@ -115,6 +115,7 @@ public:
     if (doCheck) sp_used_kw.put(kw); 
   }
 
+  /** @ to output all unlknown or unused parameters*/
   void check(const AzOut &out, AzBytArr *s_unused_param=NULL); 
 
 protected:

@@ -42,20 +42,21 @@ protected:
 
   AzRgfTreeEnsImp<AzRgfTree> dflt_ens;
   AzRgfTreeEnsemble *ens; 
-  AzRgf_FindSplit_Dflt dflt_fs; 
+  AzRgf_FindSplit_Dflt dflt_fs; /*@node splitor*/
   AzRgf_FindSplit *fs; 
   AzRgf_Optimizer_Dflt dflt_opt;  /* weight optimizer */
   AzRgf_Optimizer *opt;
-  AzRegDepth dflt_reg_depth;  
+  AzRegDepth dflt_reg_depth;  /*@L2 regularizor*/
   AzRegDepth *reg_depth; 
 
-  AzDataForTrTree dflt_data; 
+  AzDataForTrTree dflt_data; /*@?the feature data for tree */
   const AzDataForTrTree *data; /* This should be set in setInput */
   
   AzTrTtarget target; //@ Targets and data point weights for node split search.  
 
-  bool isOpt; 
+  bool isOpt; //@ Indicate whether the leaf weights are optimizied, used when exit train loop
 
+  /*@ ? AzRgfTree*/
   int rootonly_tx; 
   AzRgfTree dflt_tree; 
   AzRgfTree *rootonly_tree; 
@@ -68,7 +69,7 @@ protected:
 
   //*-----@memory related
   AzBytArr s_mem_policy; //@?to learn
-  bool beTight;
+  bool beTight; //@? memory is tight
 
 
   AzBytArr s_temp_for_trees; //@?
@@ -81,15 +82,16 @@ protected:
   int l_num; //@leaf node counter
   double py_adjust, lam_scale; /* for numerical stability for exp loss */
   AzDvect v_p; /* prediction */// the result vector
+  //@ In the proceed_until function, it will check whether to do somthing, test, opt accordiing to l_num
   AzTimer test_timer, opt_timer, lmax_timer; 
   AzOut out; 
 
   bool doTime; 
   clock_t opt_time, search_time; 
 
-  static const int lnum_inc_opt_dflt = 100; 
+  static const int lnum_inc_opt_dflt = 100; //@ inc = increment, default value for how many steps between two opt
   static const int max_lnum_dflt = 10000; 
-  static const int lnum_inc_test_dflt = 500; 
+  static const int lnum_inc_test_dflt = 500; //@ default value for  how many steps between two test
   static const int s_tree_num_dflt = 1; 
   static const AzLossType loss_type_dflt = AzLoss_Square; //@? from "AzLoss.hpp"
 
@@ -128,7 +130,7 @@ public:
               AzTreeEnsemble *inp_ens=NULL) /* may be NULL */
   {
     check_data_consistency(m_x, v_y, v_fixed_dw, featInfo, "AzRgforest::startup"); 
-
+    
     //if start with old model(ensemble), then warm start.
     if (inp_ens == NULL) cold_start(param, m_x, v_y, featInfo, v_fixed_dw, out); 
     else         

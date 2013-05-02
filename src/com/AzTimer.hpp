@@ -21,6 +21,7 @@
 
 #include "AzUtil.hpp"
 
+/*A class to do period or max check*/
 class AzTimer {
 public:
   int chk;  /* next check point */

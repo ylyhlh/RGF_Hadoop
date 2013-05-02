@@ -26,6 +26,7 @@
 #include "AzHelp.hpp"
 
 /*---------------------------------------------------------------*/
+//@?a strange class
 template<class T>
 class AzTemp_forTrTreeEns {
 protected: 
@@ -62,7 +63,7 @@ public:
       throw new AzException(AzInputError, "AzTemp_forTrTreeEns::reset", 
                             "Data size is too large."); 
     }
-    open_new_file(); 
+    open_new_file();//@?
   }
   AzFile *point_file() {
     if (!isActive()) return NULL; 
@@ -96,15 +97,15 @@ class AzTrTreeEnsemble : /*implements */public virtual AzTrTreeEnsemble_ReadOnly
 {
 protected:
   AzObjPtrArray<T> a_tree; 
-  T **t; 
+  T **t; //@logically is equalvalent to a_tree, but it is convinent 
   int t_num;  
   double const_val; 
-  int org_dim; 
+  int org_dim; //@feature numbers
 
   AzBytArr s_param; 
-  const char *dt_param; 
+  const char *dt_param; //@dt?
 
-  AzTemp_forTrTreeEns<T> temp_files; 
+  AzTemp_forTrTreeEns<T> temp_files; //@ kind of tree templete
 
 public:
   AzTrTreeEnsemble() : t(NULL), t_num(0), const_val(0), org_dim(-1), dt_param("") {}
@@ -133,10 +134,10 @@ public:
     dummy_tree.printParam(out); 
     s_param.reset(param.c_str()); 
     dt_param = s_param.c_str(); 
-    alloc(tree_num_max, "AzTrTreeEnsemble::reset"); 
+    alloc(tree_num_max, "AzTrTreeEnsemble::reset"); //@ allocate forest space
     org_dim = inp_org_dim; 
 
-    temp_files.reset(&dummy_tree, data_num, s_temp_prefix); 
+    temp_files.reset(&dummy_tree, data_num, s_temp_prefix); //@ estimate the data size for temp and do something?
   }
 
   inline const char *param_c_str() const {
@@ -342,6 +343,7 @@ public:
   }
 
 protected:
+  /** @ alloc the Tree pointer array*/
   inline void alloc(int num, const char *msg="") {
     a_tree.alloc(&t, num, "AzTrTreeEnsemble::alloc", msg); 
   }

@@ -79,8 +79,8 @@ public:
     /*---  decide sparse or dense  ---*/
     AzBytArr s_dp("; managed as dense data"); 
     bool doSparse = false; 
-    if (dataproc == dataproc_Auto && 
-        nz_ratio < Az_nz_ratio_threshold || 
+    if ( (dataproc == dataproc_Auto && 
+        nz_ratio < Az_nz_ratio_threshold )|| 
         dataproc == dataproc_Sparse) { 
       doSparse = true; 
       s_dp.reset("; managed as sparse data"); 
@@ -91,7 +91,7 @@ public:
     AzPrint::writeln(out, s, s_dp); 
     AzPrint::writeln(out, "-------------"); 
 
-   /*---  pre-sort data  ---*/
+   /*---  pre-sort @actually doing the transpose data  ---*/
     m_tran_sparse.reset(); 
     m_tran_dense.unlock(); 
     m_tran_dense.reset(); 
