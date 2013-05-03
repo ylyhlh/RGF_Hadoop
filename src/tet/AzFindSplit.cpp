@@ -69,7 +69,7 @@ void AzFindSplit::_findBestSplit(int nx,
     if (fxs != NULL) fx = fxs[ix]; 
 
     AzSortedFeatWork tmp; 
-    const AzSortedFeat *sorted = sorted_arr->sorted(fx); 
+    const AzSortedFeat *sorted = sorted_arr->sorted(fx); //@just return the fx-th AzSortedFeat in arr
     if (sorted == NULL) { /* This happens only with Thrift or warm-start */
       const AzSortedFeat *my_sorted = sorted_arr->sorted(data->sorted_array(), fx, &tmp); 
       if (my_sorted->dataNum() != dxs_num) {
@@ -125,8 +125,8 @@ void AzFindSplit::loop(AzTrTsplit *best_split,
   }
 
   AzCursor cursor; 
-  sorted->rewind(cursor); 
-
+  sorted->rewind(cursor); //@cursor.set(0).In spares case it has backward option
+  //@come here I was here here
   for ( ; ; ) {
     double value; 
     int index_num; 
