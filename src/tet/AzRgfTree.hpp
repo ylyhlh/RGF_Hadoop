@@ -177,7 +177,7 @@ protected:
         nx == root_nx) {
       if (split[nx] == NULL) split[nx] = new AzTrTsplit(); 
       else                   split[nx]->reset();
-      fs->findSplit(nx, split[nx]); 
+      fs->findSplit(nx, split[nx]); //@ the best split will reture to split[nx]
     }
   }
   virtual inline void _findSplit_end(AzRgf_FindSplit *fs) const {

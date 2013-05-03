@@ -189,7 +189,6 @@ void AzTrTree::_splitNode(const AzDataForTrTree *data,
                         const AzOut &out)
 {
   _checkNode(nx, "AzTrTree::splitNode"); 
-
   nodes[nx].fx = inp->fx; 
   nodes[nx].border_val = inp->border_val; 
 
@@ -756,6 +755,7 @@ double AzTrTree::init_constw(AzLossType loss_type,
 const AzSortedFeatArr *AzTrTree::sorted_array(int nx, 
                              const AzDataForTrTree *data) const
 {
+  std::cout<<nx<<"has "<<nodes[nx].dxs_num <<"examples"<<endl;
   const char *eyec = "AzTrTree::sorted_array"; 
   if (isBagging) {
     throw new AzException(eyec, "No support for bagging"); 
@@ -782,6 +782,7 @@ const AzSortedFeatArr *AzTrTree::sorted_array(int nx,
 #else
     if (nodes[nx].dxs_num != data->dataNum()) {
       /*---  Allow sampling  ---*/
+
       sorted_arr[nx] = new AzSortedFeatArr(data->sorted_array(), 
                                            nodes[nx].dxs, nodes[nx].dxs_num);
       return sorted_arr[nx]; 
@@ -791,7 +792,6 @@ const AzSortedFeatArr *AzTrTree::sorted_array(int nx,
     }
 #endif 
   }
-
   if (sorted_arr[root_nx] == NULL) {
     /*---  we need this as the base for SortedFeat_Dense  ---*/
     sorted_arr[root_nx] = new AzSortedFeatArr(data->sorted_array());     
@@ -807,6 +807,7 @@ const AzSortedFeatArr *AzTrTree::sorted_array(int nx,
   }
 
   /*---  make a new one and save it.  ---*/
+  //@ actually make two new and save it and delete sorted arr of px
   AzSortedFeatArr *base = sorted_arr[root_nx]; 
 
   int le_nx = nodes[px].le_nx; 
@@ -821,7 +822,7 @@ const AzSortedFeatArr *AzTrTree::sorted_array(int nx,
                             nodes[gt_nx].dxs, nodes[gt_nx].dxs_num, 
                             sorted_arr[le_nx], sorted_arr[gt_nx]); 
   if (px != root_nx) { /* can't delete the one at the root as it's the base */
-    delete sorted_arr[px]; sorted_arr[px] = NULL; 
+    delete sorted_arr[px]; sorted_arr[px] = NULL;//@The sorted_arr of parent will not be used again
   }
 
   return sorted_arr[nx]; 

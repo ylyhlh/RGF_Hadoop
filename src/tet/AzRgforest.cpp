@@ -370,7 +370,11 @@ void AzRgforest::searchBestSplit(AzTrTsplit *best_split) /* must be initialize b
   if (f_pick > 0) {
     fs->pickFeats(f_pick, data->featNum()); 
   }
-
+  /*@This input class actually is input set to put 
+   *data, tar, lam_scale, nn
+   *together
+   * ? -1 -> tx
+   */
   AzRgf_FindSplit_input input(-1, data, tar, lam_scale, nn); 
 
   /*@ each tree need to search do findSplit*/

@@ -28,6 +28,7 @@
 #include "AzFsinfo.hpp"
 #include "AzHelp.hpp"
 
+/**A class to store the needed inputs of AzRgf_FindSplit*/
 class AzRgf_FindSplit_input {
 public:
   int tx; 

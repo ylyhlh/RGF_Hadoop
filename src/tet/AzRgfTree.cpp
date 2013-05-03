@@ -43,7 +43,8 @@ void AzRgfTree::findSplit(AzRgf_FindSplit *fs,
   }
 
   /*@ Begin to search*/
-  _findSplit_begin(fs, inp); 
+  //@ let fs know about tree and data, target, min_soze
+  _findSplit_begin(fs, inp);
 
   int nx; //@the index of node
   for (nx = 0; nx < nodes_used; ++nx) {

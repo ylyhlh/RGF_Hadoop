@@ -22,11 +22,13 @@
 
 /*--------------------------------------------------------*/
 void AzRgf_FindSplit_Dflt::begin(
-                   const AzTrTree_ReadOnly *inp_tree, 
+                   const AzTrTree_ReadOnly *inp_tree, /* @ get this(as pointer) from ther tree use this funtction*/
                    const AzRgf_FindSplit_input &inp, /* tx is not used */
                    int inp_min_size)
 {
+  /*@ Like a construtor just put the value of */
   AzFindSplit::_begin(inp_tree, inp.data, inp.target, inp_min_size); 
+
 
   nlam = inp.nn*lambda; 
   nsig = inp.nn*sigma; 

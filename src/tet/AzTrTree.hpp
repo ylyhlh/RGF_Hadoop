@@ -53,7 +53,7 @@ protected:
   AzObjPtrArray<AzTrTsplit> a_split; 
 
   AzSortedFeatArr **sorted_arr; 
-  AzObjPtrArray<AzSortedFeatArr> a_sorted_arr; //@??important??
+  AzObjPtrArray<AzSortedFeatArr> a_sorted_arr; //@Each node has one AzSortedFeatArr important??
 
   int curr_min_pop, curr_max_depth; 
   bool isBagging; 
@@ -86,6 +86,8 @@ public:
   inline int root() const {
     return root_nx; 
   }
+
+  //* return the nx th AzTrTreeNode in NodesArrary
   inline const AzTrTreeNode *node(int nx) const {
     _checkNode(nx, "look"); 
     return &nodes[nx];  

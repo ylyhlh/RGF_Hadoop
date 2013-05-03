@@ -27,6 +27,7 @@
 class AzSortedFeat
 {
 public:
+  /*@?he number of data*/
   virtual int dataNum() const = 0; 
   virtual void rewind(AzCursor &cur) const = 0; 
   virtual const int *next(AzCursor &cur, double *out_val, int *out_num) const = 0; 

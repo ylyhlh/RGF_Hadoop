@@ -44,4 +44,4 @@ clean:
 	/bin/rm -f $(TARGET)
 
 run:
-	./bin/rgf train
+	/usr/bin/perl test/call_exe.pl ./bin/rgf train test/sample/train

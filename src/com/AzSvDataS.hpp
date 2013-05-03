@@ -163,7 +163,7 @@ protected:
   inline static double my_atof(const char *str, 
                            const char *eyec, 
                            int line_no) {
-    if (*str == '\0' || *str >= '0' && *str <= '9' || 
+    if (*str == '\0' || (*str >= '0' && *str <= '9' )|| // add parenthese to avoid warnning
         *str == '+' || *str == '-') {
       return atof(str); 
     }
@@ -175,7 +175,7 @@ protected:
   inline static int my_fno(const char *str, 
                            const char *eyec, 
                            int line_no) {
-    if (*str >= '0' && *str <= '9' || 
+    if ((*str >= '0' && *str <= '9' )|| // add parenthese to avoid warnning
         *str == '+') {
       return atol(str); 
     }

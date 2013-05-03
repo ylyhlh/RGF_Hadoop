@@ -130,9 +130,7 @@ protected:
       }
       inp = ptr + strlen(kw); // @this is not param we need, move the head pointer to skip the this kw 
     }
-    std::cout<<"TESTTEST "<<ptr<<kw<<strlen(kw)<<std::endl;
     ptr += strlen(kw); //@get the pointor to param value
-    std::cout<<"TESTTEST "<<ptr<<std::endl;
     return ptr; 
   }
   inline static const char *pointAt(const char *inp, const char *kw) {

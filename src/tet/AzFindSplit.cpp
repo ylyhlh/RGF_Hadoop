@@ -41,17 +41,21 @@ void AzFindSplit::_findBestSplit(int nx,
     throw new AzException(eyec, "information is not set"); 
   }
 
+  /* @data indexes belonging to this node */
   const int *dxs = tree->node(nx)->data_indexes(); 
+  //@the number of examples arrived this node.
   const int dxs_num = tree->node(nx)->dxs_num; 
 
+  //@return the sorted_arr belongs to this node(nx), if there is no, then get from data?
   const AzSortedFeatArr *sorted_arr = tree->sorted_array(nx, data); 
   if (sorted_arr == NULL) {
     throw new AzException(eyec, "No sorted array?!"); 
   }
 
+  /*@An object to record the stats*/
   Az_forFindSplit total; 
-  total.wy_sum = target->getTarDwSum(dxs, dxs_num);
-  total.w_sum = target->getDwSum(dxs, dxs_num); 
+  total.wy_sum = target->getTarDwSum(dxs, dxs_num);//@The sum of v_y in parent node
+  total.w_sum = target->getDwSum(dxs, dxs_num); //@The number of v_y in parent node
 
   /*---  go through features to find the best split  ---*/
   int feat_num = data->featNum(); 
@@ -61,7 +65,7 @@ void AzFindSplit::_findBestSplit(int nx,
   }
   int ix; 
   for (ix = 0; ix < feat_num; ++ix) {
-    int fx = ix; 
+    int fx = ix; //@ the index of feature
     if (fxs != NULL) fx = fxs[ix]; 
 
     AzSortedFeatWork tmp; 

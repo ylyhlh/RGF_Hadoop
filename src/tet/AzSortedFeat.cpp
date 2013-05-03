@@ -230,6 +230,7 @@ const
   const char *eyec = "AzSortedFeat_Dense::next"; 
 
   int cursor = cur.get(); 
+  
   if (cursor >= index_num) {
     return NULL;  /* end of data */
   }
@@ -792,6 +793,7 @@ const AzSortedFeat *AzSortedFeatArr::sorted(const AzSortedFeatArr *inp,
                              int fx, 
                              AzSortedFeatWork *out) const 
 {
+  //std::cout<<"TEST"<<inp->featNum()<<std::endl;
   const char *eyec = "AzSortedFeatArr::sorted(inp,fx,work0)"; 
   if (f_num != inp->featNum() || 
       ia_isActive.size() <= 0 || active_num <= 0) {
