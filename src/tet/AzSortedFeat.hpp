@@ -233,8 +233,8 @@ public:
 
 class AzSortedFeatArr { 
 protected:
-  AzSortedFeat_Sparse **arrs; 
-  AzSortedFeat_Dense **arrd; 
+  AzSortedFeat_Sparse **arrs; //@arrs = array sparse
+  AzSortedFeat_Dense **arrd; //@arrd = array dense
   AzObjPtrArray<AzSortedFeat_Sparse> a_sparse; 
   AzObjPtrArray<AzSortedFeat_Dense> a_dense; 
   int f_num; 

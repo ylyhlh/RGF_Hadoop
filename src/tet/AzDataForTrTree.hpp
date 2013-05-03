@@ -96,6 +96,7 @@ public:
     m_tran_dense.unlock(); 
     m_tran_dense.reset(); 
     data_num = m_data->colNum(); 
+    //@ Make the sorted_arr for dataset
     if (doSparse) {
       m_data->transpose(&m_tran_sparse); 
       sorted_arr.reset_sparse(&m_tran_sparse, beTight); 

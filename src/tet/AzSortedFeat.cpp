@@ -21,20 +21,20 @@
 #include "AzPrint.hpp"
 
 /*------------------------------------------------------*/
-/*------------------------------------------------------*/
+/*----------@Here the feature vecture is transformed to SortedFeat_Dense------------------------*/
 void AzSortedFeat_Dense::reset(const AzDvect *v_data_transpose, 
                                    const AzIntArr *ia_dx) 
 {
   v_dx2v = v_data_transpose; 
-  const double *dx2value = v_dx2v->point(); 
+  const double *dx2value = v_dx2v->point(); //@1 values 
 
-  const int *dxs = ia_dx->point(); 
-  AzIFarr ifa_dx_val; 
-  ifa_dx_val.prepare(ia_dx->size()); 
+  const int *dxs = ia_dx->point(); //@2 indexs
+  AzIFarr ifa_dx_val;//@(Int,Float)-array 
+  ifa_dx_val.prepare(ia_dx->size());
   int ix; 
   for (ix = 0; ix < ia_dx->size(); ++ix) {
     int dx = dxs[ix]; 
-    ifa_dx_val.put(dx, dx2value[dx]); 
+    ifa_dx_val.put(dx, dx2value[dx]); //@put 1 2 into IFa
   }
   ifa_dx_val.sort_FloatInt(true); /* ascending order */
 
@@ -741,6 +741,7 @@ void AzSortedFeatArr::reset_dense(const AzDmat *m_tran_dense,   /* set */
   int nz_num = 0; 
   AzIntArr ia_all_dx; 
   ia_all_dx.range(0, data_num); 
+  /*@ for each feature new a AzSortedFeat_Dense object*/
   int fx; 
   for (fx = 0; fx < f_num; ++fx) {
     arrd[fx] = new AzSortedFeat_Dense(m_tran_dense->col(fx), &ia_all_dx); 
