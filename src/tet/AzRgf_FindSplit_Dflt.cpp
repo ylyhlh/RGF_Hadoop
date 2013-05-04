@@ -48,13 +48,14 @@ double AzRgf_FindSplit_Dflt::getBestGain(double wsum,  /* some of data weights *
   double p = p_node->weight; /* parent's weight */
   double gain = 0; 
   double q = 0; 
-
+  //printf("The c_nlam == p_nlam %d\n",c_nlam==p_nlam);
+//@@@ We should make sure !wrsum, c_nlam(?,n?), !wsum, to be all reduced p_nlam(?)
   if (doUseInternalNodes) {
     q = wrsum/(wsum+c_nlam); 
     gain = q*q*(wsum+c_nlam); /* n*gain */
   }
-  else if (nsig <= 0) { /* L2 only */
-    q = (wrsum-c_nlam*p)/(wsum+c_nlam); 
+  else if (nsig <= 0) { /* L2 only *///@This is the way we go
+    q = (wrsum-c_nlam*p)/(wsum+c_nlam); //@From paper's p10 ..!!may be we change the target when we split
     gain = q*q*(wsum+c_nlam)+(p_nlam-2*c_nlam)*p*p/2; /* "/2" for two child nodes */
               /* n*gain */
     q += p; 

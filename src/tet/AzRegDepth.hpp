@@ -31,7 +31,7 @@
 //! Regularizer using node depth. 
 class AzRegDepth {
 protected:
-  double depth_base; 
+  double depth_base; //@for L2 reg, it is 1
   AzDvect v_dep2pow;  /* to avoid repetitive calls of pow() */
   const double *dep2pow; 
 
@@ -96,7 +96,6 @@ protected:
   virtual void resetParam(AzParam &p) {
     bool doCheck = false; 
     p.vFloat(kw_depth_base, &depth_base); 
-
     /*---  ---*/
     v_dep2pow.reform(50);
     int dep; 

@@ -139,8 +139,8 @@ void AzFindSplit::loop(AzTrTsplit *best_split,
     }
     //std::cout<<"@TEST:"<<eyec<<":dest_size="<<dest_size<<std::endl; 
 
-    const double *tarDw = target->tarDw_arr(); 
-    const double *dw = target->dw_arr(); 
+    const double *tarDw = target->tarDw_arr(); //@we can look this as target
+    const double *dw = target->dw_arr(); //@we can look this as 1
     double wy_sum_move = 0, w_sum_move = 0; 
     int ix; 
     for (ix = 0; ix < index_num; ++ix) {
@@ -148,7 +148,7 @@ void AzFindSplit::loop(AzTrTsplit *best_split,
       wy_sum_move += tarDw[dx]; 
       w_sum_move += dw[dx]; 
     }
-    dest->wy_sum += wy_sum_move; 
+    dest->wy_sum += wy_sum_move; //@@@@@@@@Here here allreduce
     dest->w_sum += w_sum_move; 
 
     if (min_size > 0) {

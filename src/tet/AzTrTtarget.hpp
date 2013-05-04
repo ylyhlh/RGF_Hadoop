@@ -26,8 +26,8 @@
 /*--------------------------------------------------------*/
 class AzTrTtarget {
 protected:
-  AzDvect v_tar_dw, v_dw;//@?tar_dw <-imp_v_y  ?v_dw <-1
-  AzDvect v_y; 
+  AzDvect v_tar_dw, v_dw;//@?tar_dw <-inp_v_y   ?v_dw <-1
+  AzDvect v_y; //@<-inp_v_y
   AzDvect v_fixed_dw; /* data point weights assigned by users */
   double fixed_dw_sum; 
 
@@ -62,9 +62,11 @@ public:
     return fixed_dw_sum; 
   }
   inline void weight_tarDw() {
+    std::cout<<"@TEST:"<<"AzTrTtarget::weight_tarDw called"<<std::endl; 
     v_tar_dw.scale(&v_fixed_dw); 
   }
   inline void weight_dw() {
+    std::cout<<"@TEST:"<<"AzTrTtarget::weight_dw called"<<std::endl; 
     v_dw.scale(&v_fixed_dw); 
   }
 

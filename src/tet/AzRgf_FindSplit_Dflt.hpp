@@ -31,10 +31,10 @@ class AzRgf_FindSplit_Dflt : /* extends */    public virtual AzFindSplit,
                              /* implements */ public virtual AzRgf_FindSplit
 {
 protected:
-  double lambda, sigma; 
+  double lambda, sigma; //@ the lambda of L2 Reg, and sigma of L1
   const AzRegDepth *reg_depth; 
 
-  double nlam, nsig; 
+  double nlam , nsig; 
   double p_nlam; //!< L2 reg param for parent (node to be split) 
   double c_nlam; //!< L2 reg param for child (new node after split)
   double p_nsig, c_nsig; 
@@ -59,7 +59,7 @@ public:
                  AzTrTsplit *best_split) {
     p_node = tree->node(nx); 
     p_nlam = reg_depth->apply(nlam, p_node->depth); 
-    c_nlam = reg_depth->apply(nlam, p_node->depth+1);
+    c_nlam = reg_depth->apply(nlam, p_node->depth+1);//@for L2 reg there is nothing
     p_nsig = reg_depth->apply(nsig, p_node->depth); 
     c_nsig = reg_depth->apply(nsig, p_node->depth+1); 
     AzFindSplit::_findBestSplit(nx, best_split); 
