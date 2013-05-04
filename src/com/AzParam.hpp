@@ -29,7 +29,7 @@
 class AzParam {
 protected:
   const char *param; //@a string storing all paremeters and value
-  char dlm, kwval_dlm; //@?dlm? kind of splitor kw(keywotd)
+  char dlm, kwval_dlm; //@dlm = delimiter kind of splitor kw(keywotd)
   AzStrPool sp_used_kw; //@ a pool to store all parameter has been used
   bool doCheck; /* check unknown/duplicated keywords */
 public:

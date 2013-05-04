@@ -181,7 +181,7 @@ protected:
     }
   }
   virtual inline void _findSplit_end(AzRgf_FindSplit *fs) const {
-    fs->end(); 
+    fs->end(); //@just reset fs
   }
 
   virtual void adjustParam(); 

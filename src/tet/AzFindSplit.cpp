@@ -30,7 +30,7 @@ void AzFindSplit::_begin(const AzTrTree_ReadOnly *inp_tree,
   data = inp_data; 
 }
 
-/*--------------------------------------------------------*/
+/*-----Find best split for given tree node--------------------------------------*/
 void AzFindSplit::_findBestSplit(int nx, 
                                  /*---  output  ---*/
                                  AzTrTsplit *best_split)
@@ -81,7 +81,7 @@ void AzFindSplit::_findBestSplit(int nx,
       loop(best_split, fx, sorted, dxs_num, &total);
     }
   }
-
+  //@get the feature description from data to best_split
   if (best_split->fx >= 0) {
     if (!dmp_out.isNull()) {
       data->featInfo()->desc(best_split->fx, &best_split->str_desc); 
@@ -100,7 +100,7 @@ double AzFindSplit::evalSplit(const Az_forFindSplit i[2],
   return gain; 
 }
 
-/*--------------------------------------------------------*/
+/*------@Find best threshold for given fx @@@@@we should rewrite this------------------------------*/
 void AzFindSplit::loop(AzTrTsplit *best_split, 
                        int fx, /* feature# */
                        const AzSortedFeat *sorted, 
@@ -131,7 +131,7 @@ void AzFindSplit::loop(AzTrTsplit *best_split,
     double value; //@ The value of this threshold
     int index_num; //@ The number of exampls between two values
     const int *index = NULL; 
-    index = sorted->next(cursor, &value, &index_num); 
+    index = sorted->next(cursor, &value, &index_num); //@@@@@we should rewrite this
     if (index == NULL) break; 
     dest_size += index_num;  
     if (dest_size >= total_size) {
@@ -163,9 +163,9 @@ void AzFindSplit::loop(AzTrTsplit *best_split,
     src->wy_sum = total->wy_sum - dest->wy_sum; 
     src->w_sum  = total->w_sum  - dest->w_sum; 
 
-    double gain = evalSplit(i, bestP); 
+    double gain = evalSplit(i, bestP); //@@@we should rewrite this to make something allreduce
 #if 0 
-    best_split->keep_if_good(fx, value, gain, 
+    best_split->keep_if_good(fx, value, gain,
                         bestP[le_idx], bestP[gt_idx]); 
 #else
     if (gain > best_split->gain) {

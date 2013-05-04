@@ -31,7 +31,7 @@
 //! Call tree ensemble trainer.
 class AzTETmain {
 protected: 
-  AzBytArr s_alg_name/*algorithm name*/, s_train_x_fn/*feature*/, s_train_y_fn/*target*/, s_fdic_fn, s_pred_fn; 
+  AzBytArr s_alg_name/*algorithm name*/, s_train_x_fn/*feature*/, s_train_y_fn/*target*/, s_fdic_fn/*dictionary*/, s_pred_fn; 
   AzBytArr s_dw_fn; //weight vector file name
   AzBytArr s_pred_fn_suffix; 
   AzBytArr s_eval_fn; 
@@ -57,7 +57,7 @@ protected:
 public:
   AzTETmain(const AzTETselector *inp_alg_sel, 
             AzTET_Eval *inp_eval) : s_model_stem(dflt_model_stem), eval(NULL), 
-                                    doLog(true), doDump(false), doAppend_eval(false), 
+                                    doLog(true), doDump(true), doAppend_eval(false), 
                                     doSaveLastModelOnly(false), 
                                     xv_doShuffle(false), xv_num(2), 
                                     doSparse_features(false), features_digits(10)

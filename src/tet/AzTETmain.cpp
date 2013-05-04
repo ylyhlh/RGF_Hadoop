@@ -51,7 +51,7 @@ void AzTETmain::train(const char *argv[], int argc)
   AzSvFeatInfoClone featInfo;//Feature information descriptor 
   AzTimeLog::print("Reading training data ... ", log_out); 
   readData(s_train_x_fn.c_str(), s_train_y_fn.c_str(), s_fdic_fn.c_str(), 
-           &m_tr_x, &v_tr_y, &featInfo); 
+           &m_tr_x, &v_tr_y, &featInfo); //@ how to read
   readDataWeights(s_dw_fn, v_tr_y.rowNum(), &v_fixed_dw); 
 
   /*---  for wamr start  ---*/
@@ -79,7 +79,7 @@ void AzTETmain::train(const char *argv[], int argc)
   show_elapsed(log_out, clk); 
 }
 
-/*------------------------------------------------------------------*/
+/*-----@Using AzSvDataS class to read dataset according to given fn(file name)-----------------------------------------*/
 void AzTETmain::readData(const char *x_fn, 
                          const char *y_fn, 
                          const char *fdic_fn, 

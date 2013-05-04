@@ -40,7 +40,7 @@ class AzRgforest : /* implements */ public virtual AzTETrainer {
 protected: 
   AzBytArr s_config;//@resetted by *_start function based on param from AzTETproc
 
-  AzRgfTreeEnsImp<AzRgfTree> dflt_ens;
+  AzRgfTreeEnsImp<AzRgfTree> dflt_ens;//@ ensemble is a collection of trees
   AzRgfTreeEnsemble *ens; 
   AzRgf_FindSplit_Dflt dflt_fs; /*@node splitor*/
   AzRgf_FindSplit *fs; 
@@ -56,7 +56,7 @@ protected:
 
   bool isOpt; //@ Indicate whether the leaf weights are optimizied, used when exit train loop
 
-  /*@ ? AzRgfTree*/
+  /*@AzRgfTree*/
   int rootonly_tx; 
   AzRgfTree dflt_tree; 
   AzRgfTree *rootonly_tree; 
@@ -72,7 +72,7 @@ protected:
   bool beTight; //@? memory is tight
 
 
-  AzBytArr s_temp_for_trees; //@?
+  AzBytArr s_temp_for_trees; //@??
 
   double f_ratio; //@in setInput function this will decide f_picl
   //@ how many features should be picked or sampled， <0 means all features
@@ -182,7 +182,7 @@ protected:
                         const AzSmat *m_x, 
                         const AzSvFeatInfo *featInfo); 
   virtual void initEnsemble(AzParam &param, int max_tree_num); 
-
+  /**@ grow one step*/
   virtual bool growForest(); 
   AzRgfTree *tree_to_grow(int &best_tx,  /* inout */
                              int &best_nx,  /* inout */

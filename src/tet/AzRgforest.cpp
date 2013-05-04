@@ -190,7 +190,7 @@ void AzRgforest::initEnsemble(AzParam &az_param, int max_tree_num)
   rootonly_tx = max_tree_num + 1;  /* any number that doesn't overlap other trees */
 }
 
-/*-------------------------------------------------------------------*/
+/*-------Get the tree to grow, rootonly or leaf are different----------------------------------------*/
 AzRgfTree *AzRgforest::tree_to_grow(int &best_tx,  /* inout */
                                    int &best_nx,  /* inout */
                                    bool *isNewTree) /* output */
@@ -271,7 +271,7 @@ bool AzRgforest::growForest()
   }
 
   /*---  split the node  ---*/
-  double w_inc; 
+  double w_inc; //weight increase
   int leaf_nx[2] = {-1,-1}; 
   const AzRgfTree *tree = splitNode(&best_split, &w_inc, leaf_nx); 
 
@@ -330,7 +330,7 @@ bool AzRgforest::shouldExit(const AzTrTsplit *best_split) const
   return false; 
 }
 
-/*------------------------------------------------------------------*/
+/*----Loop over the tree to get best_split------------------------------------------*/
 void AzRgforest::searchBestSplit(AzTrTsplit *best_split) /* must be initialize by caller */
 {
   bool doRefreshAll = false; 
@@ -380,7 +380,7 @@ void AzRgforest::searchBestSplit(AzTrTsplit *best_split) /* must be initialize b
   /*@ each tree need to search do findSplit*/
   int tx; 
   for (tx = my_first; tx <= last_tx; ++tx) {
-    input.tx = tx; 
+    input.tx = tx;//@ put the tree index into FSinput 
     ens->tree_u(tx)->findSplit(fs, input, doRefreshAll, best_split);
   }
 

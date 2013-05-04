@@ -37,7 +37,7 @@ public:
   double lam_scale; /*!< for numerical stability of exp loss */
   double nn; /* sum of data point weights if weighted */
 
-  AzRgf_FindSplit_input(int inp_tx, 
+  AzRgf_FindSplit_input(int inp_tx, //@first is -1
                         const AzDataForTrTree *inp_data, 
                         const AzTrTtarget *inp_target, 
                         double inp_lam_scale, 

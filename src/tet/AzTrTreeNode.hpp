@@ -30,7 +30,7 @@ protected:
   const int *dxs; /* data indexes belonging to this node */
 
 public:
-  int dxs_offset;  /* position in the data indexes at the root */
+  int dxs_offset;  /* position in the data indexes at the root *///@?
   int dxs_num; //@the number of examples arrived this node.
   int depth; //!< node depth
 
