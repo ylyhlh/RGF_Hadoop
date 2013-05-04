@@ -109,7 +109,7 @@ void AzFindSplit::loop(AzTrTsplit *best_split,
 {
   /*---  first everyone is in GT(LE)  ---*/
   /*---  move the smallest(largest) ones from GT(LE) to LE(GT)  ---*/
-
+  const char *eyec = "AzFindSplit::loop"; 
   int dest_size = 0; 
   Az_forFindSplit i[2];
   Az_forFindSplit *src = &i[1], *dest = &i[0]; 
@@ -124,12 +124,12 @@ void AzFindSplit::loop(AzTrTsplit *best_split,
     gt_idx = 0; 
   }
 
-  AzCursor cursor; 
+  AzCursor cursor; //@ A class can ++ --
   sorted->rewind(cursor); //@cursor.set(0).In spares case it has backward option
-  //@come here I was here here
+
   for ( ; ; ) {
-    double value; 
-    int index_num; 
+    double value; //@ The value of this threshold
+    int index_num; //@ The number of exampls between two values
     const int *index = NULL; 
     index = sorted->next(cursor, &value, &index_num); 
     if (index == NULL) break; 
@@ -137,6 +137,7 @@ void AzFindSplit::loop(AzTrTsplit *best_split,
     if (dest_size >= total_size) {
       break; /* don't allow all vs nothing */
     }
+    //std::cout<<"@TEST:"<<eyec<<":dest_size="<<dest_size<<std::endl; 
 
     const double *tarDw = target->tarDw_arr(); 
     const double *dw = target->dw_arr(); 

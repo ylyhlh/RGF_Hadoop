@@ -30,7 +30,7 @@ public:
   /*@?he number of data*/
   virtual int dataNum() const = 0; 
   virtual void rewind(AzCursor &cur) const = 0; 
-  virtual const int *next(AzCursor &cur, double *out_val, int *out_num) const = 0; 
+  virtual const int *next(AzCursor &cur, double *out_val, int *out_num, int step_size = 1) const = 0; 
   virtual bool isForward() const = 0; 
   virtual void getIndexes(const int *inp_dxs, int inp_dxs_num, 
                               double border_val, 
@@ -42,11 +42,11 @@ public:
 class AzSortedFeat_Dense : public virtual AzSortedFeat
 {
 protected:
-  AzIntArr ia_index; 
-  const int *index; 
-  int index_num; 
-  int offset; 
-  const AzDvect *v_dx2v; 
+  AzIntArr ia_index; //@ SLIQ's Index colum
+  const int *index; //@index is the c array pointer point to the array in ia_index
+  int index_num; //@index_num is the size of ia_index
+  int offset; //@?
+  const AzDvect *v_dx2v; //@ the index of data to value
   bool isOriginal; 
 
 public:
@@ -91,7 +91,7 @@ public:
   inline void rewind(AzCursor &cur) const {
     cur.set(0); 
   }
-  const int *next(AzCursor &cur, double *out_val, int *out_num) const; 
+  const int *next(AzCursor &cur, double *out_val, int *out_num, int step_size = 1) const; 
 
   inline bool isForward() const {
     return true; 
@@ -174,7 +174,7 @@ public:
       cur.set(0); 
     }
   }
-  inline const int *next(AzCursor &cur, double *out_val, int *out_num) const {
+  inline const int *next(AzCursor &cur, double *out_val, int *out_num, int step_size = 1) const {
     if (_shouldDoBackward) {
       return backward(cur, out_val, out_num); 
     }
@@ -240,7 +240,7 @@ protected:
   int f_num; 
   bool beTight; 
 
-  /*---  used only when beTight = true  ---*/
+  /*---  used only when beTight = true @?? why look at AzSortedFeat.cpp:201 ---*/
   AzIntArr ia_isActive; 
   int active_num; 
 

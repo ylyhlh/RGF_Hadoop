@@ -572,7 +572,7 @@ void AzIIFarr::int2(AzIntArr *ia_int2) const
   }
 }
 
-/*-------------------------------------------------------------*/
+/*@get arr[idx]---------------------------------------------*/
 double AzIIFarr::get(int idx, int *int1, int *int2) const 
 {
   if (idx < 0 || idx >= ent_num) {

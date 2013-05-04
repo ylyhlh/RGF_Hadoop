@@ -334,7 +334,7 @@ public:
     checkIndex(index, "AzIntArr::get");
     return ints[index];
   }
-
+  /**@put int_val at the end of array*/
   void put(int int_val); 
   void increment(int index); 
 
@@ -1065,6 +1065,7 @@ public:
   inline int get() { return i; }
   inline int rewind() { i=0; return i;}
   inline int inc() {++i; return i;}
+  inline int inc(int increase) {i+=increase; return i;}//@new function make us can move fast
   inline int dec() {--i; return i;}
 protected: 
   int i; 

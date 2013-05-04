@@ -38,15 +38,17 @@ void AzSortedFeat_Dense::reset(const AzDvect *v_data_transpose,
   }
   ifa_dx_val.sort_FloatInt(true); /* ascending order */
 
+  
+  //@ get the Int part of ifa_dx_val out in order
   ia_index.reset(); 
   ia_index.prepare(ifa_dx_val.size()); 
   for (ix = 0; ix < ifa_dx_val.size(); ++ix) {
     int dx; 
     ifa_dx_val.get(ix, &dx); 
-    ia_index.put(dx); 
+    ia_index.put(dx); //@put dx on the end of ia_index
   }
 
-  index = ia_index.point(&index_num); 
+  index = ia_index.point(&index_num); //@index_num is the size of ia_index so index
   offset = 0; 
   isOriginal = true; /* This is the original one.  Don't change. */
 }
@@ -193,10 +195,11 @@ void AzSortedFeatArr::filter_base(const AzSortedFeatArr *inp,
   a_dense.free(&arrd); 
 
   ia_isActive.reset(); 
-  ia_isActive.toOnOff(dxs, dxs_num); 
+  ia_isActive.toOnOff(dxs, dxs_num); //@ the bool array used to sample
   active_num = dxs_num; 
 
   if (beTight) {
+    std::cout<<eyec<<"@@TEST:beTight"<<std::endl;
     return; 
   }
 
@@ -224,7 +227,8 @@ void AzSortedFeatArr::filter_base(const AzSortedFeatArr *inp,
 
 /*--------------------------------------------------------*/
 const int *AzSortedFeat_Dense::next(AzCursor &cur, 
-                              double *out_val, int *out_num) /* output */
+  //@ Here I made next function a little difference, make it can move at a given step_size
+                              double *out_val, int *out_num, int step_size) /* output */
 const 
 {
   const char *eyec = "AzSortedFeat_Dense::next"; 
@@ -241,13 +245,13 @@ const
   double curr_val = dx2value[dx]; 
 
   int begin = cursor; 
-  cursor = cur.inc(); 
+  cursor = cur.inc(step_size); 
   if (cursor >= index_num) {
     return  NULL; /* this will produce all vs none anyway */
   }
 
   double avg_val = curr_val + 0.00000001; 
-  for ( ; cursor < index_num; cursor=cur.inc()) {
+  for ( ; cursor < index_num; cursor=cur.inc(step_size)) {
     int dx = index[cursor]; 
     double next_val = dx2value[dx]; 
     if (next_val != curr_val) {
@@ -260,8 +264,9 @@ const
   }
 
   *out_val = avg_val; 
-  *out_num = cursor - begin; 
-  return index + begin;   
+  *out_num = cursor - begin;
+  //std::cout<<"@TEST:"<<eyec<<":out_num"<<*out_num<<std::endl; 
+  return index + begin; //@return the pointer to the previous threshold  
 }
 
 /*------------------------------------------------------*/
@@ -308,7 +313,7 @@ void AzSortedFeat_Sparse::reset(const AzSvect *v_data_transpose,
   AzIFarr ifa_dx_val; 
   v_data_transpose->filter(ia_dx, /* must be sorted */
                            &ifa_dx_val, NULL); 
-
+//@ The value of this threshold
   int zero_num = ia_dx->size() - ifa_dx_val.size(); 
   ia_zero.reset(); 
 

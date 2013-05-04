@@ -755,7 +755,7 @@ double AzTrTree::init_constw(AzLossType loss_type,
 const AzSortedFeatArr *AzTrTree::sorted_array(int nx, 
                              const AzDataForTrTree *data) const
 {
-  std::cout<<nx<<"has "<<nodes[nx].dxs_num <<"examples"<<endl;
+  //std::cout<<nx<<"has "<<n`odes[nx].dxs_num <<"examples"<<endl;
   const char *eyec = "AzTrTree::sorted_array"; 
   if (isBagging) {
     throw new AzException(eyec, "No support for bagging"); 
@@ -781,7 +781,7 @@ const AzSortedFeatArr *AzTrTree::sorted_array(int nx,
     return data->sorted_array(); 
 #else
     if (nodes[nx].dxs_num != data->dataNum()) {
-      /*---  Allow sampling  ---*/
+      /*---  Allow sampling  @I guess this is for bootstrapt---*/
 
       sorted_arr[nx] = new AzSortedFeatArr(data->sorted_array(), 
                                            nodes[nx].dxs, nodes[nx].dxs_num);
@@ -792,7 +792,7 @@ const AzSortedFeatArr *AzTrTree::sorted_array(int nx,
     }
 #endif 
   }
-  if (sorted_arr[root_nx] == NULL) {
+  if (sorted_arr[root_nx] == NULL) {//
     /*---  we need this as the base for SortedFeat_Dense  ---*/
     sorted_arr[root_nx] = new AzSortedFeatArr(data->sorted_array());     
   }
@@ -807,8 +807,8 @@ const AzSortedFeatArr *AzTrTree::sorted_array(int nx,
   }
 
   /*---  make a new one and save it.  ---*/
-  //@ actually make two new and save it and delete sorted arr of px
-  AzSortedFeatArr *base = sorted_arr[root_nx]; 
+  //@ actually make two new (this and this' brother)and save it and delete sorted arr of px
+  AzSortedFeatArr *base = sorted_arr[root_nx]; //@ This is the base
 
   int le_nx = nodes[px].le_nx; 
   int gt_nx = nodes[px].gt_nx; 

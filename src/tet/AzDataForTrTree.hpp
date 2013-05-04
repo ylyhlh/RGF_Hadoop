@@ -107,7 +107,9 @@ public:
       /* prohibit any action to change the pointers to the column vectors */
       m_tran_dense.lock(); 
     }
+    //@ reset feat(AzSvFeatInfo_clone) according to inp_feat, it seems we never use it
     if (inp_feat != NULL) {
+      std::cout<<"Here we got a featinf"<<std::endl;
       feat.reset(inp_feat); 
       if (feat.featNum() != m_data->rowNum()) {
         throw new AzException(AzInputError, "AzDataForTrTree::reset", "#feat mismatch"); 
