@@ -34,4 +34,8 @@ Icon
 rgf_hd.1
 test/
 bin/
+obj/
 rgf.sublime*
+
+.cproject
+.project
