@@ -89,11 +89,24 @@ protected:
   void _findBestSplit(int nx, 
                       /*---  output  ---*/
                       AzTrTsplit *best_split); 
+  void pick_split_points(int split_points_num,
+            const AzSortedFeat *sorted,
+            double *split_points);
   void loop(AzTrTsplit *best_split, 
             int fx, /* feature# */
             const AzSortedFeat *sorted, 
             int dxs_num, 
             const Az_forFindSplit *total); 
+
+  /**@ This is function loops one given split points and allreduce statistics*/
+  void loop_on_given_points(AzTrTsplit *best_split, 
+            int fx, /* feature# */
+            const AzSortedFeat *sorted, 
+            int dxs_num, 
+            const Az_forFindSplit *total,
+            double *split_points,
+            int split_points_num); 
 }; 
+
 
 #endif 

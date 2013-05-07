@@ -268,6 +268,49 @@ const
   //std::cout<<"@TEST:"<<eyec<<":out_num"<<*out_num<<std::endl; 
   return index + begin; //@return the pointer to the previous threshold  
 }
+/*@ The function return the next value and number of current value*/
+const int *AzSortedFeat_Dense::next_real(AzCursor &cur, 
+  //@ Here I made next function a little difference, make it can move at a given step_size
+                              double *out_val, int *out_num, int step_size) /* output */
+const 
+{
+  const char *eyec = "AzSortedFeat_Dense::next"; 
+
+  int cursor = cur.get(); 
+  
+  if (cursor >= index_num) {
+    return NULL;  /* end of data */
+  }
+
+  const double *dx2value = v_dx2v->point(); 
+
+  int dx = index[cursor]; 
+  double curr_val = dx2value[dx]; 
+
+  int begin = cursor; 
+  cursor = cur.inc(step_size); 
+  if (cursor >= index_num) {
+    return  NULL; /* this will produce all vs none anyway */
+  }
+
+  double avg_val = curr_val + 0.00000001; 
+  for ( ; cursor < index_num; cursor=cur.inc(step_size)) {
+    int dx = index[cursor]; 
+    double next_val = dx2value[dx]; 
+    if (next_val != curr_val) {
+      avg_val =  next_val; 
+      break; 
+    }
+  }
+  if (cursor >= index_num) {
+    return NULL; /* this will produce all vs none anyway */
+  }
+
+  *out_val = avg_val; 
+  *out_num = cursor - begin;
+  //std::cout<<"@TEST:"<<eyec<<":out_num"<<*out_num<<std::endl; 
+  return index + begin; //@return the pointer to the previous threshold  
+}
 
 /*------------------------------------------------------*/
 void AzSortedFeat_Dense::getIndexes(const int *inp_dxs, /* not used */

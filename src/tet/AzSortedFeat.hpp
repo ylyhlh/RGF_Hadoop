@@ -31,6 +31,7 @@ public:
   virtual int dataNum() const = 0; 
   virtual void rewind(AzCursor &cur) const = 0; 
   virtual const int *next(AzCursor &cur, double *out_val, int *out_num, int step_size = 1) const = 0; 
+  virtual const int *next_real(AzCursor &cur, double *out_val, int *out_num, int step_size = 1) const = 0; 
   virtual bool isForward() const = 0; 
   virtual void getIndexes(const int *inp_dxs, int inp_dxs_num, 
                               double border_val, 
@@ -92,7 +93,7 @@ public:
     cur.set(0); 
   }
   const int *next(AzCursor &cur, double *out_val, int *out_num, int step_size = 1) const; 
-
+  const int *next_real(AzCursor &cur, double *out_val, int *out_num, int step_size = 1) const; 
   inline bool isForward() const {
     return true; 
   }
@@ -175,6 +176,15 @@ public:
     }
   }
   inline const int *next(AzCursor &cur, double *out_val, int *out_num, int step_size = 1) const {
+    if (_shouldDoBackward) {
+      return backward(cur, out_val, out_num); 
+    }
+    else {
+      return forward(cur, out_val, out_num); 
+    }
+  }
+  /*@?need to change*/
+  inline const int *next_real(AzCursor &cur, double *out_val, int *out_num, int step_size = 1) const {
     if (_shouldDoBackward) {
       return backward(cur, out_val, out_num); 
     }

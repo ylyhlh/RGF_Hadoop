@@ -78,7 +78,14 @@ void AzFindSplit::_findBestSplit(int nx,
       loop(best_split, fx, my_sorted, dxs_num, &total); 
     }
     else {
-      loop(best_split, fx, sorted, dxs_num, &total);
+      std::cout<<"TEST LOOP"<<std::endl;
+      int split_points_num = 10;
+      double *split_points = (double*) malloc (sizeof(double)*split_points_num);
+      pick_split_points(split_points_num,
+                       sorted,
+                       split_points);//@@allreduce this array please
+      loop_on_given_points(best_split, fx, sorted, dxs_num, &total, split_points, split_points_num);
+      //loop(best_split, fx, sorted, dxs_num, &total);
     }
   }
   //@get the feature description from data to best_split
@@ -176,6 +183,110 @@ void AzFindSplit::loop(AzTrTsplit *best_split,
   }
 }
 
+void AzFindSplit::pick_split_points(int split_points_num,
+                       const AzSortedFeat *sorted,
+                       double* split_points)
+{
+  AzCursor cursor; //@ A class can ++ --
+  sorted->rewind(cursor); //@cursor.set(0).In spares case it has backward option
+  int total_data_num = sorted->dataNum();
+  int left_size = 0; 
+
+  for (int split_index = 0; split_index < split_points_num; split_index++) {
+    double value; //@ The value of this threshold
+    int index_num; //@ The number of exampls between two values
+    const int *index = NULL; 
+    do {//@only dense part changed?
+      index = sorted->next(cursor, &value, &index_num); //@@@@@we should rewrite this
+      left_size += index_num;
+    } 
+    while ( left_size < total_data_num / (split_points_num + 1)* (split_index + 1) );
+    split_points[split_index] = value;
+    std::printf("pick_split_points:: No %d index %d value %f\n",split_index,left_size,value);
+  }
+}
+
+void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split, 
+                       int fx, /* feature# */
+                       const AzSortedFeat *sorted, 
+                       int total_size, 
+                       const Az_forFindSplit *total,
+                       double *split_points,
+                       int split_points_num)
+{
+  /*---  first everyone is in GT(LE)  ---*/
+  /*---  move the smallest(largest) ones from GT(LE) to LE(GT)  ---*/
+  const char *eyec = "AzFindSplit::loop_on_given_points"; 
+  int dest_size = 0; 
+  Az_forFindSplit i[2];
+  Az_forFindSplit *src = &i[1], *dest = &i[0]; 
+  double bestP[2] = {0,0}; 
+  int le_idx, gt_idx; 
+  if (sorted->isForward()) {
+    le_idx = 0; 
+    gt_idx = 1; 
+  }
+  else {
+    le_idx = 1; 
+    gt_idx = 0; 
+  }
+
+  AzCursor cursor; //@ A class can ++ --
+  sorted->rewind(cursor); //@cursor.set(0).In spares case it has backward option
+
+  for (int split_index = 0; split_index < split_points_num; split_index++) {
+    double value; //@ The value of this threshold
+    int index_num; //@ The number of exampls between two values
+    const int *index = NULL; 
+    //@ try to find the first 
+    do {//@only dense part changed?
+      index = sorted->next_real(cursor, &value, &index_num); //@@@@@we should rewrite this
+    } 
+    while ( value < split_points[split_index] );
+
+    if (index == NULL) break; 
+    dest_size += index_num;  
+    if (dest_size >= total_size) {
+      break; /* don't allow all vs nothing */
+    }
+    //std::cout<<"@TEST:"<<eyec<<":dest_size="<<dest_size<<std::endl; 
+
+    const double *tarDw = target->tarDw_arr(); //@we can look this as target
+    const double *dw = target->dw_arr(); //@we can look this as 1
+    double wy_sum_move = 0, w_sum_move = 0; 
+    int ix; 
+    for (ix = 0; ix < index_num; ++ix) {
+      int dx = index[ix]; 
+      wy_sum_move += tarDw[dx]; 
+      w_sum_move += dw[dx]; 
+    }
+    dest->wy_sum += wy_sum_move; //@@@@@@@@Here here allreduce
+    dest->w_sum += w_sum_move; //@@@@@@@@Here here allreduce
+
+    if (min_size > 0) {
+      if (dest_size < min_size) {
+        continue; 
+      }
+      if (total_size - dest_size < min_size) {
+        break; 
+      }
+    }
+
+    src->wy_sum = total->wy_sum - dest->wy_sum; //@@@@@@@@Here here allreduce
+    src->w_sum  = total->w_sum  - dest->w_sum; //@@@@@@@@Here here allreduce
+
+    double gain = evalSplit(i, bestP); //@@@we should rewrite this to make something allreduce
+#if 0 
+    best_split->keep_if_good(fx, value, gain,
+                        bestP[le_idx], bestP[gt_idx]); 
+#else
+    if (gain > best_split->gain) {
+      best_split->reset_values(fx, split_points[split_index] , gain, 
+                        bestP[le_idx], bestP[gt_idx]); 
+    }
+#endif 
+  }
+}
 /*--------------------------------------------------------*/
 void AzFindSplit::_pickFeats(int pick_num, int f_num)
 {
