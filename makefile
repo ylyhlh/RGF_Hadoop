@@ -1,48 +1,60 @@
-
-
-BIN_NAME = rgf
+CXX=g++
 BIN_DIR = bin
+BIN_NAME = rgf
 TARGET = $(BIN_DIR)/$(BIN_NAME)
-CFLAGS = -Isrc/com -Isrc/tet_tools -O2
+CXXFLAGS = -Isrc/com -Isrc/tet_tools -O2
 
-CPP_FILES= 	\
-	src/tet/driv_rgf.cpp	\
-	src/com/AzDmat.cpp	\
-	src/tet/AzFindSplit.cpp	\
-	src/com/AzIntPool.cpp	\
-	src/com/AzLoss.cpp	\
-	src/tet/AzOptOnTree_TreeReg.cpp	\
-	src/tet/AzOptOnTree.cpp	\
-	src/com/AzParam.cpp	\
-	src/tet/AzReg_Tsrbase.cpp	\
-	src/tet/AzReg_TsrOpt.cpp	\
-	src/tet/AzReg_TsrSib.cpp	\
-	src/tet/AzRgf_FindSplit_Dflt.cpp	\
-	src/tet/AzRgf_FindSplit_TreeReg.cpp	\
-	src/tet/AzRgf_Optimizer_Dflt.cpp	\
-	src/tet/AzRgforest.cpp	\
-	src/tet/AzRgfTree.cpp	\
-	src/com/AzSmat.cpp	\
-	src/tet/AzSortedFeat.cpp	\
-	src/com/AzStrPool.cpp	\
-	src/com/AzSvDataS.cpp	\
-	src/com/AzTaskTools.cpp	\
-	src/tet/AzTETmain.cpp	\
-	src/tet/AzTETproc.cpp	\
-	src/com/AzTools.cpp	\
-	src/tet/AzTree.cpp	\
-	src/tet/AzTreeEnsemble.cpp	\
-	src/tet/AzTrTree.cpp	\
-	src/tet/AzTrTreeFeat.cpp	\
-	src/com/AzUtil.cpp
+all:  $(TARGET)
 
-#$(TARGET): $(CPP_FILES)
-all: 
-	/bin/rm -f $(TARGET)
-	g++ $(CPP_FILES) $(CFLAGS) -o $(TARGET)
+OBJ=obj
+OBJDIR:=$(OBJ) $(OBJ)/tet $(OBJ)/com
+
+# Add .d to Make's recognized suffixes.
+SUFFIXES += .d
+
+#We don't need to clean up when we're making these targets
+NODEPS:=clean
+
+#Find all the C++ files in the src/ directory
+SOURCES:=$(shell find src -name "*.cpp")
+#Objects we'd like to build
+OBJECTS:=$(patsubst src/%.cpp,$(OBJ)/%.o,$(SOURCES))
+#These are the dependency files, which make will clean up after it creates them
+DEPFILES:=$(patsubst src/%.cpp,$(OBJ)/%.d,$(SOURCES))
+
+#Don't create dependencies when we're cleaning, for instance
+ifeq (0, $(words $(findstring $(MAKECMDGOALS), $(NODEPS))))
+#Chances are, these files don't exist.  GMake will create them and
+#clean up automatically afterwards
+  -include $(DEPFILES)
+endif
+
+
+#This is the rule for creating the dependency files
+$(OBJ)/%.d: src/%.cpp
+	$(CXX) $(CXXFLAGS) -MM -MT '$(patsubst src/%.cpp,$(OBJ)/%.o,$<)' $< -MF $@
+
+#This rule does the compilation
+$(OBJ)/%.o: src/%.cpp $(OBJ)/%.d
+	$(CXX) $(CXXFLAGS) -o $@ -c $<
+
+$(OBJECTS): | $(OBJDIR)
+$(DEPFILES): | $(OBJDIR)
+
+# directory
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
+	mkdir -p $(BIN_DIR)
+
+$(TARGET): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -o $@ $+ 
 
 clean: 
-	/bin/rm -f $(TARGET)
+	rm -rf $(OBJ)/*
+	rm -rf $(BIN_DIR)/*
+
+one: clean
+	g++ $(SOURCES) $(CXXFLAGS) -o $(TARGET)
 
 run:
-	/usr/bin/perl test/call_exe.pl ./bin/rgf train test/sample/train
+	perl test/call_exe.pl ./bin/rgf train test/sample/train
