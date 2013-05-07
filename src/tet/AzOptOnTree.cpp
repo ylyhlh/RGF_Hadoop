@@ -235,7 +235,7 @@ void AzOptOnTree::monitorLoss(int ite,
     uloss_sum += uloss; 
   }
 
-  double uloss_avg = uloss_sum / nn; 
+  double uloss_avg = uloss_sum / nn; //@@opt, we should allreduce this point!!!
   double n1 = v_w.absSum(); 
   double n2 = v_w.selfInnerProduct(); 
 

@@ -41,7 +41,7 @@ void AzRgforest::cold_start(const char *param,
                   az_param, v_y, v_fixed_dw, out, &v_p); 
   initTarget(v_y, v_fixed_dw); //@ set AzTrTtarget target; Targets and data point weights for node split search.  
   initEnsemble(az_param, max_tree_num); /* initialize tree ensemble *///@Ensemble is an array of trees in the forest
-  fs->reset(az_param, reg_depth, out); /* initialize node search *///?
+  fs->reset(az_param, reg_depth, out); /* initialize node search *///
   az_param.check(out);//@find out the unknown parameters and output
   l_num = 0; /* initialize leaf node counter */
 
