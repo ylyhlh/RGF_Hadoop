@@ -307,7 +307,7 @@ void AzOptOnTree::_update_with_features(
     double my_nlam = reg_depth->apply(nlam, node(fx)->depth); 
     double my_nsig = reg_depth->apply(nsig, node(fx)->depth); 
     double delta = getDelta(dxs, dxs_num, w, my_nlam, my_nsig, py_avg, for_del); 
-    v_w.set(fx, w+delta); 
+    v_w.set(fx, w+delta); //@All reduce this point is better?
     updatePred(dxs, dxs_num, delta, &v_p); 
   }
 }
