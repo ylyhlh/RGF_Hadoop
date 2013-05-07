@@ -1,4 +1,5 @@
 
+
 BIN_NAME = rgf
 BIN_DIR = bin
 TARGET = $(BIN_DIR)/$(BIN_NAME)
