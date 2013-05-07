@@ -276,7 +276,7 @@ double AzOptOnTree::update(double inp_nlam,
   AzRgf_forDelta for_delta; 
 
   update_with_features(nlam, nsig, py_avg, &for_delta); 
-  update_intercept(nlam, nsig, py_avg, &for_delta); 
+  update_intercept(nlam, nsig, py_avg, &for_delta); //@?
 
   if (for_delta.truncated > 0 && !out.isNull()) {
     AzPrint o(out); 
@@ -414,9 +414,9 @@ const
   else {
     AzLoss::sum_deriv_weighted(loss_type, dxs, dxs_num, p, y, fixed_dw, py_avg, 
                       nega_dL, ddL); 
-  }
+  }//@check wether the dxs_num is devided -> no. 
 
-  double ddL_nlam = ddL + nlam; 
+  double ddL_nlam = ddL + nlam; //@allreduce here dL/dw, ddL/ddw
   if (ddL_nlam == 0) ddL_nlam = 1;  /* this shouldn't happen, though */
   double delta = (nega_dL-nlam*w)*eta/ddL_nlam; 
   if (nsig > 0) {
