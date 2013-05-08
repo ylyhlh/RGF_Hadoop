@@ -32,7 +32,11 @@ Icon
 .Trashes
 
 rgf_hd.1
-test/
+test/output
+test/sample/*
+!test/sample/train.data.x
+!test/sample/train.data.y
+!test/sample/train.inp
 bin/
 obj/
 rgf.sublime*
