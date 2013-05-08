@@ -2,7 +2,7 @@ CXX=g++
 BIN_DIR = bin
 BIN_NAME = rgf
 TARGET = $(BIN_DIR)/$(BIN_NAME)
-CXXFLAGS = -Isrc/com -Isrc/tet_tools -O2
+CXXFLAGS = -Isrc/com -Isrc/tet -Isrc/allreduce -O2
 SPANNINGTREE = $(BIN_DIR)/spanning_tree
 
 all:  $(TARGET) $(SPANNINGTREE)
@@ -16,8 +16,9 @@ SUFFIXES += .d
 #We don't need to clean up when we're making these targets
 NODEPS:=clean
 
+MAINS:=src/spanning_tree.cpp src/allreduce_test.cpp
 #Find all the C++ files in the src/ directory
-SOURCES:=$(filter-out src/spanning_tree.cpp,$(shell find src -name "*.cpp"))
+SOURCES:=$(filter-out $(MAINS),$(shell find src -name "*.cpp"))
 #Objects we'd like to build
 OBJECTS:=$(patsubst src/%.cpp,$(OBJ)/%.o,$(SOURCES))
 #These are the dependency files, which make will clean up after it creates them
@@ -58,6 +59,9 @@ clean:
 
 one: clean
 	g++ $(SOURCES) $(CXXFLAGS) -o $(TARGET)
+
+artest: src/allreduce_test.cpp $(OBJECTS) | $(OBJDIR)
+	$(CXX) $(CXXFLAGS) -o $(BIN_DIR)/$@ src/allreduce_test.cpp $(OBJ)/allreduce/*.o
 
 run:
 	mkdir -p test/output

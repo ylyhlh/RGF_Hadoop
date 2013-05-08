@@ -22,6 +22,8 @@
 #include <sys/timeb.h>
 #include "allreduce.h"
 
+namespace Hadoop {
+
 using namespace std;
 
 const int buf_size = 1<<16;
@@ -405,3 +407,4 @@ void all_reduce(float* buffer, const int n, const string master_location, const 
   broadcast((char*)buffer, n*sizeof(float), socks.parent, socks.children);
 }
 
+}
