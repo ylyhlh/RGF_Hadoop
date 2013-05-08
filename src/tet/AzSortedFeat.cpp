@@ -279,6 +279,7 @@ const
   int cursor = cur.get(); 
   
   if (cursor >= index_num) {
+    std::cout<<"@ERRO:"<<eyec<<"cursor:="<<cursor<<std::endl; 
     return NULL;  /* end of data */
   }
 
@@ -290,7 +291,7 @@ const
   int begin = cursor; 
   cursor = cur.inc(step_size); 
   if (cursor >= index_num) {
-    return  NULL; /* this will produce all vs none anyway */
+    //return  NULL; /* this will produce all vs none anyway */
   }
 
   double avg_val = curr_val + 0.00000001; 
@@ -303,7 +304,7 @@ const
     }
   }
   if (cursor >= index_num) {
-    return NULL; /* this will produce all vs none anyway */
+    //return NULL; /* this will produce all vs none anyway */
   }
 
   *out_val = avg_val; 

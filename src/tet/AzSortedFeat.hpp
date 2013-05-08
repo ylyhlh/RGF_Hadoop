@@ -29,6 +29,7 @@ class AzSortedFeat
 public:
   /*@?he number of data*/
   virtual int dataNum() const = 0; 
+  virtual double getValue(int index) const = 0; 
   virtual void rewind(AzCursor &cur) const = 0; 
   virtual const int *next(AzCursor &cur, double *out_val, int *out_num, int step_size = 1) const = 0; 
   virtual const int *next_real(AzCursor &cur, double *out_val, int *out_num, int step_size = 1) const = 0; 
@@ -79,6 +80,12 @@ public:
 
   inline int dataNum() const {
     return index_num; 
+  }
+
+  inline double getValue(int ix) const {
+    const double *dx2value = v_dx2v->point(); 
+    int dx = index[ix]; 
+    return dx2value[dx] ;
   }
 
   inline int *base_index_for_update(int *len) {
@@ -160,6 +167,13 @@ public:
 
   inline int dataNum() const {
     return data_num; 
+  }
+
+  inline double getValue(int ix) const {
+    const int *index = ia_index.point(); 
+    const double *value = v_value.point(); 
+    int dx = index[ix]; 
+    return value[dx];
   }
 
   void reset(const AzSvect *v_data_transpose, const AzIntArr *ia_dx); 

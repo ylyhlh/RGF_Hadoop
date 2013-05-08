@@ -28,7 +28,8 @@
 class Az_forFindSplit {
 public:
   double wy_sum, w_sum; 
-  Az_forFindSplit() : wy_sum(0), w_sum(0) {}
+  int size;
+  Az_forFindSplit() : wy_sum(0), w_sum(0), size(0) {}
   void reset() {
     wy_sum = w_sum = 0; 
   }

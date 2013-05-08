@@ -52,7 +52,7 @@ double AzRgf_FindSplit_Dflt::getBestGain(double wsum,  /* some of data weights *
 //@@@ We should make sure !wrsum, c_nlam(?,n?), !wsum, to be all reduced p_nlam(?)
   if (doUseInternalNodes) {
     q = wrsum/(wsum+c_nlam); 
-    gain = q*q*(wsum+c_nlam); /* n*gain */
+    gain = q*q*(wsum+c_nlam); /* n*gain *///@find the define do one time all reduce
   }
   else if (nsig <= 0) { /* L2 only *///@This is the way we go
     q = (wrsum-c_nlam*p)/(wsum+c_nlam); //@From paper's p10 ..!!may be we change the target when we split

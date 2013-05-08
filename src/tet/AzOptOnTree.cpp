@@ -396,9 +396,10 @@ const
 {
   const char *eyec = "AzOptOnTree::getDelta"; 
   if (dxs == NULL) return 0; 
-  if (dxs_num <= 0) {
-    throw new AzException(eyec, "no data indexes"); 
-  }
+  
+
+    //throw new AzException(eyec, "no data indexes"); 
+  
 
   const double *fixed_dw = NULL; 
   if (!AzDvect::isNull(&v_fixed_dw)) fixed_dw = v_fixed_dw.point(); 
@@ -418,7 +419,11 @@ const
 
   double ddL_nlam = ddL + nlam; //@allreduce here dL/dw, ddL/ddw
   if (ddL_nlam == 0) ddL_nlam = 1;  /* this shouldn't happen, though */
+  if (dxs_num == 0) {      std::cout<<"@TEST:"<<eyec<<":nega_dL="<<nega_dL<<std::endl; 
+}
   double delta = (nega_dL-nlam*w)*eta/ddL_nlam; 
+  
+
   if (nsig > 0) {
     double del1; 
     if (w+delta>0) del1 = delta - nsig*eta/ddL_nlam; 
