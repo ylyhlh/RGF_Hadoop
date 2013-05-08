@@ -60,4 +60,5 @@ one: clean
 	g++ $(SOURCES) $(CXXFLAGS) -o $(TARGET)
 
 run:
+	mkdir -p test/output
 	perl test/call_exe.pl ./bin/rgf train test/sample/train
