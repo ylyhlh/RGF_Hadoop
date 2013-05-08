@@ -60,7 +60,7 @@ clean:
 one: clean
 	g++ $(SOURCES) $(CXXFLAGS) -o $(TARGET)
 
-artest: src/allreduce_test.cpp $(OBJECTS) | $(OBJDIR)
+artest: src/allreduce_test.cpp $(SPANNINGTREE) $(OBJECTS) | $(OBJDIR)
 	$(CXX) $(CXXFLAGS) -o $(BIN_DIR)/$@ src/allreduce_test.cpp $(OBJ)/allreduce/*.o
 
 run:
