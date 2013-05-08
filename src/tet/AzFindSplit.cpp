@@ -78,13 +78,14 @@ void AzFindSplit::_findBestSplit(int nx,
       loop(best_split, fx, my_sorted, dxs_num, &total); 
     }
     else {
-      std::cout<<"TEST LOOP"<<std::endl;
-      int split_points_num = 10;
+      //std::cout<<"TEST LOOP"<<std::endl;
+      int split_points_num = 20;
       double *split_points = (double*) malloc (sizeof(double)*split_points_num);
       pick_split_points(split_points_num,
                        sorted,
                        split_points);//@@allreduce this array please
       loop_on_given_points(best_split, fx, sorted, dxs_num, &total, split_points, split_points_num);
+      //*/
       //loop(best_split, fx, sorted, dxs_num, &total);
     }
   }
@@ -187,8 +188,8 @@ void AzFindSplit::pick_split_points(int split_points_num,
                        const AzSortedFeat *sorted,
                        double* split_points)
 {
-  AzCursor cursor; //@ A class can ++ --
-  sorted->rewind(cursor); //@cursor.set(0).In spares case it has backward option
+  //AzCursor cursor; //@ A class can ++ --
+  //sorted->rewind(cursor); //@cursor.set(0).In spares case it has backward option
   int total_data_num = sorted->dataNum();
   int left_size = 0; 
 
@@ -247,7 +248,7 @@ void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split,
       //if (index == NULL) break;
     } 
     //@
-    if (index == NULL)    std::cout<<"@ERRO:"<<eyec<<":dest_size="<<dest_size<<std::endl; 
+    //if (index == NULL)    std::cout<<"@ERRO:"<<eyec<<":dest_size="<<dest_size<<std::endl; 
 ; 
     if (dest_size >= total_size) {
       //std::cout<<"@TEST:"<<eyec<<":ppdest_size="<<dest_size<<std::endl; 
@@ -274,10 +275,10 @@ void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split,
     //std::printf("@TEST: pick_split_points:: No %d index %d in total %d value %f %f \n",split_index,dest_size, total_size,value, split_points[split_index]);
     if (min_size > 0) {
       if (dest_size < min_size) {
-        //continue; 
+        continue; 
       }
       if (total_size  - dest_size < min_size) {
-        //break; 
+        break; //@very important for accuracy
       }
     }
 
@@ -286,7 +287,7 @@ void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split,
     src->size = total_size  - dest_size;
     //std::printf("@TEST: pick_split_points:: No %d dest_size %d src_size  %d in total %d  \n",split_index,dest_size, total_size  - dest_size, total_size);
 
-    //@save i to make high level allreduce
+    //@save i to make high level allreduce AND ALSO THE NLAM
     double gain = evalSplit(i, bestP); //@@@we should rewrite this to make something allreduce
 #if 0 
     best_split->keep_if_good(fx, value, gain,
