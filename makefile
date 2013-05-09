@@ -65,7 +65,9 @@ artest: src/allreduce_test.cpp $(SPANNINGTREE) $(OBJECTS) | $(OBJDIR)
 
 run:
 	mkdir -p test/output
-	perl test/call_exe.pl ./bin/rgf train test/sample/train
+	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
+	perl test/call_exe.pl ./bin/rgf train test/sample/train localhost 1233 1 0
+	killall spanning_tree
 
 predict:
 	perl test/call_exe.pl ./bin/rgf predict test/sample/predict
