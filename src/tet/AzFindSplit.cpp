@@ -17,7 +17,7 @@
  * * * * */
 
 #include "AzFindSplit.hpp"
-#include "accumulate.h"
+//#include "accumulate.h"
 
 /*--------------------------------------------------------*/
 void AzFindSplit::_begin(const AzTrTree_ReadOnly *inp_tree, 
@@ -65,6 +65,11 @@ void AzFindSplit::_findBestSplit(int nx,
     fxs = ia_fx->point(&feat_num); 
   }
   int ix; 
+
+  int split_points_num = 10;
+  double *split_points = new double[split_points_num];
+  Az_forFindSplit *info = new Az_forFindSplit[2*split_points_num];
+
   for (ix = 0; ix < feat_num; ++ix) {
     int fx = ix; //@ the index of feature
     if (fxs != NULL) fx = fxs[ix]; 
@@ -81,16 +86,29 @@ void AzFindSplit::_findBestSplit(int nx,
     else {
       //std::cout<<"TEST LOOP"<<std::endl;
       ///*
-      int split_points_num = 100;
+#if 1
       
-      double *split_points = (double*) malloc (sizeof(double)*split_points_num);
       pick_split_points(split_points_num,
                        sorted,
                        split_points);//@@allreduce this array please
-      accumulate_avg(split_points, split_points_num);
-      loop_on_given_points(best_split, fx, sorted, dxs_num, &total, split_points, split_points_num);
+      //accumulate_avg(split_points, split_points_num);
+      loop_on_given_points(best_split, fx, sorted, dxs_num, &total, split_points, split_points_num,info);
+      
+      double bestP[2] = {0,0}; 
+
+      for (int split_index = 0; split_index < split_points_num; split_index++) { 
+        
+        double gain = evalSplit(&(info[split_index*2]), bestP); //@@@we should rewrite this to make something allreduce
+        if (gain > best_split->gain) {
+          best_split->reset_values(fx, split_points[split_index] , gain, 
+                            bestP[0], bestP[1]); 
+        }
+      }
+
+#else
       //*/
-      //loop(best_split, fx, sorted, dxs_num, &total);
+      loop(best_split, fx, sorted, dxs_num, &total);
+#endif
     }
   }
   //@get the feature description from data to best_split
@@ -99,6 +117,8 @@ void AzFindSplit::_findBestSplit(int nx,
       data->featInfo()->desc(best_split->fx, &best_split->str_desc); 
     }
   }
+  delete[] split_points;
+  delete[] info;
 }
 
 /*--------------------------------------------------------*/
@@ -218,7 +238,8 @@ void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split,
                        int total_size, 
                        const Az_forFindSplit *total,
                        double *split_points,
-                       int split_points_num)
+                       int split_points_num,
+                       Az_forFindSplit *info)
 {
   /*---  first everyone is in GT(LE)  ---*/
   /*---  move the smallest(largest) ones from GT(LE) to LE(GT)  ---*/
@@ -226,6 +247,7 @@ void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split,
   int dest_size = 0; 
   Az_forFindSplit i[2];
   Az_forFindSplit *src = &i[1], *dest = &i[0]; 
+  
   double bestP[2] = {0,0}; 
   int le_idx, gt_idx; 
   if (sorted->isForward()) {
@@ -241,6 +263,9 @@ void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split,
   sorted->rewind(cursor); //@cursor.set(0).In spares case it has backward option
   double value = split_points[0] - 1;
   for (int split_index = 0; split_index < split_points_num; split_index++) {
+    Az_forFindSplit *inf = &info[split_index*2];
+    Az_forFindSplit *src1 = &inf[1], *dest1 = &inf[0]; 
+
      //@ The value of this threshold
     int index_num = 0; //@ The number of exampls between two values
     const int *index = NULL; 
@@ -252,11 +277,10 @@ void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split,
       //if (index == NULL) break;
     } 
     //@
-    //if (index == NULL)    std::cout<<"@ERRO:"<<eyec<<":dest_size="<<dest_size<<std::endl; 
-; 
+    //if (index == NULL)    std::cout<<"@ERRO:"<<eyec<<":dest_size="<<dest_size<<std::endl;  
     if (dest_size >= total_size) {
       //std::cout<<"@TEST:"<<eyec<<":ppdest_size="<<dest_size<<std::endl; 
-      break; /* don't allow all vs nothing */
+      //break; /* don't allow all vs nothing */
     }
 
     //std::cout<<"@TEST:"<<eyec<<":dest_size="<<dest_size<<std::endl; 
@@ -271,37 +295,46 @@ void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split,
       w_sum_move += dw[dx]; 
       //std::cout<<"@TEST:"<<eyec<<":dw[dx]="<<dw[dx]<<std::endl; 
     }
+
     dest->wy_sum += wy_sum_move; //@@@@@@@@Here here allreduce
     dest->w_sum += w_sum_move; //@@@@@@@@Here here allreduce
     dest->size = dest_size;
-
-
     //std::printf("@TEST: pick_split_points:: No %d index %d in total %d value %f %f \n",split_index,dest_size, total_size,value, split_points[split_index]);
-    if (min_size > 0) {
-      if (dest_size < min_size) {
-        continue; 
-      }
-      if (total_size  - dest_size < min_size) {
-        break; //@very important for accuracy
-      }
-    }
 
     src->wy_sum = total->wy_sum - dest->wy_sum; //@@@@@@@@Here here allreduce
     src->w_sum  = total->w_sum  - dest->w_sum; //@@@@@@@@Here here allreduce
     src->size = total_size  - dest_size;
+
+    dest1->wy_sum = dest->wy_sum;
+    dest1->w_sum  = dest->w_sum; 
+    dest1->size = dest->size;
+
+    src1->wy_sum = src->wy_sum;
+    src1->w_sum  = src->w_sum; 
+    src1->size = src->size;
+    
+    /*if (min_size > 0) {
+      if (dest_size < min_size) {
+        //continue; 
+      }
+      if (total_size  - dest_size < min_size) {
+        //break; //@very important for accuracy
+      }
+    }
     //std::printf("@TEST: pick_split_points:: No %d dest_size %d src_size  %d in total %d  \n",split_index,dest_size, total_size  - dest_size, total_size);
 
     //@save i to make high level allreduce AND ALSO THE NLAM
-    double gain = evalSplit(i, bestP); //@@@we should rewrite this to make something allreduce
-#if 0 
-    best_split->keep_if_good(fx, value, gain,
-                        bestP[le_idx], bestP[gt_idx]); 
-#else
+    //
+    
+#if 0
+
+    double gain = evalSplit(inf, bestP); //@@@we should rewrite this to make something allreduce
     if (gain > best_split->gain) {
       best_split->reset_values(fx, split_points[split_index] , gain, 
                         bestP[le_idx], bestP[gt_idx]); 
     }
 #endif 
+    //*/
   }
 }
 /*--------------------------------------------------------*/

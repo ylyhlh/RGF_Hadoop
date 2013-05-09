@@ -31,7 +31,7 @@ public:
   int size;
   Az_forFindSplit() : wy_sum(0), w_sum(0), size(0) {}
   void reset() {
-    wy_sum = w_sum = 0; 
+    wy_sum = w_sum = size = 0; 
   }
 };
 
@@ -106,7 +106,8 @@ protected:
             int dxs_num, 
             const Az_forFindSplit *total,
             double *split_points,
-            int split_points_num); 
+            int split_points_num,
+            Az_forFindSplit *info); 
 }; 
 
 

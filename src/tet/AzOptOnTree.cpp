@@ -419,7 +419,8 @@ const
 
   double ddL_nlam = ddL + nlam; //@allreduce here dL/dw, ddL/ddw
   if (ddL_nlam == 0) ddL_nlam = 1;  /* this shouldn't happen, though */
-  if (dxs_num == 0) {      std::cout<<"@TEST:"<<eyec<<":nega_dL="<<nega_dL<<std::endl; 
+  if (dxs_num == 0) {      
+    //std::cout<<"@TEST:"<<eyec<<":nega_dL="<<nega_dL<<std::endl; 
 }
   double delta = (nega_dL-nlam*w)*eta/ddL_nlam; 
   
