@@ -9,7 +9,7 @@ using namespace std;
 using namespace Hadoop;
 
 void test_scale(int total) {
-    float data;
+    double data;
     data = accumulate_scalar(1); // 1 * total
     data = accumulate_scalar(data); // 1 * total * total
     cout << "Sum of data: " << data << endl;
@@ -18,7 +18,7 @@ void test_scale(int total) {
 
 void test_sum(int total) {
     const int length = 10;
-    float data[length];
+    double data[length];
     for (int i = 0; i < length; ++i)
     {
         data[i] = i;
@@ -32,7 +32,7 @@ void test_sum(int total) {
 
 void test_avg(int total) {
     const int length = 10;
-    float data[length];
+    double data[length];
     for (int i = 0; i < length; ++i)
     {
         data[i] = i;
@@ -43,7 +43,7 @@ void test_avg(int total) {
         verify(int(data[i]) == i);
     }
 }
- 
+
 int main(int argc, char** argv) {
     if (argc < 4) {
         cout << argv[0] << " <master> <total> <node_id>" << endl;

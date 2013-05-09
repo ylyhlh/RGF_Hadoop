@@ -3,7 +3,7 @@ Copyright (c) by respective owners including Yahoo!, Microsoft, and
 individual contributors. All rights reserved.  Released under a BSD
 license as described in the file LICENSE.
  */
-// This implements the allreduce function of MPI.  
+// This implements the allreduce function of MPI.
 
 #ifndef ALLREDUCE_H
 #define ALLREDUCE_H
@@ -35,10 +35,10 @@ struct node_socks {
     if(current_master != "") {
       if(parent != -1)
 	shutdown(this->parent, SHUT_RDWR);
-      if(children[0] != -1) 
+      if(children[0] != -1)
 	shutdown(this->children[0], SHUT_RDWR);
       if(children[1] != -1)
-	shutdown(this->children[1], SHUT_RDWR);  
+	shutdown(this->children[1], SHUT_RDWR);
     }
   }
   node_socks ()
@@ -47,6 +47,6 @@ struct node_socks {
   }
 };
 
-void all_reduce(float* buffer, int n, std::string master_location, size_t unique_id, size_t total, size_t node, node_socks& socks);
+void all_reduce(double* buffer, int n, std::string master_location, size_t unique_id, size_t total, size_t node, node_socks& socks);
 }
 #endif

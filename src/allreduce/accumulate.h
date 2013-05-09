@@ -23,7 +23,7 @@ license as described in the file LICENSE.
 //   This step is done only once, see cluster.h(.cpp)
 //   After that, we can use accumulate anywhere in the program.
 //
-//   float* array; // Pointer to an array.
+//   double* array; // Pointer to an array.
 //   int length;
 //   Hadoop::accumulate_sum(array, length);
 //
@@ -31,9 +31,9 @@ license as described in the file LICENSE.
 //
 namespace Hadoop {
 
-float accumulate_scalar(float local_sum);
-void accumulate_sum(float* array, size_t length);
-void accumulate_avg(float* array, size_t length);
+double accumulate_scalar(double local_sum);
+void accumulate_sum(double* array, size_t length);
+void accumulate_avg(double* array, size_t length);
 }
 
 #endif
