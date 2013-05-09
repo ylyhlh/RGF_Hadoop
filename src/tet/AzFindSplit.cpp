@@ -17,6 +17,7 @@
  * * * * */
 
 #include "AzFindSplit.hpp"
+#include "accumulate.h"
 
 /*--------------------------------------------------------*/
 void AzFindSplit::_begin(const AzTrTree_ReadOnly *inp_tree, 
@@ -79,11 +80,14 @@ void AzFindSplit::_findBestSplit(int nx,
     }
     else {
       //std::cout<<"TEST LOOP"<<std::endl;
-      int split_points_num = 20;
+      ///*
+      int split_points_num = 100;
+      
       double *split_points = (double*) malloc (sizeof(double)*split_points_num);
       pick_split_points(split_points_num,
                        sorted,
                        split_points);//@@allreduce this array please
+      accumulate_avg(split_points, split_points_num);
       loop_on_given_points(best_split, fx, sorted, dxs_num, &total, split_points, split_points_num);
       //*/
       //loop(best_split, fx, sorted, dxs_num, &total);

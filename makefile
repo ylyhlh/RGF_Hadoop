@@ -51,7 +51,7 @@ $(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $@ $+
 
 $(SPANNINGTREE): src/spanning_tree.cpp | $(OBJDIR)
-	$(CXX) $(CXXFLAGS) -o $@ $+
+	$(CXX) $(CXXFLAGS) -o $@ $+a
 
 clean:
 	rm -rf $(OBJ)/*
@@ -71,4 +71,4 @@ predict:
 	perl test/call_exe.pl ./bin/rgf predict test/sample/predict
 
 train_test:
-	perl test/call_exe.pl ./bin/rgf train_test test/sample/regress_train_test
+	perl test/call_exe.pl ./bin/rgf train_test test/sample/train_test

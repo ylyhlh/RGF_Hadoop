@@ -22,6 +22,7 @@
 #include "AzRgfTrainerSel.hpp"
 #include "AzTET_Eval_Dflt.hpp"
 #include "AzHelp.hpp"
+#include "accumulate.h"
 
 /*-----------------------------------------------------------------*/
 void help(int argc, const char *argv[])
@@ -59,7 +60,11 @@ int main(int argc, const char *argv[])
     help(argc, argv); 
     return -1; 
   }
-
+  string master_location="localhost";
+  int node = 0;
+  int unique_id = 1234;
+  int total = 1;
+  Hadoop::Cluster::init_cluster(node, total, unique_id, master_location);
   const char *action = argv[1]; 
 
   AzRgfTrainerSel alg_sel; 

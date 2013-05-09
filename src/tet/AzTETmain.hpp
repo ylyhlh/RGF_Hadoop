@@ -57,7 +57,7 @@ protected:
 public:
   AzTETmain(const AzTETselector *inp_alg_sel, 
             AzTET_Eval *inp_eval) : s_model_stem(dflt_model_stem), eval(NULL), 
-                                    doLog(true), doDump(true), doAppend_eval(false), 
+                                    doLog(true), doDump(false), doAppend_eval(false), 
                                     doSaveLastModelOnly(false), 
                                     xv_doShuffle(false), xv_num(2), 
                                     doSparse_features(false), features_digits(10)
