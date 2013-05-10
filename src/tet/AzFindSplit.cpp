@@ -66,7 +66,7 @@ void AzFindSplit::_findBestSplit(int nx,
   }
   int ix; 
 
-  int split_points_num = 10;
+  int split_points_num = 20;
   double *split_points = new double[split_points_num];
   Az_forFindSplit *info = new Az_forFindSplit[2*split_points_num];
 
@@ -81,6 +81,7 @@ void AzFindSplit::_findBestSplit(int nx,
       if (my_sorted->dataNum() != dxs_num) {
         throw new AzException(eyec, "conflict in #data"); 
       }
+      std::cout<<"TEST LOOP"<<std::endl;
       loop(best_split, fx, my_sorted, dxs_num, &total); 
     }
     else {
@@ -248,17 +249,6 @@ void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split,
   Az_forFindSplit i[2];
   Az_forFindSplit *src = &i[1], *dest = &i[0]; 
   
-  double bestP[2] = {0,0}; 
-  int le_idx, gt_idx; 
-  if (sorted->isForward()) {
-    le_idx = 0; 
-    gt_idx = 1; 
-  }
-  else {
-    le_idx = 1; 
-    gt_idx = 0; 
-  }
-
   AzCursor cursor; //@ A class can ++ --
   sorted->rewind(cursor); //@cursor.set(0).In spares case it has backward option
   double value = split_points[0] - 1;
