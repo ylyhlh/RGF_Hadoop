@@ -42,6 +42,9 @@ void AzFindSplit::_findBestSplit(int nx,
     throw new AzException(eyec, "information is not set");
   }
 
+  
+  
+
   /* @data indexes belonging to this node */
   const int *dxs = tree->node(nx)->data_indexes();
   //@the number of examples arrived this node.
@@ -68,6 +71,9 @@ void AzFindSplit::_findBestSplit(int nx,
 
   int split_points_num = 20;
   double *split_points = new double[split_points_num];
+  double *wy_sum_array = new double[2*split_points_num];
+  double *w_sum_array = new double[2*split_points_num];
+  double *size_array = new double[2*split_points_num];
   Az_forFindSplit *info = new Az_forFindSplit[2*split_points_num];
 
   for (ix = 0; ix < feat_num; ++ix) {
@@ -96,6 +102,22 @@ void AzFindSplit::_findBestSplit(int nx,
       loop_on_given_points(best_split, fx, sorted, dxs_num, &total, split_points, split_points_num,info);
 
       double bestP[2] = {0,0};
+      //@ get every thing out
+      for (int split_index = 0; split_index < 2*split_points_num; split_index++) {
+        wy_sum_array[split_index] = info[split_index].wy_sum;
+        w_sum_array[split_index] = info[split_index].w_sum;
+        size_array[split_index] = info[split_index].size;
+      }
+
+      Hadoop::accumulate_sum(wy_sum_array, split_points_num*2);
+      Hadoop::accumulate_sum(w_sum_array, split_points_num*2);
+      Hadoop::accumulate_sum(size_array, split_points_num*2);
+
+      for (int split_index = 0; split_index < 2*split_points_num; split_index++) {
+        info[split_index].wy_sum = wy_sum_array[split_index];
+        info[split_index].w_sum = w_sum_array[split_index];
+        info[split_index].size = size_array[split_index];
+      }
 
       for (int split_index = 0; split_index < split_points_num; split_index++) {
 
@@ -247,7 +269,7 @@ void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split,
   const char *eyec = "AzFindSplit::loop_on_given_points";
   int dest_size = 0;
   Az_forFindSplit i[2];
-  
+
   Az_forFindSplit *src = &i[1], *dest = &i[0]; 
   
 

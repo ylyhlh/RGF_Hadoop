@@ -1,0 +1,61 @@
+./bin/rgf train_test train_x_fn=test/sample/msd_01.train.x,train_y_fn=test/sample/msd_01.train.y,test_x_fn=test/sample/msd_01.train.x,test_y_fn=test/sample/msd_01.train.y,evaluation_fn=test/output/msd_01.evaluation,model_fn_prefix=test/output/msd_01.model,reg_L2=1,algorithm=RGF,loss=LS,test_interval=100,max_leaf_forest=500,Verbose --master localhost --unique_id 1233 --total 2 --node_id 0
+"train_test": 
+   algorithm=RGF
+   train_x_fn=test/sample/msd_01.train.x
+   train_y_fn=test/sample/msd_01.train.y
+   Log:ON
+   test_x_fn=test/sample/msd_01.train.x
+   test_y_fn=test/sample/msd_01.train.y
+   evaluation_fn=test/output/msd_01.evaluation
+   model_fn_prefix=test/output/msd_01.model
+--------------------
+Fri May 10 18:46:16 2013: Reading training data ... 
+Fri May 10 18:46:16 2013: Reading test data ... 
+Fri May 10 18:46:16 2013: Start ... #train=2000, #test=2000
+--------------------
+Forest-level: 
+   loss=LS
+   max_leaf_forest=500
+   max_tree=250
+   opt_interval=100
+   test_interval=100
+   num_tree_search=1
+   Verbose:ON
+   memory_policy=Generous
+-------------
+Training data: 90x2000, nonzero_ratio=1; managed as dense data.
+-------------
+Optimization: 
+   loss=LS
+   num_iteration_opt=10
+   reg_L2=1
+   opt_stepsize=0.5
+Tree-level: min_pop=10
+Node split: reg_L2=1
+--------------------
+Fri May 10 18:46:23 2013: Calling optimizer with 32 trees and 100 leaves
+Fri May 10 18:46:23 2013: Testing ... 
+Fri May 10 18:46:23 2013: Writing model: seq#=1
+Fri May 10 18:46:28 2013: Calling optimizer with 72 trees and 200 leaves
+Fri May 10 18:46:29 2013: Testing ... 
+Fri May 10 18:46:29 2013: Writing model: seq#=2
+Fri May 10 18:46:33 2013: Calling optimizer with 118 trees and 300 leaves
+Fri May 10 18:46:34 2013: Testing ... 
+Fri May 10 18:46:34 2013: Writing model: seq#=3
+Fri May 10 18:46:40 2013: Calling optimizer with 157 trees and 400 leaves
+Fri May 10 18:46:40 2013: Testing ... 
+Fri May 10 18:46:40 2013: Writing model: seq#=4
+Fri May 10 18:46:45 2013: AzRgforest: #leaf reached max
+Fri May 10 18:46:45 2013: Calling optimizer with 195 trees and 501 leaves
+Fri May 10 18:46:46 2013: Testing ... 
+Fri May 10 18:46:46 2013: Writing model: seq#=5
+
+Generated 5 model file(s): 
+test/output/msd_01.model-01
+test/output/msd_01.model-02
+test/output/msd_01.model-03
+test/output/msd_01.model-04
+test/output/msd_01.model-05
+
+Fri May 10 18:46:46 2013: Done ...
+elapsed: 10.091
