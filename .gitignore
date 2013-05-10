@@ -43,3 +43,4 @@ rgf.sublime*
 
 .cproject
 .project
+*.log
