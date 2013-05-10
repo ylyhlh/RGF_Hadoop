@@ -51,7 +51,7 @@ $(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $@ $+
 
 $(SPANNINGTREE): src/spanning_tree.cpp | $(OBJDIR)
-	$(CXX) $(CXXFLAGS) -o $@ $+a
+	$(CXX) $(CXXFLAGS) -o $@ $+
 
 clean:
 	rm -rf $(OBJ)/*
