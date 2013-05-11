@@ -42,9 +42,6 @@ void AzFindSplit::_findBestSplit(int nx,
     throw new AzException(eyec, "information is not set");
   }
 
-  
-  
-
   /* @data indexes belonging to this node */
   const int *dxs = tree->node(nx)->data_indexes();
   //@the number of examples arrived this node.
@@ -69,7 +66,7 @@ void AzFindSplit::_findBestSplit(int nx,
   }
   int ix;
 
-  int split_points_num = 20;
+  int split_points_num = 50;
   double *split_points = new double[split_points_num];
   double *wy_sum_array = new double[2*split_points_num];
   double *w_sum_array = new double[2*split_points_num];
@@ -142,6 +139,9 @@ void AzFindSplit::_findBestSplit(int nx,
   }
   delete[] split_points;
   delete[] info;
+  delete[] wy_sum_array;
+  delete[] w_sum_array;
+  delete[] size_array;
 }
 
 /*--------------------------------------------------------*/

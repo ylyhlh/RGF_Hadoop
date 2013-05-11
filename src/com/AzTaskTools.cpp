@@ -21,6 +21,7 @@
 #include "AzTools.hpp"
 #include "AzTaskTools.hpp"
 #include "AzPrint.hpp"
+//#include "accumulate.h"
 
 /*------------------------------------------------------------------*/
 void AzTaskTools::showDist(const AzStrArray *sp_cat, 
@@ -130,7 +131,8 @@ void AzTaskTools::eval(const char *ite_str,
   double tp=0, tn=0, fp=0, fn=0; 
   double posi=0, rmse=0; 
 
-  int num = data_num; 
+  int num = data_num;
+  
   const int *dxs = NULL; 
   if (ia_dx != NULL) {
     dxs = ia_dx->point(&num); 
@@ -163,6 +165,9 @@ void AzTaskTools::eval(const char *ite_str,
     double diff = p_val - y[dx]; 
     rmse += (diff*diff); 
   }
+  double tmp_num = num;
+  //Hadoop::accumulate_sum(&tmp_num, 1);
+
   double uloss_avg = 
   analyzeLoss(loss_type, v_test_pval, v_test_yval, ia_dx, 1); 
   double nloss1_avg = 0, nloss2_avg = 0; 
@@ -172,8 +177,8 @@ void AzTaskTools::eval(const char *ite_str,
     nloss2_avg = analyzeLoss(loss_type, v_test_pval, v_test_yval, ia_dx, p_coeff[1]); 
   }
 
-  rmse = sqrt(rmse/(double)num); 
-  double acc = (tp+tn) / (double)num; 
+  rmse = sqrt(rmse/tmp_num); 
+  double acc = (tp+tn) / tmp_num; 
   double precision = 0; 
   if (tp + fp > 0) {
     precision = tp / (tp + fp); 
@@ -213,7 +218,7 @@ void AzTaskTools::eval(const char *ite_str,
       o.print("nloss2", nloss2_avg, 5); 
     }
     o.print("ok",(int)tp); o.print("t",(int)(tp+fp)); o.print("g",(int)posi); 
-    o.print("#data", num); 
+    o.print("#data", tmp_num); 
     o.printEnd(); 
   }
   if (result != NULL) {
