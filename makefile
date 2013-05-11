@@ -71,6 +71,11 @@ run: kill
 	perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_02 localhost 1233 2 1 >log2.log
 	killall spanning_tree
 
+train: kill
+	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
+	perl test/call_exe.pl ./bin/rgf train test/sample/train localhost 1233 1 0
+	killall spanning_tree
+
 predict:
 	perl test/call_exe.pl ./bin/rgf predict test/sample/predict
 
