@@ -4,6 +4,7 @@ BIN_NAME = rgf
 TARGET = $(BIN_DIR)/$(BIN_NAME)
 CXXFLAGS = -Isrc/com -Isrc/tet -Isrc/allreduce -O2
 SPANNINGTREE = $(BIN_DIR)/spanning_tree
+SPAN_F = $(words $(shell ps aux | grep '[s]panning_tree' ))
 
 all:  $(TARGET) $(SPANNINGTREE)
 
@@ -63,7 +64,7 @@ one: clean
 artest: src/allreduce_test.cpp $(SPANNINGTREE) $(OBJECTS) | $(OBJDIR)
 	$(CXX) $(CXXFLAGS) -o $(BIN_DIR)/$@ src/allreduce_test.cpp $(OBJ)/allreduce/*.o
 
-run:
+run: kill
 	mkdir -p test/output
 	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
 	perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_01 localhost 1233 2 0 >log1 &
@@ -77,4 +78,7 @@ train_test:
 	perl test/call_exe.pl ./bin/rgf train_test test/sample/train_test
 
 kill:
+ifneq (0, $(SPAN_F))
 	killall spanning_tree
+endif
+	
