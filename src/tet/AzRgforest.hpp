@@ -103,7 +103,7 @@ public:
     loss_type(loss_type_dflt), 
     doForceToRefreshAll(false), beVerbose(false),  
     l_num(0), isOpt(false), out(log_out), py_adjust(0), lam_scale(1), 
-    opt_time(0), search_time(0), doTime(false), 
+    opt_time(0), search_time(0), doTime(true), 
     beTight(false), s_mem_policy(mp_not_beTight), 
     f_ratio(-1), f_pick(-1), 
     doPassiveRoot(false) 

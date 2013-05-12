@@ -24,6 +24,8 @@ typedef SOCKET socket_t;
 #include <netdb.h>
 typedef int socket_t;
 #endif
+#include "timer.h"
+
 namespace Hadoop {
 
 struct node_socks {
@@ -46,6 +48,10 @@ struct node_socks {
     current_master = "";
   }
 };
+
+extern StopWatch all_reduce_watch;
+extern int all_reduce_data_amount;
+extern int all_reduce_counter;
 
 void all_reduce(double* buffer, int n, std::string master_location, size_t unique_id, size_t total, size_t node, node_socks& socks);
 }

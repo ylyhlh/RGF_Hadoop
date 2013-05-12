@@ -2,10 +2,11 @@ CXX=g++
 BIN_DIR = bin
 BIN_NAME = rgf
 TARGET = $(BIN_DIR)/$(BIN_NAME)
-CXXFLAGS = -Isrc/com -Isrc/tet -Isrc/allreduce -O2
+CXXFLAGS = -Isrc/com -Isrc/tet -Isrc/allreduce -O2 -fopenmp
 SPANNINGTREE = $(BIN_DIR)/spanning_tree
 ME=$(shell whoami)
 SPAN_F = $(words $(shell ps aux | grep '[s]panning_tree' | grep $(ME) ))
+RGF_F = $(words $(shell ps aux | grep '[r]gf' ))
 
 all:  $(TARGET) $(SPANNINGTREE)
 
@@ -68,9 +69,15 @@ artest: src/allreduce_test.cpp $(SPANNINGTREE) $(OBJECTS) | $(OBJDIR)
 run: kill
 	mkdir -p test/output
 	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
-	perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_01 localhost 1233 2 0 >log1.log &
+	perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_01 localhost 1233 2 0 >log1.log &  
 	perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_02 localhost 1233 2 1 >log2.log
-	killall spanning_tree
+	@killall spanning_tree
+
+run1: kill all
+	mkdir -p test/output
+	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
+	perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_01 localhost 1233 1 0 >log1_1.log   
+	@killall spanning_tree
 
 train: kill
 	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
@@ -82,11 +89,14 @@ predict:
 
 train_test: kill
 	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
-	perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_01 localhost 1233 1 0 >log1.log
+	perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_04 localhost 1233 1 0 >log1.log
 
 kill:
 ifneq (0, $(SPAN_F))
-	killall spanning_tree
+	@killall spanning_tree
+endif
+ifneq (0, $(RGF_F))
+	@killall rgf
 endif
 
 # Marco for hadoop cluster
@@ -99,5 +109,13 @@ ifneq (0, $(words $(shell $(hfs) -ls | grep count_file )))
 	$(hfs) -rmr count_file
 endif
 	$(hjs) -input test/train.long.unix -output count_file -mapper runallreduce.sh -reducer cat -file cluster/runallreduce.sh bin/artest
+	killall spanning_tree
+
+cluster: kill
+	$(BIN_DIR)/spanning_tree
+ifneq (0, $(words $(shell $(hfs) -ls | grep rgfout )))
+	$(hfs) -rmr rgfout
+endif
+	$(hjs) -input test/train.long.unix -output rgfout -mapper runrgf.sh -reducer cat -file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
 	killall spanning_tree
 

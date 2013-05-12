@@ -188,6 +188,7 @@ void AzOptOnTree::iterate(int inp_ite_num,
   int ite_chk = MIN(5, ite_num); 
   int ite; 
   for (ite = 0; ite < ite_num; ++ite) {
+
     double delta = update(nlam, nsig); 
     if (exit_delta > 0 && 
         delta < exit_delta) {
@@ -299,6 +300,8 @@ void AzOptOnTree::_update_with_features(
   int fx; 
   int f_num = tree_feat->featNum(); 
   for (fx = 0; fx < f_num; ++fx) {
+    //std::cout<<"@Allreduce"<<f_num<<std::endl; 
+
     if (tree_feat->featInfo(fx)->isRemoved) continue; 
 
     double w = v_w.get(fx); 
@@ -400,7 +403,6 @@ const
 
     //throw new AzException(eyec, "no data indexes"); 
   Hadoop::accumulate_sum(&nlam, 1);
-
   const double *fixed_dw = NULL; 
   if (!AzDvect::isNull(&v_fixed_dw)) fixed_dw = v_fixed_dw.point(); 
 
@@ -421,7 +423,7 @@ const
   double ddL_nlam = ddL + nlam; //@allreduce here dL/dw, ddL/ddw
   if (ddL_nlam == 0) ddL_nlam = 1;  /* this shouldn't happen, though */
   if (dxs_num == 0) {      
-    //std::cout<<"@TEST:"<<eyec<<":nega_dL="<<nega_dL<<std::endl; 
+    //
 }
   double delta = (nega_dL-nlam*w)*eta/ddL_nlam; 
   

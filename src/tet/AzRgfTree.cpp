@@ -49,14 +49,14 @@ void AzRgfTree::findSplit(AzRgf_FindSplit *fs,
   int nx; //@the index of node
   for (nx = 0; nx < nodes_used; ++nx) {
     if (!nodes[nx].isLeaf()) continue; //@if not lead then next node
-
     /*---@Check the tree construction rules---*/
     if (max_depth > 0 && nodes[nx].depth >= max_depth) {
       continue;
     }
     if (min_size > 0 && nodes[nx].dxs_num < min_size*2) {
-      continue;
+      //continue;@????????
     }
+    //printf("%s The best split is%d %d %d\n", eyec, nx, best_split->fx,best_split->nx);
 
     /*@!!!!really find the split on a node*/
     _findSplit(fs, nx, doRefreshAll); 

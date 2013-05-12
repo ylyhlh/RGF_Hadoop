@@ -262,7 +262,9 @@ bool AzRgforest::growForest()
 {
   clock_t b_time; 
   time_begin(&b_time); 
-
+  
+  AzBytArr s("Calling growForest "); 
+  AzTimeLog::print(s, out); 
   /*---  find the best split  ---*/
   AzTrTsplit best_split; 
   searchBestSplit(&best_split);                    
@@ -390,6 +392,7 @@ void AzRgforest::searchBestSplit(AzTrTsplit *best_split) /* must be initialize b
     input.tx = rootonly_tx; 
     rootonly_tree->findSplit(fs, input, doRefreshAll, best_split); 
   }
+  //printf("The best split is %d %d\n", best_split->fx,best_split->nx);
 }
 
 /*------------------------------------------------------------------*/
