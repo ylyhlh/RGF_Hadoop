@@ -68,7 +68,7 @@ void test_count_file(const string& file_name) {
     while ( fin.good() )
     {
       getline (fin,line);
-      count++;
+      if (!line.empty()) count++;
       // cout << line << endl;
     }
     fin.close();

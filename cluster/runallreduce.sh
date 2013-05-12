@@ -6,15 +6,15 @@ dryrun=$1
 
 # MR1 sets $mapred_map_tasks
 # MR2/YARN sets $mapreduce_job_maps
-nmappers=$mapreduce_job_maps
+nmappers=$mapred_map_tasks
 
 # MR1 sets $mapreduce_job_submithost
 # MR2/YARN sets $mapreduce_job_submithostname
-submit_host=$mapreduce_job_submithostname
+submit_host=$mapreduce_job_submithost
 
 # MR1 sets $mapred_output_dir
 # MR2/YARN sets $mapreduce_output_fileoutputformat_outputdir
-output_dir=$mapreduce_output_fileoutputformat_outputdir
+output_dir=$mapred_output_dir
 
 set -u
 
@@ -42,4 +42,6 @@ cut -f2- $TRAINFILE > $TRAINFILE.x
 
 artestcmd="./artest $submit_host $nmappers $mapper --job count_file --file $TRAINFILE.y"
 echo $artestcmd > /dev/stderr
-#$artestcmd
+$artestcmd
+
+#hadoop fs -put $TRAINFILE.y $output_dir/$mapper.input

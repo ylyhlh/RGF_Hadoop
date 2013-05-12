@@ -4,7 +4,8 @@ BIN_NAME = rgf
 TARGET = $(BIN_DIR)/$(BIN_NAME)
 CXXFLAGS = -Isrc/com -Isrc/tet -Isrc/allreduce -O2
 SPANNINGTREE = $(BIN_DIR)/spanning_tree
-SPAN_F = $(words $(shell ps aux | grep '[s]panning_tree' ))
+ME=$(shell whoami)
+SPAN_F = $(words $(shell ps aux | grep '[s]panning_tree' | grep $(ME) ))
 
 all:  $(TARGET) $(SPANNINGTREE)
 
@@ -87,3 +88,16 @@ kill:
 ifneq (0, $(SPAN_F))
 	killall spanning_tree
 endif
+
+# Marco for hadoop cluster
+hfs=hadoop fs
+hjs=hadoop jar /usr/lib/hadoop/contrib/streaming/hadoop-streaming-1.0.3.16.jar
+
+arcluster: kill
+	$(BIN_DIR)/spanning_tree
+ifneq (0, $(words $(shell $(hfs) -ls | grep count_file )))
+	$(hfs) -rmr count_file
+endif
+	$(hjs) -input test/train.long.unix -output count_file -mapper runallreduce.sh -reducer cat -file cluster/runallreduce.sh bin/artest
+	killall spanning_tree
+
