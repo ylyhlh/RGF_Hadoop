@@ -8,7 +8,8 @@ then
   echo "Merging $FILENAME.y and $FILENAME.x"
   echo "into"
   echo "$FILENAME.dat"
-  paste $FILENAME.y $FILENAME.x > $FILENAME.dat
+  # remove \r in \r\n to convert Windows line ending to Unix style
+  paste $FILENAME.y $FILENAME.x | tr -d '\r' > $FILENAME.dat
   echo "Merge finish."
 else
   echo "merge.sh <prefix of x and y files>"
