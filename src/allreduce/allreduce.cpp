@@ -20,7 +20,9 @@
 #include <unistd.h>
 #endif
 #include <sys/timeb.h>
+#include <sys/socket.h>
 #include "allreduce.h"
+#include "utils.h"
 
 namespace Hadoop {
 
@@ -51,6 +53,8 @@ socket_t sock_connect(const uint32_t ip, const int port) {
 
     cerr << "connecting to " << hostname << ':' << ntohs(port) << endl;
   }
+  int one = 1;
+  setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, &one, sizeof(one));
 
   if (connect(sock,(sockaddr*)&far_end, sizeof(far_end)) == -1)
   {
@@ -143,6 +147,10 @@ void all_reduce_init(const string master_location, const size_t unique_id, const
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = htonl(INADDR_ANY);
     address.sin_port = netport;
+
+    int yes = 1;
+    verify(setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == 0);
+    verify(setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, &yes, sizeof(yes)) == 0);
 
     bool listening = false;
     while(!listening)
@@ -399,12 +407,19 @@ void broadcast(char* buffer, const int n, const socket_t parent_sock, const sock
   }
 }
 
+StopWatch all_reduce_watch;
+int all_reduce_data_amount = 0;
+int all_reduce_counter = 0;
 void all_reduce(double* buffer, const int n, const string master_location, const size_t unique_id, const size_t total, const size_t node, node_socks& socks)
 {
+  all_reduce_data_amount += n*sizeof(double);
+  all_reduce_counter++;
+  all_reduce_watch.start();
   if(master_location != socks.current_master)
     all_reduce_init(master_location, unique_id, total, node, socks);
   reduce((char*)buffer, n*sizeof(double), socks.parent, socks.children);
   broadcast((char*)buffer, n*sizeof(double), socks.parent, socks.children);
+  all_reduce_watch.end();
 }
 
 }
