@@ -26,6 +26,7 @@
 #include "AzHelp.hpp"
 #include "accumulate.h"
 #include "utils.h"
+#include "timer.h"
 
 using std::map;
 using std::string;
@@ -134,6 +135,9 @@ int main(int argc, const char *argv[])
     cout << stat->getMessage() << endl;
     return -1;
   }
+  cerr << "Allreduce time: " << Hadoop::all_reduce_watch.get_total() << endl;
+  cerr << "Allreduce data(bytes): " << Hadoop::all_reduce_data_amount << endl;
+  cerr << "Allreduce count: " << Hadoop::all_reduce_counter << endl;
 
   return 0;
 }
