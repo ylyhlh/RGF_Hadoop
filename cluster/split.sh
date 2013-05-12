@@ -4,7 +4,7 @@
 #   eg. split.sh test/sampel/train.dat
 FILENAME=$1
 
-if [ -e $FILENAME.x -a -e $FILENAME.y ]
+if [ -e $FILENAME ]
 then
   cut -f1 $FILENAME > $FILENAME.y
   cut -f2- $FILENAME > $FILENAME.x
