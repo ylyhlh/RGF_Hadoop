@@ -36,7 +36,7 @@ void AzFindSplit::_findBestSplit(int nx,
                                  /*---  output  ---*/
                                  AzTrTsplit *best_split)
 {
-  
+
   const char *eyec = "AzFindSplit::_findBestSplit";
   //printf("%s The best split is%d %d %d\n", eyec, nx, best_split->fx,best_split->nx);
   if (tree == NULL || target == NULL || data == NULL) {
@@ -70,16 +70,16 @@ void AzFindSplit::_findBestSplit(int nx,
   double split_points_num_float = dxs_num /10;
   Hadoop::accumulate_avg(&split_points_num_float, 1);
   int split_points_num = split_points_num_float>10? split_points_num_float:10;
-  
+
   double *split_points_a = new double[split_points_num*feat_num];
   double *wy_sum_array_a = new double[2*split_points_num*feat_num];
   double *w_sum_array_a = new double[2*split_points_num*feat_num];
   double *size_array_a = new double[2*split_points_num*feat_num];
   Az_forFindSplit *info_a = new Az_forFindSplit[2*split_points_num*feat_num];
 
-#pragma omp parallel
+//#pragma omp parallel
   {
-  #pragma omp for schedule(dynamic)
+  //#pragma omp for schedule(dynamic)
   for (ix = 0; ix < feat_num; ++ix) {
     double *split_points = &split_points_a[ix*split_points_num];
     double *wy_sum_array = &wy_sum_array_a[ix*split_points_num*2];
@@ -96,9 +96,9 @@ void AzFindSplit::_findBestSplit(int nx,
   }
 }
   Hadoop::accumulate_avg(split_points_a, split_points_num*feat_num);
-#pragma omp parallel
+//#pragma omp parallel
 {
-  #pragma omp for schedule(dynamic)
+  //#pragma omp for schedule(dynamic)
   for (ix = 0; ix < feat_num; ++ix) {
     double *split_points = &split_points_a[ix*split_points_num];
     double *wy_sum_array = &wy_sum_array_a[ix*split_points_num*2];
@@ -136,14 +136,14 @@ void AzFindSplit::_findBestSplit(int nx,
       loop(best_split, fx, sorted, dxs_num, &total);
 #endif
   }
-} 
+}
 
   Hadoop::accumulate_sum(wy_sum_array_a, split_points_num*2*feat_num);
   Hadoop::accumulate_sum(w_sum_array_a, split_points_num*2*feat_num);
   Hadoop::accumulate_sum(size_array_a, split_points_num*2*feat_num);
-#pragma omp parallel
+//#pragma omp parallel
 {
-  #pragma omp for schedule(dynamic)
+  //#pragma omp for schedule(dynamic)
   for (ix = 0; ix < feat_num; ++ix) {
     double *split_points = &split_points_a[ix*split_points_num];
     double *wy_sum_array = &wy_sum_array_a[ix*split_points_num*2];
@@ -163,7 +163,7 @@ void AzFindSplit::_findBestSplit(int nx,
     for (int split_index = 0; split_index < split_points_num; split_index++) {
         double gain = evalSplit(&(info[split_index*2]), bestP); //@@@we should rewrite this to make something allreduce
         bool flag = false;
-        if( info[split_index*2].size > min_size && info[split_index*2+1].size > min_size) 
+        if( info[split_index*2].size > min_size && info[split_index*2+1].size > min_size)
           flag = true;
         if (gain > best_split->gain && flag ) {
           best_split->reset_values(fx, split_points[split_index] , gain,
@@ -313,8 +313,8 @@ void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split,
   int dest_size = 0;
   Az_forFindSplit i[2];
 
-  Az_forFindSplit *src = &i[1], *dest = &i[0]; 
-  
+  Az_forFindSplit *src = &i[1], *dest = &i[0];
+
 
   AzCursor cursor; //@ A class can ++ --
   sorted->rewind(cursor); //@cursor.set(0).In spares case it has backward option
