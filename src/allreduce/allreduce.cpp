@@ -408,7 +408,7 @@ void broadcast(char* buffer, const int n, const socket_t parent_sock, const sock
 }
 
 StopWatch all_reduce_watch;
-int all_reduce_data_amount = 0;
+long long all_reduce_data_amount = 0;
 int all_reduce_counter = 0;
 void all_reduce(double* buffer, const int n, const string master_location, const size_t unique_id, const size_t total, const size_t node, node_socks& socks)
 {

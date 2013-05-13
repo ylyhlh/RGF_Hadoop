@@ -50,7 +50,7 @@ struct node_socks {
 };
 
 extern StopWatch all_reduce_watch;
-extern int all_reduce_data_amount;
+extern long long all_reduce_data_amount;
 extern int all_reduce_counter;
 
 void all_reduce(double* buffer, int n, std::string master_location, size_t unique_id, size_t total, size_t node, node_socks& socks);
