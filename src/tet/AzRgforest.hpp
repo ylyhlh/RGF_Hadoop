@@ -278,5 +278,6 @@ protected:
 
   virtual void warmupEnsemble(AzParam &az_param, int max_tree_num, 
                               const AzTreeEnsemble *inp_ens); 
+  void printForVis(AzTrTsplit *best_split,int *leaf_nx);
 }; 
 #endif

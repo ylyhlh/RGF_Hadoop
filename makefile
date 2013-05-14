@@ -6,6 +6,8 @@ CXXFLAGS = -Isrc/com -Isrc/tet -Isrc/allreduce -O2 -fopenmp
 SPANNINGTREE = $(BIN_DIR)/spanning_tree
 SPAN_F = $(words $(shell ps aux | grep '[s]panning_tree' ))
 RGF_F = $(words $(shell ps aux | grep '[r]gf' ))
+DATA1 = ctslices
+DATA2 = ctslices
 
 all:  $(TARGET) $(SPANNINGTREE)
 
@@ -68,8 +70,8 @@ artest: src/allreduce_test.cpp $(SPANNINGTREE) $(OBJECTS) | $(OBJDIR)
 run: kill all
 	mkdir -p test/output
 	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
-	perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_01 localhost 1233 2 0 >log1.log &  
-	perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_02 localhost 1233 2 1 >log2.log
+	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA1) localhost 1233 2 0 >log1.log &  
+	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA2) localhost 1233 2 1 >log2.log
 	@killall spanning_tree
 
 run1: kill all
