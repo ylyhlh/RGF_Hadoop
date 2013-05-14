@@ -35,6 +35,7 @@ rgf_hd.1
 test/output
 test/sample/*
 test/exp-data/*
+rgf1.2/test/
 !test/sample/train.long.unix
 !test/sample/train.data.x
 !test/sample/train.data.y
