@@ -36,7 +36,7 @@ void AzFindSplit::_findBestSplit(int nx,
                                  /*---  output  ---*/
                                  AzTrTsplit *best_split)
 {
-  
+
   const char *eyec = "AzFindSplit::_findBestSplit";
   //printf("%s The best split is%d %d %d\n", eyec, nx, best_split->fx,best_split->nx);
   if (tree == NULL || target == NULL || data == NULL) {
@@ -72,7 +72,7 @@ void AzFindSplit::_findBestSplit(int nx,
   int split_points_num = split_points_num_float>10? split_points_num_float:10;
   
   double *split_points_a = new double[split_points_num*feat_num];
-  double *wy_sum_array_a = new double[2*split_points_num*feat_num];
+  double *wy_sum_array_a = new double[4*split_points_num*feat_num];
   double *w_sum_array_a = new double[2*split_points_num*feat_num];
   double *size_array_a = new double[2*split_points_num*feat_num];
   Az_forFindSplit *info_a = new Az_forFindSplit[2*split_points_num*feat_num];

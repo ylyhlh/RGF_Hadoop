@@ -263,15 +263,15 @@ bool AzRgforest::growForest()
   clock_t b_time; 
   time_begin(&b_time); 
   
-  AzBytArr s("Calling growForest "); 
-  AzTimeLog::print(s, out); 
+  //AzBytArr s("Calling growForest "); 
+  //AzTimeLog::print(s, out); 
   /*---  find the best split  ---*/
   AzTrTsplit best_split; 
   searchBestSplit(&best_split);                    
   if (shouldExit(&best_split)) { /* exit if no more split */
     return true; /* exit */
   }
-
+  
   /*---  split the node  ---*/
   double w_inc; //weight increase
   int leaf_nx[2] = {-1,-1}; 
