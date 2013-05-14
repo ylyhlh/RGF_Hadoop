@@ -69,7 +69,7 @@ void AzFindSplit::_findBestSplit(int nx,
 
   double split_points_num_float = dxs_num /10;
   Hadoop::accumulate_avg(&split_points_num_float, 1);
-  int split_points_num = split_points_num_float>10? split_points_num_float:10;
+  int split_points_num = 100;// split_points_num_float>10? split_points_num_float:10;
 
   double *split_points_a = new double[split_points_num*feat_num];
   double *wy_sum_array_a = new double[4*split_points_num*feat_num];
