@@ -49,3 +49,6 @@ rgf.sublime*
 .cproject
 .project
 *.log
+
+# python compile
+*.pyc
