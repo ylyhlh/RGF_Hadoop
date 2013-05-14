@@ -113,7 +113,7 @@ void all_reduce_init(const string master_location, const size_t unique_id, const
   socks.current_master = master_location;
 
   uint32_t master_ip = * ((uint32_t*)master->h_addr);
-  int port = 28543;
+  int port = 22222;
 
   /// Span tree master has to be set up before running the job.
   socket_t master_sock = sock_connect(master_ip, htons(port));
