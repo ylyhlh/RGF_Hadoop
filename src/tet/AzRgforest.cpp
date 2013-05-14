@@ -257,6 +257,7 @@ void AzRgforest::time_show()
   }
 }
 
+Timer vis_timer;
 /*------------------------------------------------------------------*/
 bool AzRgforest::growForest()
 {
@@ -267,15 +268,25 @@ bool AzRgforest::growForest()
   //AzTimeLog::print(s, out); 
   /*---  find the best split  ---*/
   AzTrTsplit best_split; 
-  searchBestSplit(&best_split);                    
+  searchBestSplit(&best_split);
+
   if (shouldExit(&best_split)) { /* exit if no more split */
     return true; /* exit */
   }
-  
+
   /*---  split the node  ---*/
   double w_inc; //weight increase
   int leaf_nx[2] = {-1,-1}; 
   const AzRgfTree *tree = splitNode(&best_split, &w_inc, leaf_nx); 
+    vis_timer.end();
+    if(best_split.nx == 0) {
+      std::cerr<<"@VIS:"<<vis_timer.elapsed()<<" "<<"root"<<" "<<best_split.tx<<"-"<<0<<std::endl;
+      std::cerr<<"@VIS:"<<vis_timer.elapsed()<<" "<<best_split.tx<<"-"<<best_split.nx<<" "<<best_split.tx<<"-"<<leaf_nx[0]<<std::endl;          
+      std::cerr<<"@VIS:"<<vis_timer.elapsed()<<" "<<best_split.tx<<"-"<<best_split.nx<<" "<<best_split.tx<<"-"<<leaf_nx[1]<<std::endl;  
+    }else {
+      std::cerr<<"@VIS:"<<vis_timer.elapsed()<<" "<<best_split.tx<<"-"<<best_split.nx<<" "<<best_split.tx<<"-"<<leaf_nx[0]<<std::endl;
+      std::cerr<<"@VIS:"<<vis_timer.elapsed()<<" "<<best_split.tx<<"-"<<best_split.nx<<" "<<best_split.tx<<"-"<<leaf_nx[1]<<std::endl;            
+    }
 
   if (lmax_timer.reachedMax(l_num, "AzRgforest: #leaf", out)) { 
     return true; /* #leaf reached max; exit */
