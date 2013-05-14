@@ -7,6 +7,8 @@ SPANNINGTREE = $(BIN_DIR)/spanning_tree
 ME=$(shell whoami)
 SPAN_F = $(words $(shell ps aux | grep '[s]panning_tree' | grep $(ME) ))
 RGF_F = $(words $(shell ps aux | grep '[r]gf' ))
+DATA1 = ctslices
+DATA2 = ctslices
 
 all:  $(TARGET) $(SPANNINGTREE)
 
@@ -66,11 +68,11 @@ one: clean
 artest: src/allreduce_test.cpp $(SPANNINGTREE) $(OBJECTS) | $(OBJDIR)
 	$(CXX) $(CXXFLAGS) -o $(BIN_DIR)/$@ src/allreduce_test.cpp $(OBJ)/allreduce/*.o
 
-run: kill
+run: kill all
 	mkdir -p test/output
 	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
-	perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_01 localhost 1233 2 0 >log1.log &  
-	perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_02 localhost 1233 2 1 >log2.log
+	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA1) localhost 1233 2 0 >log1.log &  
+	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA2) localhost 1233 2 1 >log2.log
 	@killall spanning_tree
 
 run1: kill all

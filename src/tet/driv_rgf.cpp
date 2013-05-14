@@ -28,6 +28,8 @@
 #include "utils.h"
 #include "timer.h"
 
+extern Timer vis_timer;
+
 using std::map;
 using std::string;
 
@@ -80,7 +82,7 @@ int main(int argc, const char *argv[])
     help(argc, argv);
     return -1;
   }
-
+  vis_timer.start();
   // Register to cluster if cluster parameters are given.
   map<string, string> arg_map;
   parse_args(argc, argv, arg_map);

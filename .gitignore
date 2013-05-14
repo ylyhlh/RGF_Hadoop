@@ -39,11 +39,7 @@ test/exp-data/*
 !test/sample/train.data.x
 !test/sample/train.data.y
 !test/sample/train.inp
-!test/sample/msd_01.train.x
-!test/sample/msd_01.train.y
-!test/sample/msd_02.train.x
-!test/sample/msd_02.train.y
-!test/sample/train.inp
+!test/sample/ctslices.inp
 !test/sample/msd_01.inp
 !test/sample/msd_02.inp
 bin/

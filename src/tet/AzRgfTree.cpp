@@ -45,6 +45,7 @@ void AzRgfTree::findSplit(AzRgf_FindSplit *fs,
   /*@ Begin to search*/
   //@ let fs know about tree(and its number in forest(ensemble)) and data, target, min_soze
   _findSplit_begin(fs, inp);
+    
 
   int nx; //@the index of node
   for (nx = 0; nx < nodes_used; ++nx) {
@@ -59,6 +60,7 @@ void AzRgfTree::findSplit(AzRgf_FindSplit *fs,
     //printf("%s The best split is%d %d %d\n", eyec, nx, best_split->fx,best_split->nx);
 
     /*@!!!!really find the split on a node*/
+    //std::cout<<"@Allreduce"<<std::endl;
     _findSplit(fs, nx, doRefreshAll); 
 
     //@ if the best spit for this tree found and stored in split[nx]
