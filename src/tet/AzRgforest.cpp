@@ -280,12 +280,12 @@ bool AzRgforest::growForest()
   const AzRgfTree *tree = splitNode(&best_split, &w_inc, leaf_nx); 
     vis_timer.end();
     if(best_split.nx == 0) {
-      std::cerr<<"@VIS:"<<vis_timer.elapsed()<<" "<<"root"<<" "<<best_split.tx<<"-"<<0<<std::endl;
-      std::cerr<<"@VIS:"<<vis_timer.elapsed()<<" "<<best_split.tx<<"-"<<best_split.nx<<" "<<best_split.tx<<"-"<<leaf_nx[0]<<std::endl;          
-      std::cerr<<"@VIS:"<<vis_timer.elapsed()<<" "<<best_split.tx<<"-"<<best_split.nx<<" "<<best_split.tx<<"-"<<leaf_nx[1]<<std::endl;  
+      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" "<<"root"<<" "<<best_split.tx<<"-"<<0<<std::endl;
+      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" "<<best_split.tx<<"-"<<best_split.nx<<" "<<best_split.tx<<"-"<<leaf_nx[0]<<std::endl;          
+      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" "<<best_split.tx<<"-"<<best_split.nx<<" "<<best_split.tx<<"-"<<leaf_nx[1]<<std::endl;  
     }else {
-      std::cerr<<"@VIS:"<<vis_timer.elapsed()<<" "<<best_split.tx<<"-"<<best_split.nx<<" "<<best_split.tx<<"-"<<leaf_nx[0]<<std::endl;
-      std::cerr<<"@VIS:"<<vis_timer.elapsed()<<" "<<best_split.tx<<"-"<<best_split.nx<<" "<<best_split.tx<<"-"<<leaf_nx[1]<<std::endl;            
+      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" "<<best_split.tx<<"-"<<best_split.nx<<" "<<best_split.tx<<"-"<<leaf_nx[0]<<std::endl;
+      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" "<<best_split.tx<<"-"<<best_split.nx<<" "<<best_split.tx<<"-"<<leaf_nx[1]<<std::endl;            
     }
 
   if (lmax_timer.reachedMax(l_num, "AzRgforest: #leaf", out)) { 
