@@ -53,7 +53,7 @@ protected:
     dataproc_Sparse = 2, 
   };
 
-  #define Az_nz_ratio_threshold 0.01
+  #define Az_nz_ratio_threshold 0.2
   #define Az_max_test_entries (1024*1024*16)
   dataproc_Type dataproc; 
   AzBytArr s_dataproc; 
