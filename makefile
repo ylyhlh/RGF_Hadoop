@@ -118,7 +118,7 @@ cluster: kill $(TARGET) $(SPANNINGTREE)
 ifneq (0, $(words $(shell $(hfs) -ls | grep rgfout )))
 	$(hfs) -rmr rgfout
 endif
-	$(hjs) -Dmapred.map.tasks=8 -input /user/sz865/test/msd.test.dat -output rgfout -mapper runrgf.sh -reducer cat -file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
+	$(hjs) -Dmapred.map.tasks=2 -input /user/sz865/test/msd.test.dat -output rgfout -mapper runrgf.sh -reducer cat -file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
 	killall spanning_tree
 
 clusterCT: kill $(TARGET) $(SPANNINGTREE)
@@ -126,6 +126,6 @@ clusterCT: kill $(TARGET) $(SPANNINGTREE)
 ifneq (0, $(words $(shell $(hfs) -ls | grep rgfout )))
 	$(hfs) -rmr rgfout
 endif
-	$(hjs) -Dmapred.map.tasks=8 -Dmapred.reduce.tasks=0 -input /user/hl1283/RGF_Hadoop/test/sample/ctslices1.test.dat -output rgfout -mapper runrgf.sh -reducer cat -file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
+	$(hjs) -D mapred.map.tasks=2 -D mapred.reduce.tasks=0 -input /user/hl1283/RGF_Hadoop/test/sample/ctslices.test.dat -output rgfout -mapper runrgf.sh -reducer cat -file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
 	killall spanning_tree
 
