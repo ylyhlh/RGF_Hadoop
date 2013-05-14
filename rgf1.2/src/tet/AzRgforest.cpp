@@ -13,14 +13,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with this progr.  If not, see <http://www.gnu.org/licenses/>.
  * * * * */
 
 #include "AzRgforest.hpp"
 #include "AzHelp.hpp"
-#include "AzRgf_kw.hpp"
+#include "timer.h"
 
-/*-------------------------------------------------------------------*/
+
+/*-----------call by AzTETproc to setup the trainer-------------------------------------------*/
 void AzRgforest::cold_start(const char *param, 
                         const AzSmat *m_x, 
                         const AzDvect *v_y, 
@@ -30,18 +31,19 @@ void AzRgforest::cold_start(const char *param,
 {
   out = out_req; 
   s_config.reset(param); 
-
-  AzParam az_param(param); 
+    
+  AzParam az_param(param); //@should learn it. Partly learned
+  
   int max_tree_num = resetParam(az_param); 
-  setInput(az_param, m_x, featInfo);        
-  reg_depth->reset(az_param, out);  /* init regularizer on node depth */
-  v_p.reform(v_y->rowNum()); 
-  opt->cold_start(loss_type, data, reg_depth, /* initialize optimizer */
+  setInput(az_param, m_x, featInfo); //@ data part decide Sparse or not, do transpose
+  reg_depth->reset(az_param, out);  /* init regularizer on node depth *///?learn regularizer is gamma
+  v_p.reform(v_y->rowNum()); // @resize the prediction results according to the target vector
+  opt->cold_start(loss_type, data, reg_depth, /* initialize optimizer *///?opt is something wired
                   az_param, v_y, v_fixed_dw, out, &v_p); 
-  initTarget(v_y, v_fixed_dw);    
-  initEnsemble(az_param, max_tree_num); /* initialize tree ensemble */
-  fs->reset(az_param, reg_depth, out); /* initialize node search */
-  az_param.check(out); 
+  initTarget(v_y, v_fixed_dw); //@ set AzTrTtarget target; Targets and data point weights for node split search.  
+  initEnsemble(az_param, max_tree_num); /* initialize tree ensemble *///@Ensemble is an array of trees in the forest
+  fs->reset(az_param, reg_depth, out); /* initialize node search *///
+  az_param.check(out);//@find out the unknown parameters and output
   l_num = 0; /* initialize leaf node counter */
 
   if (!beVerbose) { 
@@ -49,7 +51,7 @@ void AzRgforest::cold_start(const char *param,
   }
 
   time_init(); /* initialize time measure ment */
-  end_of_initialization(); 
+  end_of_initialization(); //print out sum weight if weighted
 }
 
 /*-------------------------------------------------------------------*/
@@ -137,14 +139,14 @@ void AzRgforest::warmupEnsemble(AzParam &az_param, int max_tree_num,
                   out, max_tree_num, s_tree_num, &v_p); 
 
   /*---  always have one unsplit root: represent the next tree  ---*/
-  rootonly_tree->reset(az_param); 
+  rootonly_tree->reset(az_param); //@reinit the tree and set the size related params
   rootonly_tree->makeRoot(data); 
 
   rootonly_tx = max_tree_num + 1;  /* any number that doesn't overlap other trees */
 }
 
 /*-------------------------------------------------------------------*/
-/* input: v_p */
+/* @setup the Target object which contains target(y) and weight */
 void AzRgforest::initTarget(const AzDvect *v_y, 
                             const AzDvect *v_fixed_dw)
 {
@@ -157,9 +159,10 @@ void AzRgforest::setInput(AzParam &p,
                           const AzSmat *m_x, 
                           const AzSvFeatInfo *featInfo)
 {
-  dflt_data.reset_data(out, m_x, p, beTight, featInfo); 
+  dflt_data.reset_data(out, m_x, p, beTight, featInfo); //?
   data = &dflt_data; 
 
+  /* @ set up feature sampling number * f_ratio-> f_pick*/
   f_pick = -1; 
   if (f_ratio > 0) {
     f_pick = (int)((double)data->featNum() * f_ratio); 
@@ -178,7 +181,7 @@ void AzRgforest::initEnsemble(AzParam &az_param, int max_tree_num)
                           "max# must be positive"); 
   }
 
-  ens->cold_start(az_param, &s_temp_for_trees, data->dataNum(), 
+  ens->cold_start(az_param, &s_temp_for_trees/*@??that's what?*/, data->dataNum(), 
                   out, max_tree_num, data->featNum()); 
 
   /*---  always have one unsplit root: represent the next tree  ---*/
@@ -188,7 +191,7 @@ void AzRgforest::initEnsemble(AzParam &az_param, int max_tree_num)
   rootonly_tx = max_tree_num + 1;  /* any number that doesn't overlap other trees */
 }
 
-/*-------------------------------------------------------------------*/
+/*-------Get the tree to grow, rootonly or leaf are different----------------------------------------*/
 AzRgfTree *AzRgforest::tree_to_grow(int &best_tx,  /* inout */
                                    int &best_nx,  /* inout */
                                    bool *isNewTree) /* output */
@@ -205,11 +208,11 @@ AzRgfTree *AzRgforest::tree_to_grow(int &best_tx,  /* inout */
     return tree; 
   }
 }
-
-/*-------------------------------------------------------------------*/
+Timer vis_timer;
+/*-------@call by AzTETproc to do train and of course return when time to test or convergence reached*/
 AzTETrainer_Ret AzRgforest::proceed_until()
 {
-  AzTETrainer_Ret ret = AzTETrainer_Ret_Exit; 
+  AzTETrainer_Ret ret = AzTETrainer_Ret_Exit; //@ from test
   for ( ; ; ) {
     /*---  grow the forest  ---*/
     bool doExit = growForest(); 
@@ -217,6 +220,8 @@ AzTETrainer_Ret AzRgforest::proceed_until()
 
     /*---  optimize weights  ---*/
     if (opt_timer.ringing(false, l_num)) {
+      vis_timer.end();
+      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" opt"<<std::endl;
       optimize_resetTarget(); 
       show_tree_info(); 
     }
@@ -231,6 +236,7 @@ AzTETrainer_Ret AzRgforest::proceed_until()
 
   if (ret == AzTETrainer_Ret_Exit) {
     if (!isOpt) {
+      
       optimize_resetTarget(); 
     }
     time_show(); 
@@ -255,23 +261,40 @@ void AzRgforest::time_show()
   }
 }
 
+
+void AzRgforest::printForVis(AzTrTsplit *best_split,int *leaf_nx)
+{
+  vis_timer.end();
+    if(best_split->nx == 0) {
+      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" "<<"root"<<" "<<best_split->tx<<"-"<<0<<std::endl;
+      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" "<<best_split->tx<<"-"<<best_split->nx<<" "<<best_split->tx<<"-"<<leaf_nx[0]<<std::endl;          
+      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" "<<best_split->tx<<"-"<<best_split->nx<<" "<<best_split->tx<<"-"<<leaf_nx[1]<<std::endl;  
+    }else {
+      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" "<<best_split->tx<<"-"<<best_split->nx<<" "<<best_split->tx<<"-"<<leaf_nx[0]<<std::endl;
+      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" "<<best_split->tx<<"-"<<best_split->nx<<" "<<best_split->tx<<"-"<<leaf_nx[1]<<std::endl;            
+    }
+}
 /*------------------------------------------------------------------*/
 bool AzRgforest::growForest()
 {
   clock_t b_time; 
   time_begin(&b_time); 
-
+  
+  //AzBytArr s("Calling growForest "); 
+  //AzTimeLog::print(s, out); 
   /*---  find the best split  ---*/
   AzTrTsplit best_split; 
-  searchBestSplit(&best_split);                    
+  searchBestSplit(&best_split);
+
   if (shouldExit(&best_split)) { /* exit if no more split */
     return true; /* exit */
   }
 
   /*---  split the node  ---*/
-  double w_inc; 
+  double w_inc; //weight increase
   int leaf_nx[2] = {-1,-1}; 
   const AzRgfTree *tree = splitNode(&best_split, &w_inc, leaf_nx); 
+  printForVis(&best_split, leaf_nx);
 
   if (lmax_timer.reachedMax(l_num, "AzRgforest: #leaf", out)) { 
     return true; /* #leaf reached max; exit */
@@ -328,7 +351,7 @@ bool AzRgforest::shouldExit(const AzTrTsplit *best_split) const
   return false; 
 }
 
-/*------------------------------------------------------------------*/
+/*----Loop over the tree to get best_split------------------------------------------*/
 void AzRgforest::searchBestSplit(AzTrTsplit *best_split) /* must be initialize by caller */
 {
   bool doRefreshAll = false; 
@@ -339,6 +362,7 @@ void AzRgforest::searchBestSplit(AzTrTsplit *best_split) /* must be initialize b
     doRefreshAll = true; 
   }
 
+  //@tx is the index of tree
   int last_tx = ens->lastIndex(); 
 
   /*---  decide which trees should be searched  ---*/
@@ -363,22 +387,31 @@ void AzRgforest::searchBestSplit(AzTrTsplit *best_split) /* must be initialize b
     tar = &my_tar; 
   }
 
+  /*@ this is to sample features if needed, see f_pick*/
   if (f_pick > 0) {
     fs->pickFeats(f_pick, data->featNum()); 
   }
-
+  /*@This input class actually is input set to put 
+   *data, tar, lam_scale, nn
+   *together
+   * ? -1 -> tx
+   */
   AzRgf_FindSplit_input input(-1, data, tar, lam_scale, nn); 
+
+  /*@ each tree need to search do findSplit*/
   int tx; 
   for (tx = my_first; tx <= last_tx; ++tx) {
-    input.tx = tx; 
+    input.tx = tx;//@ put the tree index into FSinput 
     ens->tree_u(tx)->findSplit(fs, input, doRefreshAll, best_split);
   }
+
   /*---  rootonly tree  ---*/
   if (!doPassiveRoot || 
       best_split->tx < 0 || best_split->fx < 0) {
     input.tx = rootonly_tx; 
     rootonly_tree->findSplit(fs, input, doRefreshAll, best_split); 
   }
+  //printf("The best split is %d %d\n", best_split->fx,best_split->nx);
 }
 
 /*------------------------------------------------------------------*/
@@ -627,16 +660,17 @@ int AzRgforest::adjustTestInterval(int lnum_inc_test, int lnum_inc_opt)
 /*--------------------------------------------------------*/
 int AzRgforest::resetParam(AzParam &p)
 {
+  //@ various kw_* is macro from AzRgf_kw.hpp
   const char *eyec = "AzRgforest::resetParam"; 
 
-  /*---  for storing data indexes in the trees to disk  ---*/
-  /*---  this must be called before adjustTestInterval. ---*/
+  /*---  for storing data indexes in the trees to disk  ---*///?
+  /*---  this must be called before adjustTestInterval. ---*///?
   p.vStr(kw_temp_for_trees, &s_temp_for_trees); 
 
   /*---  loss function   ---*/
   p.vLoss(kw_loss, &loss_type); 
 
-  /*---  weight optimization interval  ---*/
+  /*---  weight optimization interval  ---*///?
   int lnum_inc_opt = lnum_inc_opt_dflt; 
   p.vInt(kw_lnum_inc_opt, &lnum_inc_opt); 
   if (lnum_inc_opt <= 0) {
@@ -676,7 +710,7 @@ int AzRgforest::resetParam(AzParam &p)
 
   test_timer.reset(lnum_inc_test); 
 
-  /*---  memory handling  ---*/
+  /*---  memory handling  ---*///???????????
   p.vStr(kw_mem_policy, &s_mem_policy); 
   if (s_mem_policy.length() <= 0)                     beTight = false; 
   else if (s_mem_policy.compare(mp_beTight) == 0)     beTight = true; 

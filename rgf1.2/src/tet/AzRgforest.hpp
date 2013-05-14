@@ -38,24 +38,25 @@
 //! RGF main.  
 class AzRgforest : /* implements */ public virtual AzTETrainer {
 protected: 
-  AzBytArr s_config; 
+  AzBytArr s_config;//@resetted by *_start function based on param from AzTETproc
 
-  AzRgfTreeEnsImp<AzRgfTree> dflt_ens; 
+  AzRgfTreeEnsImp<AzRgfTree> dflt_ens;//@ ensemble is a collection of trees
   AzRgfTreeEnsemble *ens; 
-  AzRgf_FindSplit_Dflt dflt_fs; 
+  AzRgf_FindSplit_Dflt dflt_fs; /*@node splitor*/
   AzRgf_FindSplit *fs; 
   AzRgf_Optimizer_Dflt dflt_opt;  /* weight optimizer */
   AzRgf_Optimizer *opt;
-  AzRegDepth dflt_reg_depth;  
+  AzRegDepth dflt_reg_depth;  /*@L2 regularizor*/
   AzRegDepth *reg_depth; 
 
-  AzDataForTrTree dflt_data; 
+  AzDataForTrTree dflt_data; /*@?the feature data for tree */
   const AzDataForTrTree *data; /* This should be set in setInput */
   
-  AzTrTtarget target; 
+  AzTrTtarget target; //@ Targets and data point weights for node split search.  
 
-  bool isOpt; 
+  bool isOpt; //@ Indicate whether the leaf weights are optimizied, used when exit train loop
 
+  /*@AzRgfTree*/
   int rootonly_tx; 
   AzRgfTree dflt_tree; 
   AzRgfTree *rootonly_tree; 
@@ -65,28 +66,35 @@ protected:
   bool doForceToRefreshAll; /* for debug */
   int s_tree_num;    /* # of latest trees to be searched */
   bool beVerbose; 
-  AzBytArr s_mem_policy; 
-  bool beTight;
-  AzBytArr s_temp_for_trees; 
-  double f_ratio; 
-  int f_pick; 
+
+  //*-----@memory related
+  AzBytArr s_mem_policy; //@?to learn
+  bool beTight; //@? memory is tight
+
+
+  AzBytArr s_temp_for_trees; //@??
+
+  double f_ratio; //@in setInput function this will decide f_picl
+  //@ how many features should be picked or sampled， <0 means all features
   bool doPassiveRoot; 
+  int f_pick; 
 
   /*---  work area  ---*/
-  int l_num; 
+  int l_num; //@leaf node counter
   double py_adjust, lam_scale; /* for numerical stability for exp loss */
-  AzDvect v_p; /* prediction */
+  AzDvect v_p; /* prediction */// the result vector
+  //@ In the proceed_until function, it will check whether to do somthing, test, opt accordiing to l_num
   AzTimer test_timer, opt_timer, lmax_timer; 
   AzOut out; 
 
   bool doTime; 
   clock_t opt_time, search_time; 
 
-  static const int lnum_inc_opt_dflt = 100; 
+  static const int lnum_inc_opt_dflt = 100; //@ inc = increment, default value for how many steps between two opt
   static const int max_lnum_dflt = 10000; 
-  static const int lnum_inc_test_dflt = 500; 
+  static const int lnum_inc_test_dflt = 500; //@ default value for  how many steps between two test
   static const int s_tree_num_dflt = 1; 
-  static const AzLossType loss_type_dflt = AzLoss_Square; 
+  static const AzLossType loss_type_dflt = AzLoss_Square; //@? from "AzLoss.hpp"
 
 public:
   AzRgforest() : 
@@ -95,7 +103,7 @@ public:
     loss_type(loss_type_dflt), 
     doForceToRefreshAll(false), beVerbose(false),  
     l_num(0), isOpt(false), out(log_out), py_adjust(0), lam_scale(1), 
-    opt_time(0), search_time(0), doTime(false), 
+    opt_time(0), search_time(0), doTime(true), 
     beTight(false), s_mem_policy(mp_not_beTight), 
     f_ratio(-1), f_pick(-1), 
     doPassiveRoot(false) 
@@ -123,11 +131,13 @@ public:
               AzTreeEnsemble *inp_ens=NULL) /* may be NULL */
   {
     check_data_consistency(m_x, v_y, v_fixed_dw, featInfo, "AzRgforest::startup"); 
-
+    
+    //if start with old model(ensemble), then warm start.
     if (inp_ens == NULL) cold_start(param, m_x, v_y, featInfo, v_fixed_dw, out); 
-    else                 warm_start(param, m_x, v_y, featInfo, v_fixed_dw, inp_ens, out); 
-    m_x->destroy(); 
-    v_y->destroy(); 
+    else         
+        warm_start(param, m_x, v_y, featInfo, v_fixed_dw, inp_ens, out); 
+    m_x->destroy(); //delete the old data to get more memory
+    v_y->destroy(); //delete the old data to get more memory
     if (v_fixed_dw != NULL) v_fixed_dw->destroy(); 
     if (inp_ens != NULL) inp_ens->destroy(); 
   }
@@ -172,7 +182,7 @@ protected:
                         const AzSmat *m_x, 
                         const AzSvFeatInfo *featInfo); 
   virtual void initEnsemble(AzParam &param, int max_tree_num); 
-
+  /**@ grow one step*/
   virtual bool growForest(); 
   AzRgfTree *tree_to_grow(int &best_tx,  /* inout */
                              int &best_nx,  /* inout */
@@ -268,5 +278,6 @@ protected:
 
   virtual void warmupEnsemble(AzParam &az_param, int max_tree_num, 
                               const AzTreeEnsemble *inp_ens); 
+  void printForVis(AzTrTsplit *best_split,int *leaf_nx);
 }; 
 #endif

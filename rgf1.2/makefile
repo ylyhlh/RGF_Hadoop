@@ -7,6 +7,7 @@ CFLAGS = -Isrc/com -Isrc/tet_tools -O2
 CPP_FILES= 	\
 	src/tet/driv_rgf.cpp	\
 	src/com/AzDmat.cpp	\
+	src/com/timer.cpp	\
 	src/tet/AzFindSplit.cpp	\
 	src/com/AzIntPool.cpp	\
 	src/com/AzLoss.cpp	\
