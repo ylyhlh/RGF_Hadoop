@@ -29,6 +29,7 @@
 #include "timer.h"
 
 extern Timer vis_timer;
+extern Timer allreduce_wait_timer;
 
 using std::map;
 using std::string;
@@ -83,6 +84,7 @@ int main(int argc, const char *argv[])
     return -1;
   }
   vis_timer.start();
+  allreduce_wait_timer.start();
   // Register to cluster if cluster parameters are given.
   map<string, string> arg_map;
   parse_args(argc, argv, arg_map);

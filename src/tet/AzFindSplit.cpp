@@ -19,6 +19,7 @@
 #include "AzFindSplit.hpp"
 #include "accumulate.h"
 
+
 /*--------------------------------------------------------*/
 void AzFindSplit::_begin(const AzTrTree_ReadOnly *inp_tree,
                          const AzDataForTrTree *inp_data,
@@ -31,12 +32,13 @@ void AzFindSplit::_begin(const AzTrTree_ReadOnly *inp_tree,
   data = inp_data;
 }
 
+Timer allreduce_wait_timer;
 /*-----Find best split for given tree node--------------------------------------*/
 void AzFindSplit::_findBestSplit(int nx,
                                  /*---  output  ---*/
                                  AzTrTsplit *best_split)
 {
-
+  
   const char *eyec = "AzFindSplit::_findBestSplit";
   //printf("%s The best split is%d %d %d\n", eyec, nx, best_split->fx,best_split->nx);
   if (tree == NULL || target == NULL || data == NULL) {
@@ -68,7 +70,7 @@ void AzFindSplit::_findBestSplit(int nx,
   int ix;
 
   double split_points_num_float = dxs_num /10;
-  Hadoop::accumulate_avg(&split_points_num_float, 1);
+  //Hadoop::accumulate_avg(&split_points_num_float, 1);
   //int split_points_num = 100;// split_points_num_float>10? split_points_num_float:10;
 
   double *split_points_a = new double[split_points_num*feat_num];
@@ -137,8 +139,10 @@ void AzFindSplit::_findBestSplit(int nx,
 #endif
   }
 }
-
+  allreduce_wait_timer.end();
+  
   Hadoop::accumulate_sum(wy_sum_array_a, split_points_num*2*feat_num);
+  std::cout<<"@@allreduce@@"<<allreduce_wait_timer.elapsed()<<std::endl;
   Hadoop::accumulate_sum(w_sum_array_a, split_points_num*2*feat_num);
   Hadoop::accumulate_sum(size_array_a, split_points_num*2*feat_num);
 //#pragma omp parallel
