@@ -19,7 +19,10 @@ loss=LS             # Square loss
 test_interval=100   # Save models every time 100 leaves are added.
 max_leaf_forest=500 # Stop training when #leaf reaches 500. 
 Verbose             # Display info during training. 
+#VIS
 #---  other parameters (commented out)
 #NormalizeTarget    # Normalize targets so that the average becomes zero. 
 #train_w_fn=??             # User-specified weights of data points. 
 #model_fn_for_warmstart=?? # Path to the model file to do warm-start with
+
+Split_points_num=1200

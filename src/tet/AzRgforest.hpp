@@ -67,6 +67,7 @@ protected:
   int s_tree_num;    /* # of latest trees to be searched */
   bool beVerbose; 
 
+
   //*-----@memory related
   AzBytArr s_mem_policy; //@?to learn
   bool beTight; //@? memory is tight
@@ -87,7 +88,7 @@ protected:
   AzTimer test_timer, opt_timer, lmax_timer; 
   AzOut out; 
 
-  bool doTime; 
+  bool doTime, beVIS;
   clock_t opt_time, search_time; 
 
   static const int lnum_inc_opt_dflt = 100; //@ inc = increment, default value for how many steps between two opt
@@ -103,7 +104,7 @@ public:
     loss_type(loss_type_dflt), 
     doForceToRefreshAll(false), beVerbose(false),  
     l_num(0), isOpt(false), out(log_out), py_adjust(0), lam_scale(1), 
-    opt_time(0), search_time(0), doTime(true), 
+    opt_time(0), search_time(0), doTime(true), beVIS(false),
     beTight(false), s_mem_policy(mp_not_beTight), 
     f_ratio(-1), f_pick(-1), 
     doPassiveRoot(false) 

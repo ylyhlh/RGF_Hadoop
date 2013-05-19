@@ -31,6 +31,7 @@
 #define kw_doForceToRefreshAll "Force_to_refresh_all"
 #define kw_forest_beVerbose   "Verbose_forest"
 #define kw_beVerbose      "Verbose"
+#define kw_beVIS     "VIS"
 #define kw_doTime         "Time"
 #define kw_mem_policy "memory_policy="
 #define mp_beTight "Conservative"
@@ -111,6 +112,7 @@
 /* #define kw_sigma  "reg_L1="  shared with opt */
 #define kw_s_lambda "reg_sL2="
 #define kw_s_sigma  "reg_sL1="
+#define kw_split_points_num "Split_points_num="
 
 #define help_shared_with_opt "Shared with the weight optimizer."
 #define help_s_lambda "For node search, override lambda with this value."

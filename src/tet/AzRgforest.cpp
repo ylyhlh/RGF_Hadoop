@@ -219,8 +219,10 @@ AzTETrainer_Ret AzRgforest::proceed_until()
 
     /*---  optimize weights  ---*/
     if (opt_timer.ringing(false, l_num)) {
-      vis_timer.end();
-      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" opt"<<std::endl;
+      if(beVIS) {
+        vis_timer.end();
+        std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" opt"<<std::endl;
+      }
       optimize_resetTarget(); 
       show_tree_info(); 
     }
@@ -292,8 +294,9 @@ bool AzRgforest::growForest()
   /*---  split the node  ---*/
   double w_inc; //weight increase
   int leaf_nx[2] = {-1,-1}; 
-  const AzRgfTree *tree = splitNode(&best_split, &w_inc, leaf_nx); 
-  printForVis(&best_split, leaf_nx);
+  const AzRgfTree *tree = splitNode(&best_split, &w_inc, leaf_nx);
+  if(beVIS)
+    printForVis(&best_split, leaf_nx);
 
   if (lmax_timer.reachedMax(l_num, "AzRgforest: #leaf", out)) { 
     return true; /* #leaf reached max; exit */
@@ -738,6 +741,7 @@ int AzRgforest::resetParam(AzParam &p)
   p.swOn(&doForceToRefreshAll, kw_doForceToRefreshAll); 
   p.swOn(&beVerbose, kw_forest_beVerbose); /* for compatibility */
   p.swOn(&beVerbose, kw_beVerbose); 
+  p.swOn(&beVIS, kw_beVIS); 
   p.swOn(&doTime, kw_doTime); 
 
   /*---  display parameters  ---*/
@@ -752,6 +756,7 @@ int AzRgforest::resetParam(AzParam &p)
     o.printV(kw_s_tree_num, s_tree_num); 
     o.printSw(kw_doForceToRefreshAll, doForceToRefreshAll); 
     o.printSw(kw_beVerbose, beVerbose); 
+    o.printSw(kw_beVIS, beVIS);
     o.printSw(kw_doTime, doTime); 
     o.printV_if_not_empty(kw_mem_policy, s_mem_policy); 
     o.printV_if_not_empty(kw_temp_for_trees, &s_temp_for_trees); 

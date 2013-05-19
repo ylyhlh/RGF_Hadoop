@@ -209,7 +209,7 @@ void AzRgfTree::resetParam(AzParam &p)
   p.vInt(kw_max_depth, &max_depth); 
   p.vInt(kw_min_size, &min_size); 
   p.vInt(kw_max_leaf_num, &max_leaf_num); 
-
+  p.vInt(kw_split_points_num, &split_points_num); 
   p.swOn(&doUseInternalNodes, kw_doUseInternalNodes); 
   p.swOn(&beVerbose, kw_tree_beVerbose); 
 

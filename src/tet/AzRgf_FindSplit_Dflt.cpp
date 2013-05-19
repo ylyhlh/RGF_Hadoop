@@ -82,6 +82,8 @@ void AzRgf_FindSplit_Dflt::resetParam(AzParam &p)
   p.vFloat(kw_lambda, &lambda); 
   p.vFloat(kw_sigma, &sigma); 
 
+  p.vInt(kw_split_points_num, &split_points_num); 
+
   /*---  override ... ---*/
   p.vFloat(kw_s_lambda, &lambda); 
   p.vFloat(kw_s_sigma, &sigma); 
@@ -106,6 +108,7 @@ void AzRgf_FindSplit_Dflt::printParam(const AzOut &out) const
   o.set_precision(5); 
   o.ppBegin("AzRgf_FindSplit_Dflt", "Node split", ", "); 
   o.printV(kw_lambda, lambda); 
+  o.printV(kw_split_points_num, split_points_num); 
   o.printV_posiOnly(kw_sigma, sigma); 
   o.ppEnd(); 
 }

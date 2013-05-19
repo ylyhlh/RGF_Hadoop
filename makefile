@@ -9,7 +9,7 @@ SPAN_F = $(words $(shell ps aux | grep '[s]panning_tree' | grep $(ME) ))
 RGF_F = $(words $(shell ps aux | grep '[r]gf' ))
 DATA1 = ctslices
 DATA2 = ctslices
-
+CLUSTER_DATA = /user/hl1283/RGF_Hadoop/test/sample/ctslices.test.dat
 all:  $(TARGET) $(SPANNINGTREE)
 
 OBJ=obj
@@ -81,17 +81,6 @@ run1: kill all
 	perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_01 localhost 1233 1 0 >log1_1.log   
 	@killall spanning_tree
 
-train: kill
-	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
-	perl test/call_exe.pl ./bin/rgf train test/sample/train localhost 1233 1 0
-	killall spanning_tree
-
-predict:
-	perl test/call_exe.pl ./bin/rgf predict test/sample/predict
-
-train_test: kill
-	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
-	perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_04 localhost 1233 1 0 >log1.log
 
 kill:
 ifneq (0, $(SPAN_F))
@@ -104,14 +93,6 @@ endif
 # Marco for hadoop cluster
 hfs=hadoop fs
 hjs=hadoop jar /usr/lib/hadoop/contrib/streaming/hadoop-streaming-1.0.3.16.jar
-
-arcluster: kill
-	$(BIN_DIR)/spanning_tree
-ifneq (0, $(words $(shell $(hfs) -ls | grep count_file )))
-	$(hfs) -rmr count_file
-endif
-	$(hjs) -input test/train.long.unix -output count_file -mapper runallreduce.sh -reducer cat -file cluster/runallreduce.sh bin/artest
-	killall spanning_tree
 
 cluster: kill $(TARGET) $(SPANNINGTREE)
 	$(BIN_DIR)/spanning_tree
@@ -126,6 +107,6 @@ clusterCT: kill $(TARGET) $(SPANNINGTREE)
 ifneq (0, $(words $(shell $(hfs) -ls | grep rgfout )))
 	$(hfs) -rmr rgfout
 endif
-	$(hjs) -D mapred.map.tasks=2 -D mapred.reduce.tasks=0 -input /user/hl1283/RGF_Hadoop/test/sample/ctslices.test.dat -output rgfout -mapper runrgf.sh -reducer cat -file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
+	$(hjs) -D mapred.map.tasks=2 -D mapred.reduce.tasks=0 -input $(CLUSTER_DATA) -output rgfout -mapper runrgf.sh -reducer cat -file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
 	killall spanning_tree
 

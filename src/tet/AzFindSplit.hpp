@@ -43,14 +43,15 @@ protected:
   const AzTrTtarget *target; 
   const AzDataForTrTree *data; 
   const AzTrTree_ReadOnly *tree; 
-  int min_size; 
+  int min_size;
+  int split_points_num;
 
   AzIntArr ia_feats; 
   const AzIntArr *ia_fx; 
 
 public:
   AzFindSplit() : target(NULL), data(NULL), tree(NULL), ia_fx(NULL), 
-                  min_size(-1) {}
+                  min_size(-1), split_points_num(1000) {}
   ~AzFindSplit() {}
   void reset() {
     target = NULL;

@@ -60,7 +60,7 @@ class AzRgfTree : /* extends */ public virtual AzTrTree
 protected:
   bool doUseInternalNodes; 
   //@the rules of tree: min_size is the min number of examples a node must have
-  int max_depth, max_leaf_num, min_size; 
+  int max_depth, max_leaf_num, min_size, split_points_num;
   AzOut out, my_dmp_out; 
   bool beVerbose; 
 
