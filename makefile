@@ -9,7 +9,7 @@ SPAN_F = $(words $(shell ps aux | grep '[s]panning_tree' | grep $(ME) ))
 RGF_F = $(words $(shell ps aux | grep '[r]gf' ))
 DATA1 = ctslices
 DATA2 = ctslices
-CLUSTER_DATA = /user/hl1283/RGF_Hadoop/test/sample/ctslices.test.dat
+CLUSTER_DATA = /user/hl1283/RGF_Hadoop/test/sample/ctslices1.test.dat
 all:  $(TARGET) $(SPANNINGTREE)
 
 OBJ=obj
@@ -107,6 +107,6 @@ clusterCT: kill $(TARGET) $(SPANNINGTREE)
 ifneq (0, $(words $(shell $(hfs) -ls | grep rgfout )))
 	$(hfs) -rmr rgfout
 endif
-	$(hjs) -D mapred.map.tasks=2 -D mapred.reduce.tasks=0 -input $(CLUSTER_DATA) -output rgfout -mapper runrgf.sh -reducer cat -file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
+	$(hjs) -D mapred.job.map.memory.mb=6000 -D mapred.map.tasks=2 -D mapred.reduce.tasks=0 -input $(CLUSTER_DATA) -output rgfout -mapper runrgf.sh -reducer cat -file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
 	killall spanning_tree
 

@@ -1,0 +1,1 @@
+cat > temp; head -n 1 temp
