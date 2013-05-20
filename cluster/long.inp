@@ -24,3 +24,4 @@ Verbose             # Display info during training.
 #train_w_fn=??             # User-specified weights of data points. 
 #model_fn_for_warmstart=?? # Path to the model file to do warm-start with
 
+Split_points_num=1000
