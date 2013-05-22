@@ -189,9 +189,9 @@ void AzFindSplit::_findBestSplit(int nx,
   //printf("%s The best split is%d %d %d\n", eyec, nx, best_split->fx,best_split->nx);
   delete[] split_points_a;
   delete[] info_a;
-  delete[] wy_sum_array_a;
-  delete[] w_sum_array_a;
-  delete[] size_array_a;
+  //delete[] wy_sum_array_a;
+  //delete[] w_sum_array_a;
+  //delete[] size_array_a;
 
 }
 
