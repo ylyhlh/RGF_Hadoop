@@ -245,7 +245,7 @@ protected:
   } 
 
   /*! place holder for extension; called at the end of training */
-  virtual inline void end_of_training() {}
+  virtual inline void end_of_training() {printf("sss\n");}
 
   /*---  for time measurement  ---*/
   inline virtual void time_init() {
