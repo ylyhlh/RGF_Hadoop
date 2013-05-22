@@ -18,7 +18,7 @@
 
 #include "AzFindSplit.hpp"
 #include "accumulate.h"
-
+#include <math.h> 
 
 /*--------------------------------------------------------*/
 void AzFindSplit::_begin(const AzTrTree_ReadOnly *inp_tree,
@@ -73,10 +73,13 @@ void AzFindSplit::_findBestSplit(int nx,
   //Hadoop::accumulate_avg(&split_points_num_float, 1);
   //int split_points_num = 100;// split_points_num_float>10? split_points_num_float:10;
 
-  double *split_points_a = new double[split_points_num*feat_num];
-  double *wy_sum_array_a = new double[2*split_points_num*feat_num];
-  double *w_sum_array_a = new double[2*split_points_num*feat_num];
-  double *size_array_a = new double[2*split_points_num*feat_num];
+  double *split_points_a = new double[7*split_points_num*feat_num];
+  //double *wy_sum_array_a = new double[2*split_points_num*feat_num];
+  double *wy_sum_array_a = &split_points_a[split_points_num*feat_num];
+  //double *w_sum_array_a = new double[2*split_points_num*feat_num];
+  double *w_sum_array_a = &split_points_a[3*split_points_num*feat_num];
+  //double *size_array_a = new double[2*split_points_num*feat_num];
+  double *size_array_a = &split_points_a[5*split_points_num*feat_num];
   Az_forFindSplit *info_a = new Az_forFindSplit[2*split_points_num*feat_num];
 
 //#pragma omp parallel
@@ -141,11 +144,11 @@ void AzFindSplit::_findBestSplit(int nx,
 }
   allreduce_wait_timer.end();
   std::cout<<"@@allreduce1@@"<<allreduce_wait_timer.elapsed()<<std::endl;
-  Hadoop::accumulate_sum(wy_sum_array_a, split_points_num*2*feat_num);
+  Hadoop::accumulate_sum(wy_sum_array_a, split_points_num*6*feat_num);
   allreduce_wait_timer.end();
   std::cout<<"@@allreduce2@@"<<allreduce_wait_timer.elapsed()<<std::endl;
-  Hadoop::accumulate_sum(w_sum_array_a, split_points_num*2*feat_num);
-  Hadoop::accumulate_sum(size_array_a, split_points_num*2*feat_num);
+  //Hadoop::accumulate_sum(w_sum_array_a, split_points_num*2*feat_num);
+  //Hadoop::accumulate_sum(size_array_a, split_points_num*2*feat_num);
 //#pragma omp parallel
 {
   //#pragma omp for schedule(dynamic)
@@ -289,7 +292,7 @@ void AzFindSplit::pick_split_points(int split_points_num,
   int left_size = 0;
 
   for (int split_index = 0; split_index < split_points_num; split_index++) {
-    double value = sorted->getValue(floor(total_data_num / double(split_points_num + 1)* (split_index + 1))); //@ The value of this threshold
+    
     int index_num; //@ The number of exampls between two values
     const int *index = NULL;
     /*while ( left_size < total_data_num / double(split_points_num + 1)* (split_index + 1) )
@@ -297,8 +300,11 @@ void AzFindSplit::pick_split_points(int split_points_num,
       index = sorted->next(cursor, &value, &index_num); //@@@@@we should rewrite this
       left_size += index_num;
     } */
+    double h = (total_data_num+1.0/3.0)*(split_index+1)/(split_points_num+1)+1.0/3.0;
 
-    split_points[split_index] = value;
+    double value_L = sorted->getValue(floor(h)); //@ The value of this threshold
+    double value_R = sorted->getValue(floor(h)+1); //@ The value of this threshold
+    split_points[split_index] = value_L+(h-floor(h))*(value_R-value_L);
     //std::printf("pick_split_points:: No %d index %d value %f \n",split_index,left_size,value);
   }
 }
