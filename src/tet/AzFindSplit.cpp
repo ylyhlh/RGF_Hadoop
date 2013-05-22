@@ -74,7 +74,7 @@ void AzFindSplit::_findBestSplit(int nx,
   //int split_points_num = 100;// split_points_num_float>10? split_points_num_float:10;
 
   double *split_points_a = new double[split_points_num*feat_num];
-  double *wy_sum_array_a = new double[4*split_points_num*feat_num];
+  double *wy_sum_array_a = new double[2*split_points_num*feat_num];
   double *w_sum_array_a = new double[2*split_points_num*feat_num];
   double *size_array_a = new double[2*split_points_num*feat_num];
   Az_forFindSplit *info_a = new Az_forFindSplit[2*split_points_num*feat_num];
@@ -140,9 +140,10 @@ void AzFindSplit::_findBestSplit(int nx,
   }
 }
   allreduce_wait_timer.end();
-  
+  std::cout<<"@@allreduce1@@"<<allreduce_wait_timer.elapsed()<<std::endl;
   Hadoop::accumulate_sum(wy_sum_array_a, split_points_num*2*feat_num);
-  std::cout<<"@@allreduce@@"<<allreduce_wait_timer.elapsed()<<std::endl;
+  allreduce_wait_timer.end();
+  std::cout<<"@@allreduce2@@"<<allreduce_wait_timer.elapsed()<<std::endl;
   Hadoop::accumulate_sum(w_sum_array_a, split_points_num*2*feat_num);
   Hadoop::accumulate_sum(size_array_a, split_points_num*2*feat_num);
 //#pragma omp parallel
