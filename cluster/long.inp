@@ -23,5 +23,5 @@ Verbose             # Display info during training.
 #NormalizeTarget    # Normalize targets so that the average becomes zero. 
 #train_w_fn=??             # User-specified weights of data points. 
 #model_fn_for_warmstart=?? # Path to the model file to do warm-start with
-VIS
-Split_points_num=200
+#VIS
+Split_points_num=100
