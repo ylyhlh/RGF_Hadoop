@@ -62,7 +62,7 @@ void AzRgfTree::findSplit(AzRgf_FindSplit *fs,
     /*@!!!!really find the split on a node*/
     std::cout<<"@Allreduce"<<nx<<std::endl;
     _findSplit(fs, nx, doRefreshAll); 
-
+    std::cout<<"@Allreduce_1"<<nx<<std::endl;
     //@ if the best spit for this tree found and stored in split[nx]
     if (split[nx]->fx >= 0 && 
         split[nx]->gain > best_split->gain) {
