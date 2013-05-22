@@ -60,7 +60,7 @@ void AzRgfTree::findSplit(AzRgf_FindSplit *fs,
     //printf("%s The best split is%d %d %d\n", eyec, nx, best_split->fx,best_split->nx);
 
     /*@!!!!really find the split on a node*/
-    //std::cout<<"@Allreduce"<<std::endl;
+    std::cout<<"@Allreduce"<<nx<<std::endl;
     _findSplit(fs, nx, doRefreshAll); 
 
     //@ if the best spit for this tree found and stored in split[nx]
