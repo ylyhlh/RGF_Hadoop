@@ -11,7 +11,7 @@ DATA1 = ctslices
 DATA2 = ctslices
 CLUSTER_DATA = /user/hl1283/RGF_Hadoop/test/sample/ctslices1.test.dat
 all:  $(TARGET) $(SPANNINGTREE)
-MAP_NUM=12
+MAP_NUM=2
 
 OBJ=obj
 OBJDIR:=$(OBJ)/tet $(OBJ)/com $(OBJ)/allreduce
