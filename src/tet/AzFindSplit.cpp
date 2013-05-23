@@ -49,6 +49,7 @@ void AzFindSplit::_findBestSplit(int nx,
   const int *dxs = tree->node(nx)->data_indexes();
   //@the number of examples arrived this node.
   const int dxs_num = tree->node(nx)->dxs_num;
+std::cout<<"@@allreduce3@@"<<std::endl;
 
   //@return the sorted_arr belongs to this node(nx), if there is no, then get from data?
   const AzSortedFeatArr *sorted_arr = tree->sorted_array(nx, data);
@@ -100,7 +101,6 @@ void AzFindSplit::_findBestSplit(int nx,
                        split_points);//@@allreduce this array please
   }
 }
-std::cout<<"@@allreduce3@@"<<std::endl;
 
   Hadoop::accumulate_avg(split_points_a, split_points_num*feat_num);
 //#pragma omp parallel
