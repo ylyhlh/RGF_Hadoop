@@ -100,6 +100,8 @@ void AzFindSplit::_findBestSplit(int nx,
                        split_points);//@@allreduce this array please
   }
 }
+std::cout<<"@@allreduce3@@"<<std::endl;
+
   Hadoop::accumulate_avg(split_points_a, split_points_num*feat_num);
 //#pragma omp parallel
 {
