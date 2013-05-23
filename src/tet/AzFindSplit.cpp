@@ -308,10 +308,10 @@ void AzFindSplit::pick_split_points(int split_points_num,
       index = sorted->next(cursor, &value, &index_num); //@@@@@we should rewrite this
       left_size += index_num;
     } */
-    double h = (total_data_num+1.0/3.0)*(split_index+1)/(split_points_num+1)+1.0/3.0;
-    if(sorted->dataNum()==161)
-       std::cout<<"@@allreduce_pick@@"<<h<<floor(h)<<std::endl;
-
+    double h = (total_data_num+1.0/3.0)*(split_index+1.0)/(split_points_num+1.0)+1.0/3.0;
+    
+    if(floor(h)>=sorted->dataNum())
+        h=h-1;
     double value_L = sorted->getValue(floor(h)); //@ The value of this threshold
     double value_R = sorted->getValue(floor(h)+1); //@ The value of this threshold
     split_points[split_index] = value_L+(h-floor(h))*(value_R-value_L);
