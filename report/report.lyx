@@ -1,0 +1,483 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+Overview 
+\end_layout
+
+\begin_layout Standard
+\align left
+The Regularized Greedy Forest (RGF)
+\begin_inset CommandInset citation
+LatexCommand cite
+key "1"
+
+\end_inset
+
+ is a new decision tree(forest) method proposed in 2011, which works well
+ in some cases and better than some well-knowm methods such as, Random Forest,
+ Gradient Boosted Decision Tree.
+ Our project is to make the trainning process parallel and scalable by Allreduce
+\begin_inset CommandInset citation
+LatexCommand cite
+key "2"
+
+\end_inset
+
+ on Hadoop.
+\end_layout
+
+\begin_layout Standard
+There are already some good algorithms designed to make decision tree scalable,
+ such as SLIQ, Sprint and RainForest
+\begin_inset CommandInset citation
+LatexCommand cite
+key "4"
+
+\end_inset
+
+.
+ And there are two ways to make it scalable:
+\end_layout
+
+\begin_layout Itemize
+Sample divide: each subdataset contains some samples of whole dataset with
+ all features
+\end_layout
+
+\begin_layout Itemize
+Feature divide: each subdataset contains some features of whole dataset
+ with all samples
+\end_layout
+
+\begin_layout Standard
+We choose sample divide in our program, and make around 4.8 times speed up
+ on hadoop cluster with 8-15 mappers., but with a small accuracy drop.
+\end_layout
+
+\begin_layout Section
+Details
+\end_layout
+
+\begin_layout Subsection
+Regularized Greedy Forest 
+\end_layout
+
+\begin_layout Standard
+The Regularized Greedy Forest method can be seen as a combination of Fully-Corre
+ctice Gradient Boosting
+\begin_inset CommandInset citation
+LatexCommand cite
+key "1"
+
+\end_inset
+
+ and Structure Sparsity Regularization.
+ There are three big differences in RGF:
+\end_layout
+
+\begin_layout Itemize
+Using the underlying forest structure: While most of the boosting method
+ using the weak learner as a black box, the RGF using the property of the
+ weak learner to train the model and optimize the loss function.
+ Acutally it gives a weight to each leaf in the forest.
+ 
+\end_layout
+
+\begin_layout Itemize
+Structure Regularization: RGF redefines the loss function to be optimized
+ by adding a regularization term to original loss function.
+ And this regularization term will depend on the structure of the forest,
+ such as the depth of trees and the weights of leaves.
+\end_layout
+
+\begin_layout Itemize
+Fully Corrective: RGF uses the idea of Fully-Corrective Gradient Boosting
+\begin_inset CommandInset citation
+LatexCommand cite
+key "3"
+
+\end_inset
+
+ to train the forest.
+ During the tree growing process, RGF optimize the weights of all leaves,
+ not like the Ada-Boosting or Greedy Boosting only optimize the weight of
+ last weak learner.
+\end_layout
+
+\begin_layout Standard
+Here is the RGF method:
+\end_layout
+
+\begin_layout Standard
+??
+\end_layout
+
+\begin_layout Subsection
+Scalability by Hadoop and Allreduce
+\end_layout
+
+\begin_layout Standard
+To solve the aforementioned problem and speed up the training process of
+ RGF, we use Mapreduce/Hadoop to make it scalable.
+ In the programing schema of Mapreduce, the data is spreaded among all machines
+ within a cluster and all processes are isolated from each other, making
+ the Mapreduce framework the only way of communication.
+ The first assumption about data is very natural for our problem, where
+ the dataset is line oriented.
+ But in RGF algorithm, it is necessary to iterate over all dataset sometime,
+ like finding the best split point in a tree, which involves trying all
+ possible split points between every pair of adjacent examples belonging
+ to a given node.
+ Thus communication is unavoidable with distributed dataset.
+ We have to decouple the algorithm logic in RGF algorithm where iteration
+ over all dataset is necessary and allow all processes to communicate to
+ others.
+\end_layout
+
+\begin_layout Subsection
+Where to do allreduce 
+\end_layout
+
+\begin_layout Standard
+Fortunately, the communication pattern is simple so that Allreduce is sufficient
+ for our problem.
+ Concretely, there are two kinds of unavoided iterations over all dataset
+ in the RGF with L2 regulation:
+\end_layout
+
+\begin_layout Itemize
+To find the best split (node, feature, threshold), we need to go through
+ the whole dataset on each node to collect some statistics.
+\end_layout
+
+\begin_layout Itemize
+To optimize the weights, we need the gradient values of loss function, which
+ need the whole dataset.
+\end_layout
+
+\begin_layout Standard
+Allreduce is used here to get the overall statistics of dataset and also
+ to get the loss function for whole dataset.
+ Here is the flow diagram of the whole pogram:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename pasted1.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The Allreduces of optimization part are very short, like one double variable,
+ and frequently.
+ So it only takes a very short time.
+ And the Allreduces in grow tree part are always very expensive.
+ So it is better if we can make the size and frequency of Allreduce in that
+ part small.
+ 
+\end_layout
+
+\begin_layout Enumerate
+For size, the trick is to search the feature bin by bin (quantile) instead
+ of sample by sample so that we only need to Allreduce the split points
+ of bin we search.
+\end_layout
+
+\begin_layout Enumerate
+For frequency, the optimal way is to have only two Allreduce in each tree
+ growing step.
+ But this will greatly destroy the structure of original code.
+ So we decide to make two allreduces in each tree node:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Splits points synchronization: before the search best split (feature, threshold)
+ pair on each node, for each feature we compute some quantiles of samples
+ arriving this node and average them over the mappers using Allreduce.
+\end_layout
+
+\begin_layout Itemize
+After going through all the split points and collect many statistics, we
+ make an Allreduce to make 
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
+Quantile estimation
+\end_layout
+
+\begin_layout Standard
+Because we are searching through the dataset bin by bin to find the best
+ threshold for each feature, how to get the bins' split points is very important.
+ This will decide the accuracy of the method.
+ To get the split points we need to estimate the quantile of samples arriving
+ the node we are working on.
+ There are many quantile estimation method available.
+ 
+\end_layout
+
+\begin_layout Standard
+Suppose we are finding the 
+\begin_inset Formula $p$
+\end_inset
+
+ quantile, 
+\begin_inset Formula $p\in(0,1)$
+\end_inset
+
+, and for the feature we are woring on we have sorted sample set:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\begin_inset Formula 
+\[
+x_{1},\ x_{2},\ ....,\ x_{k}
+\]
+
+\end_inset
+
+ Then the simplest way to estimate the quantile is:
+\begin_inset Formula 
+\[
+Q_{p}=x_{round(p)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+But this is known not stable, sometimes create some strange result, so we
+ use one of Hyndman and Fan methods, which are robust L-estimators:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ $
+\end_inset
+
+
+\begin_inset Formula 
+\[
+Q_{p}=x_{\lfloor h\rfloor}+(h-\lfloor h\rfloor)(x_{\lfloor h\rfloor+1}-x_{\lfloor h\rfloor}),\ where\ h=(k+1/3)p+1/3
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This actually is an interpolation of two datapoint near the quantile.
+ 
+\end_layout
+
+\begin_layout Subsection
+Visualization:
+\end_layout
+
+\begin_layout Standard
+We visualize the train process to show the speed up.
+ It is based on 
+\begin_inset CommandInset href
+LatexCommand href
+target "http://ubietylab.net/ubigraph/"
+
+\end_inset
+
+.
+ The code is available in the cluster/vis.py on hadoop branch.
+\end_layout
+
+\begin_layout Section
+Experiments:
+\end_layout
+
+\begin_layout Standard
+In our experiments, we use the dataset 
+\begin_inset CommandInset href
+LatexCommand href
+name "CT slices"
+target "http://archive.ics.uci.edu/ml/datasets/Relative+location+of+CT+slices+on+axial+axis"
+
+\end_inset
+
+ from the UCI repository.
+ This is a regression problem, so we compare the accuracy be root mean square
+ error (RMSE).
+\end_layout
+
+\begin_layout Subsection
+Speed up and time:
+\end_layout
+
+\begin_layout Standard
+To test speed up rate of our parallel method, we use a dataset of 400MB
+ by duplicating the CT slices many times to simulating the possible duplication
+ in the real big dataset.
+ And we find around 4.8 times speed up with 100 splits points.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename pasted2.png
+	scale 60
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename pasted3.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And we find there are al
+\end_layout
+
+\begin_layout Standard
+Time components
+\end_layout
+
+\begin_layout Subsection
+Error:
+\end_layout
+
+\begin_layout Subsection
+Code on github:
+\end_layout
+
+\begin_layout Standard
+The code on 
+\begin_inset CommandInset href
+LatexCommand href
+target "https://github.com/ylyhlh/RGF_Hadoop"
+
+\end_inset
+
+.
+ And the branch hadoop is what we are working with on Hadoop system.
+\end_layout
+
+\begin_layout Subsection
+Future Work / Conclusion
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "1"
+key "1"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "2"
+key "2"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "3"
+key "3"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "4"
+key "4"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
