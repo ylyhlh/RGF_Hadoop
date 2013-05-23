@@ -99,10 +99,11 @@ void AzFindSplit::_findBestSplit(int nx,
     int fx = ix; //@ the index of feature
     if (fxs != NULL) fx = fxs[ix];
     const AzSortedFeat *sorted = sorted_arr->sorted(fx);
+    std::cout<<"@@allreduce6@@"<<ix<<sorted->dataNum()<<ix<<std::endl;
     pick_split_points(split_points_num,
                        sorted,
                        split_points);//@@allreduce this array please
-    std::cout<<"@@allreduce6@@"<<ix<<std::endl;
+    std::cout<<"@@allreduce6@@"<<sorted->dataNum()<<ix<<std::endl;
 
   }
 }
