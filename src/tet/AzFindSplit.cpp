@@ -61,7 +61,6 @@ void AzFindSplit::_findBestSplit(int nx,
   Az_forFindSplit total;
   total.wy_sum = target->getTarDwSum(dxs, dxs_num);//@The sum of v_y in parent node
   total.w_sum = target->getDwSum(dxs, dxs_num); //@The number of v_y in parent node
-  std::cout<<"@@allreduce4@@"<<std::endl;
 
   /*---  go through features to find the best split  ---*/
   int feat_num = data->featNum();
@@ -70,7 +69,6 @@ void AzFindSplit::_findBestSplit(int nx,
     fxs = ia_fx->point(&feat_num);
   }
   int ix;
-  std::cout<<"@@allreduce5@@"<<std::endl;
 
   double split_points_num_float = dxs_num /10;
   //Hadoop::accumulate_avg(&split_points_num_float, 1);
@@ -84,7 +82,6 @@ void AzFindSplit::_findBestSplit(int nx,
   //double *size_array_a = new double[2*split_points_num*feat_num];
   double *size_array_a = &split_points_a[5*split_points_num*feat_num];
   Az_forFindSplit *info_a = new Az_forFindSplit[2*split_points_num*feat_num];
-  std::cout<<"@@allreduce6@@"<<std::endl;
 
 //#pragma omp parallel
   {
@@ -99,7 +96,6 @@ void AzFindSplit::_findBestSplit(int nx,
     int fx = ix; //@ the index of feature
     if (fxs != NULL) fx = fxs[ix];
     const AzSortedFeat *sorted = sorted_arr->sorted(fx);
-    std::cout<<"@@allreduce6@@"<<ix<<" "<<sorted->dataNum()<<std::endl;
 
     pick_split_points(split_points_num,
                        sorted,
@@ -107,7 +103,6 @@ void AzFindSplit::_findBestSplit(int nx,
 
   }
 }
-  std::cout<<"@@allreduce7@@"<<std::endl;
   Hadoop::accumulate_avg(split_points_a, split_points_num*feat_num);
 //#pragma omp parallel
 {
@@ -310,7 +305,7 @@ void AzFindSplit::pick_split_points(int split_points_num,
     } */
     double h = (total_data_num+1.0/3.0)*(split_index+1.0)/(split_points_num+1.0)+1.0/3.0;
     
-    if(floor(h)>=sorted->dataNum())
+    if(floor(h)+1>=sorted->dataNum())
         h=h-1;
     double value_L = sorted->getValue(floor(h)); //@ The value of this threshold
     double value_R = sorted->getValue(floor(h)+1); //@ The value of this threshold
