@@ -103,6 +103,7 @@ void AzFindSplit::_findBestSplit(int nx,
 
   }
 }
+
   Hadoop::accumulate_avg(split_points_a, split_points_num*feat_num);
 //#pragma omp parallel
 {
@@ -303,6 +304,7 @@ void AzFindSplit::pick_split_points(int split_points_num,
       index = sorted->next(cursor, &value, &index_num); //@@@@@we should rewrite this
       left_size += index_num;
     } */
+#if 0
     double h = (total_data_num+1.0/3.0)*(split_index+1.0)/(split_points_num+1.0)+1.0/3.0;
     
     if(floor(h)+1>=sorted->dataNum())
@@ -311,7 +313,11 @@ void AzFindSplit::pick_split_points(int split_points_num,
         h=h+1;
     double value_L = sorted->getValue(floor(h)); //@ The value of this threshold
     double value_R = sorted->getValue(floor(h)+1); //@ The value of this threshold
+
     split_points[split_index] = value_L+(h-floor(h))*(value_R-value_L);
+#endif
+    double value = sorted->getValue(floor(total_data_num / double(split_points_num + 1)* (split_index + 1)));
+    split_points[split_index] = value;
     //std::printf("pick_split_points:: No %d index %d value %f \n",split_index,left_size,value);
   }
 }
