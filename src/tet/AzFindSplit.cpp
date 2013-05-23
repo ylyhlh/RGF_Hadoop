@@ -102,6 +102,8 @@ void AzFindSplit::_findBestSplit(int nx,
     pick_split_points(split_points_num,
                        sorted,
                        split_points);//@@allreduce this array please
+    std::cout<<"@@allreduce6@@"<<ix<<std::endl;
+
   }
 }
   std::cout<<"@@allreduce7@@"<<std::endl;
