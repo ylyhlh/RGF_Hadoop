@@ -307,6 +307,8 @@ void AzFindSplit::pick_split_points(int split_points_num,
     
     if(floor(h)+1>=sorted->dataNum())
         h=h-1;
+    if(floor(h)<0)
+        h=h+1;
     double value_L = sorted->getValue(floor(h)); //@ The value of this threshold
     double value_R = sorted->getValue(floor(h)+1); //@ The value of this threshold
     split_points[split_index] = value_L+(h-floor(h))*(value_R-value_L);

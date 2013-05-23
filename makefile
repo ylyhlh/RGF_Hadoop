@@ -82,6 +82,14 @@ run1: kill all
 	perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_01 localhost 1233 1 0 >log1_1.log   
 	@killall spanning_tree
 
+run3: kill all
+	mkdir -p test/output
+	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
+	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA1) localhost 1233 3 0 >log1.log &
+	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA1) localhost 1233 3 1 >log2.log &  
+	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA2) localhost 1233 3 2 >log3.log
+	@killall spanning_tree
+
 
 kill:
 ifneq (0, $(SPAN_F))
