@@ -28,7 +28,7 @@
 
 //! Node split search for RGF.  L2 regularization.  
 /*--------------------------------------------------------*/
-class AzRgf_FindSplit_Dflt : /* extends */    public virtual AzFindSplit, 
+  class AzRgf_FindSplit_Dflt : /* extends */    public virtual AzFindSplit, 
                              /* implements */ public virtual AzRgf_FindSplit
 {
 protected:

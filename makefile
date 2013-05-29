@@ -108,7 +108,9 @@ cluster: kill $(TARGET) $(SPANNINGTREE)
 ifneq (0, $(words $(shell $(hfs) -ls | grep rgfout )))
 	$(hfs) -rmr rgfout
 endif
-	$(hjs) -D mapred.job.map.memory.mb=6000  -Dmapred.map.tasks=4 -D mapred.reduce.tasks=0 -input /user/hl1283/RGF_Hadoop/test/sample/ctslices.test.dat -output rgfout -mapper runrgf.sh -file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
+	$(hjs) -D mapred.job.map.memory.mb=6000  -Dmapred.map.tasks=4 -D mapred.reduce.tasks=0 \
+		-input /user/hl1283/RGF_Hadoop/test/sample/ctslices.test.dat -output rgfout -mapper runrgf.sh \
+		-file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
 	killall spanning_tree
 
 clusterCT: kill $(TARGET) $(SPANNINGTREE)
@@ -116,6 +118,8 @@ clusterCT: kill $(TARGET) $(SPANNINGTREE)
 ifneq (0, $(words $(shell $(hfs) -ls | grep rgfout )))
 	$(hfs) -rmr rgfout
 endif
-	$(hjs) -D mapred.job.map.memory.mb=6000 -D mapred.map.tasks=$(MAP_NUM) -D mapred.reduce.tasks=0 -input $(CLUSTER_DATA) -output rgfout -mapper runrgf.sh -reducer cat -file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
+	$(hjs) -D mapred.job.map.memory.mb=6000 -D mapred.map.tasks=$(MAP_NUM) -D mapred.reduce.tasks=0 \
+		-input $(CLUSTER_DATA) -output rgfout -mapper runrgf.sh -reducer cat \
+		-file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
 	killall spanning_tree
 
