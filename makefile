@@ -59,6 +59,8 @@ $(TARGET): $(OBJECTS)
 $(SPANNINGTREE): src/spanning_tree.cpp | $(OBJDIR)
 	$(CXX) $(CXXFLAGS) -o $@ $+
 
+.PHONY: clean kill all
+
 clean:
 	rm -rf $(OBJ)/*
 	rm -rf $(BIN_DIR)/*
