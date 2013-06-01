@@ -3,8 +3,8 @@
 train_x_fn=test/sample/ctslices_01.train.x  # Training data points
 train_y_fn=test/sample/ctslices_01.train.y # Training targets
 
-test_x_fn=test/sample/ctslices_03.train.x    # Test data points
-test_y_fn=test/sample/ctslices_03.train.y    # Test targets
+test_x_fn=test/sample/ctslices.test.x    # Test data points
+test_y_fn=test/sample/ctslices.test.y    # Test targets
 
 evaluation_fn=test/output/ctslices_01.evaluation   # Where to write 
 
@@ -17,7 +17,7 @@ reg_L2=1            # Regularization parameter.
 algorithm=RGF       # RGF with L2 regularization with leaf-only models
 loss=LS             # Square loss
 test_interval=100   # Save models every time 100 leaves are added.
-max_leaf_forest=500 # Stop training when #leaf reaches 500. 
+max_leaf_forest=20000 # Stop training when #leaf reaches 500. 
 Verbose             # Display info during training. 
 #VIS
 #---  other parameters (commented out)
