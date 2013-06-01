@@ -41,6 +41,8 @@ rgf1.2/test/
 !test/sample/train.data.y
 !test/sample/train.inp
 !test/sample/ctslices.inp
+!test/sample/ctslices_01.inp
+!test/sample/ctslices_02.inp
 !test/sample/msd_01.inp
 !test/sample/msd_02.inp
 bin/
