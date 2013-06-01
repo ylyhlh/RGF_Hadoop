@@ -32,7 +32,6 @@ echo 'Starting training' > /dev/stderr
 
 # Prepare training data
 TRAINFILE=train.dat
-TESTFILE=test.dat
 cat > $TRAINFILE
 
 cut -f1 $TRAINFILE > $TRAINFILE.y

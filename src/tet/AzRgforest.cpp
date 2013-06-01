@@ -215,7 +215,7 @@ AzTETrainer_Ret AzRgforest::proceed_until()
   for ( ; ; ) {
     /*---  grow the forest  ---*/
     bool doExit = growForest(); 
-    printf("doExit:%d\n",doExit);
+    //printf("doExit:%d\n",doExit);
     if (doExit) break; 
 
     /*---  optimize weights  ---*/
@@ -238,7 +238,6 @@ AzTETrainer_Ret AzRgforest::proceed_until()
 
   if (ret == AzTETrainer_Ret_Exit) {
     if (!isOpt) {
-      
       optimize_resetTarget(); 
     }
     time_show(); 

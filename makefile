@@ -7,8 +7,8 @@ SPANNINGTREE = $(BIN_DIR)/spanning_tree
 ME=$(shell whoami)
 SPAN_F = $(words $(shell ps aux | grep '[s]panning_tree' | grep $(ME) ))
 RGF_F = $(words $(shell ps aux | grep '[r]gf' ))
-DATA1 = ctslices
-DATA2 = ctslices
+DATA1 = ctslices_01
+DATA2 = ctslices_02
 CLUSTER_DATA = /user/hl1283/RGF_Hadoop/test/sample/ctslices1.test.dat
 all:  $(TARGET) $(SPANNINGTREE)
 MAP_NUM=2
@@ -87,9 +87,8 @@ run1: kill all
 run3: kill all
 	mkdir -p test/output
 	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
-	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA1) localhost 1233 3 0 >log1.log &
-	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA1) localhost 1233 3 1 >log2.log &  
-	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA2) localhost 1233 3 2 >log3.log
+	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA1) localhost 1233 2 0 >log1.log &
+	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA2) localhost 1233 2 1 >log2.log
 	@killall spanning_tree
 
 
