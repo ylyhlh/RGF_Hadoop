@@ -17,7 +17,7 @@ reg_L2=1            # Regularization parameter.
 algorithm=RGF       # RGF with L2 regularization with leaf-only models
 loss=LS             # Square loss
 test_interval=100   # Save models every time 100 leaves are added.
-max_leaf_forest=20000 # Stop training when #leaf reaches 500. 
+max_leaf_forest=40000 # Stop training when #leaf reaches 500. 
 Verbose             # Display info during training. 
 #VIS
 #---  other parameters (commented out)
