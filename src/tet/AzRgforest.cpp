@@ -222,7 +222,7 @@ AzTETrainer_Ret AzRgforest::proceed_until()
     if (opt_timer.ringing(false, l_num)) {
       if(beVIS) {
         vis_timer.end();
-        std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" opt"<<std::endl;
+        //std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" opt"<<std::endl;
       }
       optimize_resetTarget(); 
       show_tree_info(); 
@@ -267,12 +267,12 @@ void AzRgforest::printForVis(AzTrTsplit *best_split,int *leaf_nx)
 {
   vis_timer.end();
     if(best_split->nx == 0) {
-      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" "<<"root"<<" "<<best_split->tx<<"-"<<0<<std::endl;
-      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" "<<best_split->tx<<"-"<<best_split->nx<<" "<<best_split->tx<<"-"<<leaf_nx[0]<<std::endl;          
-      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" "<<best_split->tx<<"-"<<best_split->nx<<" "<<best_split->tx<<"-"<<leaf_nx[1]<<std::endl;  
+      std::cerr<<"@VIS: "<</*vis_timer.elapsed()<<*/" "<<"root"<<" "<<best_split->tx<<"-"<<0<<std::endl;
+      std::cerr<<"@VIS: "<</*vis_timer.elapsed()<<*/" "<<best_split->tx<<"-"<<best_split->nx<<" fx="<<best_split->fx<<" thrd="<<best_split->border_val<<" "<<best_split->tx<<"-"<<leaf_nx[0]<<std::endl;          
     }else {
-      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" "<<best_split->tx<<"-"<<best_split->nx<<" "<<best_split->tx<<"-"<<leaf_nx[0]<<std::endl;
-      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" "<<best_split->tx<<"-"<<best_split->nx<<" "<<best_split->tx<<"-"<<leaf_nx[1]<<std::endl;            
+      std::cerr<<"@VIS: "<</*vis_timer.elapsed()<<*/" "<<best_split->tx<<"-"<<best_split->nx<<" fx="<<best_split->fx<<" thrd="<<best_split->border_val<<" "<<best_split->tx<<"-"<<leaf_nx[1]<<std::endl;  
+      std::cerr<<"@VIS: "<</*vis_timer.elapsed()<<*/" "<<best_split->tx<<"-"<<best_split->nx<<" "" fx="<<best_split->fx<<" thrd="<<best_split->border_val<<" "<<best_split->tx<<"-"<<leaf_nx[0]<<std::endl;
+      std::cerr<<"@VIS: "<</*vis_timer.elapsed()<<*/" "<<best_split->tx<<"-"<<best_split->nx<<" "" fx="<<best_split->fx<<" thrd="<<best_split->border_val<<" "<<best_split->tx<<"-"<<leaf_nx[1]<<std::endl;            
     }
 }
 /*------------------------------------------------------------------*/
