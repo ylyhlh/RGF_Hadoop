@@ -9,8 +9,8 @@ SPAN_F = $(words $(shell ps aux | grep '[s]panning_tree' | grep $(ME) ))
 RGF_F = $(words $(shell ps aux | grep '[r]gf' ))
 #DATA1 = ctslices_01
 #DATA2 = ctslices_02
-DATA1 = ct.01_01
-DATA2 = ct.01_02
+DATA1 = ctslices_01
+DATA2 = ctslices_02
 DATA3 = ctslices_03
 CLUSTER_DATA = /user/hl1283/RGF_Hadoop/test/sample/ctslices1.test.dat
 all:  $(TARGET) $(SPANNINGTREE)
