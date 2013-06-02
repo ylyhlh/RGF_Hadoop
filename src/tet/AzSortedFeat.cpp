@@ -294,7 +294,7 @@ const
     //return  NULL; /* this will produce all vs none anyway */
   }
 
-  double avg_val = curr_val + 0.00000001; 
+  double avg_val = curr_val; 
   for ( ; cursor < index_num; cursor=cur.inc(step_size)) {
     int dx = index[cursor]; 
     double next_val = dx2value[dx]; 
@@ -303,8 +303,8 @@ const
       break; 
     }
   }
-  if (cursor >= index_num) {
-    //return NULL; /* this will produce all vs none anyway */
+  if (cursor > index_num) {
+    return 0; /* this will produce all vs none anyway */
   }
 
   *out_val = avg_val; 

@@ -137,6 +137,7 @@ void AzFindSplit::_findBestSplit(int nx,
       //@ get every thing out in some arrays
       for (int split_index = 0; split_index < 2*split_points_num; split_index++) {
         wy_sum_array[split_index] = info[split_index].wy_sum;
+        //printf("Be:%d----%e\n",split_index ,info[split_index].wy_sum);
         w_sum_array[split_index] = info[split_index].w_sum;
         size_array[split_index] = info[split_index].size;
       }
@@ -147,10 +148,22 @@ void AzFindSplit::_findBestSplit(int nx,
 #endif
   }
 }
+#if 0
+  for (int i = 0; i < split_points_num*feat_num; ++i)
+  {
+    printf("Before:%d----%e\n",i ,wy_sum_array_a[i]);
+  }
   allreduce_wait_timer.end();
+#endif
   //std::cout<<"@@allreduce1@@"<<allreduce_wait_timer.elapsed()<<std::endl;
   Hadoop::accumulate_sum(wy_sum_array_a, split_points_num*6*feat_num);
-  allreduce_wait_timer.end();
+  #if 0
+    for (int i = 0; i < split_points_num*feat_num; ++i)
+  {
+    printf("%d----%e\n",i ,wy_sum_array_a[i]);
+  }
+  #endif
+  //allreduce_wait_timer.end();
   //std::cout<<"@@allreduce1@@"<<allreduce_wait_timer.elapsed()<<std::endl;
   //Hadoop::accumulate_sum(w_sum_array_a, split_points_num*2*feat_num);
   //Hadoop::accumulate_sum(size_array_a, split_points_num*2*feat_num);
@@ -298,7 +311,7 @@ void AzFindSplit::pick_split_points(int split_points_num,
 
   for (int split_index = 0; split_index < split_points_num; split_index++) {
     
-    int index_num; //@ The number of exampls between two values
+    //int index_num; //@ The number of exampls between two values
     const int *index = NULL;
     /*while ( left_size < total_data_num / double(split_points_num + 1)* (split_index + 1) )
     {//@only dense part changed?
@@ -339,33 +352,32 @@ void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split,
   Az_forFindSplit i[2];
 
   Az_forFindSplit *src = &i[1], *dest = &i[0];
-
-
   AzCursor cursor; //@ A class can ++ --
   sorted->rewind(cursor); //@cursor.set(0).In spares case it has backward option
   double value = split_points[0] - 1;
   for (int split_index = 0; split_index < split_points_num; split_index++) {
     Az_forFindSplit *inf = &info[split_index*2];
     Az_forFindSplit *src1 = &inf[1], *dest1 = &inf[0];
-
      //@ The value of this threshold
     int index_num = 0; //@ The number of exampls between two values
     const int *index = NULL;
     //@ try to find the first
-    while ( value <= split_points[split_index] && cursor.get() < total_size )
+    //printf("A00:%d %e %d %d %d\n", split_index, dest->wy_sum, index_num, dest_size,cursor.get());
+    while ( value <= split_points[split_index]+1E-10 && cursor.get() < total_size )
     {//@only dense part changed?
-      index = sorted->next_real(cursor, &value, &index_num); //@@@@@we should rewrite this
+      //printf("A01: %e - %e = %e %d %e %d %d %d\n", value, split_points[split_index], value-split_points[split_index], split_index, dest->wy_sum, index_num, dest_size,cursor.get());
+      index = sorted->next_real(cursor, &value, &index_num);
       dest_size += index_num;
       //if (index == NULL) break;
     }
     //@
     //if (index == NULL)    std::cout<<"@ERRO:"<<eyec<<":dest_size="<<dest_size<<std::endl;
-    if (dest_size >= total_size) {
-      //std::cout<<"@TEST:"<<eyec<<":ppdest_size="<<dest_size<<std::endl;
-      //break; /* don't allow all vs nothing */
-    }
+    //if (dest_size > total_size) {
+      //std::cout<<"@TEST:"<<eyec<<":dest_size="<<dest_size<<" "<<cursor.get()<<std::endl;
 
-    //std::cout<<"@TEST:"<<eyec<<":dest_size="<<dest_size<<std::endl;
+      //break; /* don't allow all vs nothing */
+    //}
+
 
     const double *tarDw = target->tarDw_arr(); //@we can look this as target
     const double *dw = target->dw_arr(); //@we can look this as 1
@@ -375,16 +387,19 @@ void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split,
       int dx = index[ix];
       wy_sum_move += tarDw[dx];
       w_sum_move += dw[dx];
-      //std::cout<<"@TEST:"<<eyec<<":dw[dx]="<<dw[dx]<<std::endl;
+      //if(index_num==6)
+        //printf("A0:%e %d %e %d %d\n", tarDw[dx], split_index, dest->wy_sum, index_num, dest_size);
+
     }
 
-    dest->wy_sum += wy_sum_move; //@@@@@@@@Here here allreduce
-    dest->w_sum += w_sum_move; //@@@@@@@@Here here allreduce
+
+    dest->wy_sum += wy_sum_move; 
+    dest->w_sum += w_sum_move; 
     dest->size = dest_size;
     //std::printf("@TEST: pick_split_points:: No %d index %d in total %d value %f %f \n",split_index,dest_size, total_size,value, split_points[split_index]);
 
-    src->wy_sum = total->wy_sum - dest->wy_sum; //@@@@@@@@Here here allreduce
-    src->w_sum  = total->w_sum  - dest->w_sum; //@@@@@@@@Here here allreduce
+    src->wy_sum = total->wy_sum - dest->wy_sum;
+    src->w_sum  = total->w_sum  - dest->w_sum;
     src->size = total_size  - dest_size;
 
     dest1->wy_sum = dest->wy_sum;
@@ -394,6 +409,7 @@ void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split,
     src1->wy_sum = src->wy_sum;
     src1->w_sum  = src->w_sum;
     src1->size = src->size;
+    //printf("A:%d %e %e %d %d\n", split_index, src->wy_sum, dest->wy_sum, index_num, dest_size);
 
     /*if (min_size > 0) {
       if (dest_size < min_size) {
