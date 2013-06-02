@@ -3,8 +3,8 @@
 train_x_fn=train.dat.x  # Training data points
 train_y_fn=train.dat.y  # Training targets
 
-test_x_fn=test.dat.x    # Test data points
-test_y_fn=test.dat.y    # Test targets
+test_x_fn=train.dat.x    # Test data points
+test_y_fn=train.dat.y    # Test targets
 
 
 evaluation_fn=train.evaluation   # Where to write 
@@ -17,8 +17,8 @@ model_fn_prefix=train.model
 reg_L2=1            # Regularization parameter. 
 algorithm=RGF       # RGF with L2 regularization with leaf-only models
 loss=LS             # Square loss
-test_interval=500   # Save models every time 100 leaves are added.
-max_leaf_forest=500 # Stop training when #leaf reaches 500. 
+test_interval=100   # Save models every time 100 leaves are added.
+max_leaf_forest=20000 # Stop training when #leaf reaches 500. 
 Verbose             # Display info during training. 
 #---  other parameters (commented out)
 #NormalizeTarget    # Normalize targets so that the average becomes zero. 
