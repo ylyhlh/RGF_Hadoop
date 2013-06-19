@@ -18,22 +18,22 @@ namespace Hadoop {
 
 using namespace std;
 
-double accumulate_scalar(double local_sum) {
+float accumulate_scalar(float local_sum) {
   Cluster& cluster = Cluster::getInstance();
-  double temp = local_sum;
+  float temp = local_sum;
   all_reduce(&temp, 1, cluster.master_location, cluster.unique_id, cluster.total, cluster.node, cluster.socks);
   return temp;
 }
 
-void accumulate_sum(double* array, size_t length) {
+void accumulate_sum(float* array, size_t length) {
   Cluster& cluster = Cluster::getInstance();
   all_reduce(array, length, cluster.master_location, cluster.unique_id, cluster.total, cluster.node, cluster.socks);
 }
 
-void accumulate_avg(double* array, size_t length) {
+void accumulate_avg(float* array, size_t length) {
   Cluster& cluster = Cluster::getInstance();
   accumulate_sum(array, length);
-  double total = cluster.total;
+  float total = cluster.total;
   for (int i = 0; i < length; ++i)
   {
     array[i] /= total;

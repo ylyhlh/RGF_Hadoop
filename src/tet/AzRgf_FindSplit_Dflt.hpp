@@ -63,9 +63,12 @@ public:
     c_nlam = reg_depth->apply(nlam, p_node->depth+1);//@for L2 reg there is nothing
     p_nsig = reg_depth->apply(nsig, p_node->depth); 
     c_nsig = reg_depth->apply(nsig, p_node->depth+1); 
-
-    Hadoop::accumulate_sum(&p_nlam, 1);
-    Hadoop::accumulate_sum(&c_nlam, 1);
+    float p_nlam_f = p_nlam;
+    float c_nlam_f = c_nlam;
+    Hadoop::accumulate_sum(&p_nlam_f, 1);
+    p_nlam = p_nlam_f;
+    Hadoop::accumulate_sum(&c_nlam_f, 1);
+    c_nlam = c_nlam_f;
     AzFindSplit::_findBestSplit(nx, best_split); 
   }
   virtual void reset(AzParam &param, 

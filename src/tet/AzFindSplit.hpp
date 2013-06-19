@@ -93,7 +93,7 @@ protected:
                       AzTrTsplit *best_split); 
   void pick_split_points(int split_points_num,
             const AzSortedFeat *sorted,
-            double *split_points);
+            float *split_points);
   void loop(AzTrTsplit *best_split, 
             int fx, /* feature# */
             const AzSortedFeat *sorted, 
@@ -106,7 +106,7 @@ protected:
             const AzSortedFeat *sorted, 
             int dxs_num, 
             const Az_forFindSplit *total,
-            double *split_points,
+            float *split_points,
             int split_points_num,
             Az_forFindSplit *info); 
 }; 

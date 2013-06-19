@@ -74,23 +74,23 @@ void AzFindSplit::_findBestSplit(int nx,
   //Hadoop::accumulate_avg(&split_points_num_float, 1);
   //split_points_num = split_points_num_float>10? split_points_num_float:split_points_num_float*10;
 
-  double *split_points_a = new double[7*split_points_num*feat_num];
+  float *split_points_a = new float[7*split_points_num*feat_num];
   //double *wy_sum_array_a = new double[2*split_points_num*feat_num];
-  double *wy_sum_array_a = &split_points_a[split_points_num*feat_num];
+  float *wy_sum_array_a = &split_points_a[split_points_num*feat_num];
   //double *w_sum_array_a = new double[2*split_points_num*feat_num];
-  double *w_sum_array_a = &split_points_a[3*split_points_num*feat_num];
+  float *w_sum_array_a = &split_points_a[3*split_points_num*feat_num];
   //double *size_array_a = new double[2*split_points_num*feat_num];
-  double *size_array_a = &split_points_a[5*split_points_num*feat_num];
+  float *size_array_a = &split_points_a[5*split_points_num*feat_num];
   Az_forFindSplit *info_a = new Az_forFindSplit[2*split_points_num*feat_num];
 
 //#pragma omp parallel
   {
   //#pragma omp for schedule(dynamic)
   for (ix = 0; ix < feat_num; ++ix) {
-    double *split_points = &split_points_a[ix*split_points_num];
-    double *wy_sum_array = &wy_sum_array_a[ix*split_points_num*2];
-    double *w_sum_array = &w_sum_array_a[ix*split_points_num*2];
-    double *size_array = &size_array_a[ix*split_points_num*2];
+    float *split_points = &split_points_a[ix*split_points_num];
+    float *wy_sum_array = &wy_sum_array_a[ix*split_points_num*2];
+    float *w_sum_array = &w_sum_array_a[ix*split_points_num*2];
+    float *size_array = &size_array_a[ix*split_points_num*2];
     Az_forFindSplit *info = &info_a[ix*split_points_num*2];
 
     int fx = ix; //@ the index of feature
@@ -103,17 +103,26 @@ void AzFindSplit::_findBestSplit(int nx,
 
   }
 }
-//std::cout<<"@@allreduce1@@"<<"  "<<split_points_num<<"  "<<dxs_num<<"  "<<split_points_a[1]<<"  "<<split_points_a[split_points_num-1]<<std::endl;
 
+//std::cout<<"@@allreduce1@@"<<"  "<<split_points_num<<"  "<<dxs_num<<"  "<<split_points_a[1]<<"  "<<split_points_a[split_points_num-1]<<std::endl;
+  for (int i = 0; i < split_points_num*feat_num; ++i)
+  {
+    //printf("Before:%d----%+.15e\n",i ,split_points_a[i]);
+  }
   Hadoop::accumulate_avg(split_points_a, split_points_num*feat_num);
+  for (int i = 0; i < split_points_num*feat_num; ++i)
+  {
+    //printf("After:%d----%+.15e\n",i ,split_points_a[i]);
+  }
+
 //#pragma omp parallel
 {
   //#pragma omp for schedule(dynamic)
   for (ix = 0; ix < feat_num; ++ix) {
-    double *split_points = &split_points_a[ix*split_points_num];
-    double *wy_sum_array = &wy_sum_array_a[ix*split_points_num*2];
-    double *w_sum_array = &w_sum_array_a[ix*split_points_num*2];
-    double *size_array = &size_array_a[ix*split_points_num*2];
+    float *split_points = &split_points_a[ix*split_points_num];
+    float *wy_sum_array = &wy_sum_array_a[ix*split_points_num*2];
+    float *w_sum_array = &w_sum_array_a[ix*split_points_num*2];
+    float *size_array = &size_array_a[ix*split_points_num*2];
     Az_forFindSplit *info = &info_a[ix*split_points_num*2];
 
 
@@ -171,10 +180,10 @@ void AzFindSplit::_findBestSplit(int nx,
 {
   //#pragma omp for schedule(dynamic)
   for (ix = 0; ix < feat_num; ++ix) {
-    double *split_points = &split_points_a[ix*split_points_num];
-    double *wy_sum_array = &wy_sum_array_a[ix*split_points_num*2];
-    double *w_sum_array = &w_sum_array_a[ix*split_points_num*2];
-    double *size_array = &size_array_a[ix*split_points_num*2];
+    float *split_points = &split_points_a[ix*split_points_num];
+    float *wy_sum_array = &wy_sum_array_a[ix*split_points_num*2];
+    float *w_sum_array = &w_sum_array_a[ix*split_points_num*2];
+    float *size_array = &size_array_a[ix*split_points_num*2];
     Az_forFindSplit *info = &info_a[ix*split_points_num*2];
 
     int fx = ix; //@ the index of feature
@@ -302,7 +311,7 @@ void AzFindSplit::loop(AzTrTsplit *best_split,
 
 void AzFindSplit::pick_split_points(int split_points_num,
                        const AzSortedFeat *sorted,
-                       double* split_points)
+                       float* split_points)
 {
   //AzCursor cursor; //@ A class can ++ --
   //sorted->rewind(cursor); //@cursor.set(0).In spares case it has backward option
@@ -330,7 +339,7 @@ void AzFindSplit::pick_split_points(int split_points_num,
 
     split_points[split_index] = value_L+(h-floor(h))*(value_R-value_L);
 #endif
-    double value = sorted->getValue(floor(total_data_num / double(split_points_num + 1)* (split_index + 1)));
+    float value = sorted->getValue(floor(total_data_num / double(split_points_num + 1)* (split_index + 1)));
     split_points[split_index] = value;
     //std::printf("pick_split_points:: No %d index %d value %f \n",split_index,(int)floor(total_data_num / double(split_points_num + 1)* (split_index + 1)),value);
   }
@@ -341,7 +350,7 @@ void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split,
                        const AzSortedFeat *sorted,
                        int total_size,
                        const Az_forFindSplit *total,
-                       double *split_points,
+                       float *split_points,
                        int split_points_num,
                        Az_forFindSplit *info)
 {
@@ -363,9 +372,9 @@ void AzFindSplit::loop_on_given_points (AzTrTsplit *best_split,
     const int *index = NULL;
     //@ try to find the first
     //printf("A00:%d %e %d %d %d\n", split_index, dest->wy_sum, index_num, dest_size,cursor.get());
-    while ( value <= split_points[split_index]+1E-10 && cursor.get() < total_size )
+    while ( value <= (split_points[split_index] /*+1E-16*/) && cursor.get() < total_size )
     {//@only dense part changed?
-      //printf("A01: %e - %e = %e %d %e %d %d %d\n", value, split_points[split_index], value-split_points[split_index], split_index, dest->wy_sum, index_num, dest_size,cursor.get());
+      //printf("A01: %+.15e - %+.15e = %e %d %e %d %d %d\n", value, split_points[split_index], value-split_points[split_index], split_index, dest->wy_sum, index_num, dest_size,cursor.get());
       index = sorted->next_real(cursor, &value, &index_num);
       dest_size += index_num;
       //if (index == NULL) break;

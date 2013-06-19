@@ -31,9 +31,9 @@ license as described in the file LICENSE.
 //
 namespace Hadoop {
 
-double accumulate_scalar(double local_sum);
-void accumulate_sum(double* array, size_t length);
-void accumulate_avg(double* array, size_t length);
+float accumulate_scalar(float local_sum);
+void accumulate_sum(float* array, size_t length);
+void accumulate_avg(float* array, size_t length);
 }
 
 #endif

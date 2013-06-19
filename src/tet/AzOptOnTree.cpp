@@ -402,7 +402,9 @@ const
   
 
     //throw new AzException(eyec, "no data indexes"); 
-  Hadoop::accumulate_sum(&nlam, 1);
+  float nlam_f = nlam;
+  Hadoop::accumulate_sum(&nlam_f, 1);
+  nlam = nlam_f;
   const double *fixed_dw = NULL; 
   if (!AzDvect::isNull(&v_fixed_dw)) fixed_dw = v_fixed_dw.point(); 
 
@@ -418,8 +420,12 @@ const
     AzLoss::sum_deriv_weighted(loss_type, dxs, dxs_num, p, y, fixed_dw, py_avg, 
                       nega_dL, ddL); 
   }//@check wether the dxs_num is devided -> no. 
-  Hadoop::accumulate_sum(&nega_dL, 1);
-  Hadoop::accumulate_sum(&ddL, 1);
+  float nega_dL_f = nega_dL;
+  float ddL_f = ddL;
+  Hadoop::accumulate_sum(&nega_dL_f, 1);
+  nega_dL = nega_dL_f;
+  Hadoop::accumulate_sum(&ddL_f, 1);
+  ddL = ddL_f;
   double ddL_nlam = ddL + nlam; //@allreduce here dL/dw, ddL/ddw
   if (ddL_nlam == 0) ddL_nlam = 1;  /* this shouldn't happen, though */
   if (dxs_num == 0) {      
