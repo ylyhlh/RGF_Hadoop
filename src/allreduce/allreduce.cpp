@@ -396,7 +396,7 @@ long long all_reduce_data_amount = 0;
 int all_reduce_counter = 0;
 void all_reduce(float* buffer, const int n, const string master_location, const size_t unique_id, const size_t total, const size_t node, node_socks& socks) 
 {
-  all_reduce_data_amount += n*sizeof(double);
+  all_reduce_data_amount += n*sizeof(float);
   all_reduce_counter++;
   all_reduce_watch.start();
   if(master_location != socks.current_master) 
