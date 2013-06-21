@@ -1,0 +1,112 @@
+./bin/rgf train_test train_x_fn=test/sample/ctslices1.test.x,train_y_fn=test/sample/ctslices1.test.y,test_x_fn=test/sample/ctslices1.test.x,test_y_fn=test/sample/ctslices1.test.y,evaluation_fn=test/output/ctslices.evaluation,model_fn_prefix=test/output/ctslices.model,reg_L2=1,algorithm=RGF,loss=LS,test_interval=100,max_leaf_forest=20000,Verbose
+"train_test": 
+   algorithm=RGF
+   train_x_fn=test/sample/ctslices1.test.x
+   train_y_fn=test/sample/ctslices1.test.y
+   Log:ON
+   test_x_fn=test/sample/ctslices1.test.x
+   test_y_fn=test/sample/ctslices1.test.y
+   evaluation_fn=test/output/ctslices.evaluation
+   model_fn_prefix=test/output/ctslices.model
+--------------------
+Sun Jun  2 10:46:17 2013: Reading training data ... 
+Sun Jun  2 10:46:39 2013: Reading test data ... 
+Sun Jun  2 10:47:00 2013: Start ... #train=319332, #test=319332
+--------------------
+Large and sparse test data (nonzero ratio=0.348883); treated as sparse data.
+Forest-level: 
+   loss=LS
+   max_leaf_forest=20000
+   max_tree=10000
+   opt_interval=100
+   test_interval=100
+   num_tree_search=1
+   Verbose:ON
+   Time:ON
+   memory_policy=Generous
+-------------
+Training data: 384x319332, nonzero_ratio=0.3489; managed as dense data.
+-------------
+Optimization: 
+   loss=LS
+   num_iteration_opt=10
+   reg_L2=1
+   opt_stepsize=0.5
+Tree-level: min_pop=10
+Node split: reg_L2=1
+--------------------
+Sun Jun  2 10:51:29 2013: Calling optimizer with 34 trees and 100 leaves
+Sun Jun  2 10:51:30 2013: Testing ... 
+Sun Jun  2 10:51:34 2013: Writing model: seq#=1
+Sun Jun  2 10:55:30 2013: Calling optimizer with 61 trees and 200 leaves
+Sun Jun  2 10:55:32 2013: Testing ... 
+Sun Jun  2 10:55:36 2013: Writing model: seq#=2
+Sun Jun  2 10:59:32 2013: Calling optimizer with 83 trees and 300 leaves
+Sun Jun  2 10:59:34 2013: Testing ... 
+Sun Jun  2 10:59:37 2013: Writing model: seq#=3
+Sun Jun  2 11:03:37 2013: Calling optimizer with 102 trees and 400 leaves
+Sun Jun  2 11:03:40 2013: Testing ... 
+Sun Jun  2 11:03:44 2013: Writing model: seq#=4
+Sun Jun  2 11:07:42 2013: Calling optimizer with 121 trees and 500 leaves
+Sun Jun  2 11:07:46 2013: Testing ... 
+Sun Jun  2 11:07:49 2013: Writing model: seq#=5
+Sun Jun  2 11:11:44 2013: Calling optimizer with 139 trees and 600 leaves
+Sun Jun  2 11:11:48 2013: Testing ... 
+Sun Jun  2 11:11:52 2013: Writing model: seq#=6
+Sun Jun  2 11:15:41 2013: Calling optimizer with 157 trees and 700 leaves
+Sun Jun  2 11:15:45 2013: Testing ... 
+Sun Jun  2 11:15:48 2013: Writing model: seq#=7
+Sun Jun  2 11:19:28 2013: Calling optimizer with 174 trees and 800 leaves
+Sun Jun  2 11:19:32 2013: Testing ... 
+Sun Jun  2 11:19:35 2013: Writing model: seq#=8
+Sun Jun  2 11:23:21 2013: Calling optimizer with 190 trees and 900 leaves
+Sun Jun  2 11:23:25 2013: Testing ... 
+Sun Jun  2 11:23:28 2013: Writing model: seq#=9
+Sun Jun  2 11:27:17 2013: Calling optimizer with 205 trees and 1000 leaves
+Sun Jun  2 11:27:22 2013: Testing ... 
+Sun Jun  2 11:27:25 2013: Writing model: seq#=10
+Sun Jun  2 11:31:11 2013: Calling optimizer with 220 trees and 1100 leaves
+Sun Jun  2 11:31:17 2013: Testing ... 
+Sun Jun  2 11:31:20 2013: Writing model: seq#=11
+Sun Jun  2 11:35:06 2013: Calling optimizer with 235 trees and 1200 leaves
+Sun Jun  2 11:35:11 2013: Testing ... 
+Sun Jun  2 11:35:14 2013: Writing model: seq#=12
+Sun Jun  2 11:39:02 2013: Calling optimizer with 250 trees and 1300 leaves
+Sun Jun  2 11:39:08 2013: Testing ... 
+Sun Jun  2 11:39:11 2013: Writing model: seq#=13
+Sun Jun  2 11:43:02 2013: Calling optimizer with 263 trees and 1400 leaves
+Sun Jun  2 11:43:08 2013: Testing ... 
+Sun Jun  2 11:43:12 2013: Writing model: seq#=14
+Sun Jun  2 11:46:51 2013: Calling optimizer with 276 trees and 1500 leaves
+Sun Jun  2 11:46:57 2013: Testing ... 
+Sun Jun  2 11:47:00 2013: Writing model: seq#=15
+Sun Jun  2 11:50:42 2013: Calling optimizer with 290 trees and 1600 leaves
+Sun Jun  2 11:50:49 2013: Testing ... 
+Sun Jun  2 11:50:52 2013: Writing model: seq#=16
+Sun Jun  2 11:54:39 2013: Calling optimizer with 305 trees and 1700 leaves
+Sun Jun  2 11:54:46 2013: Testing ... 
+Sun Jun  2 11:54:49 2013: Writing model: seq#=17
+Sun Jun  2 11:58:31 2013: Calling optimizer with 318 trees and 1800 leaves
+Sun Jun  2 11:58:39 2013: Testing ... 
+Sun Jun  2 11:58:42 2013: Writing model: seq#=18
+Sun Jun  2 12:02:17 2013: Calling optimizer with 330 trees and 1900 leaves
+Sun Jun  2 12:02:25 2013: Testing ... 
+Sun Jun  2 12:02:28 2013: Writing model: seq#=19
+Sun Jun  2 12:06:12 2013: Calling optimizer with 342 trees and 2000 leaves
+Sun Jun  2 12:06:20 2013: Testing ... 
+Sun Jun  2 12:06:23 2013: Writing model: seq#=20
+Sun Jun  2 12:10:10 2013: Calling optimizer with 356 trees and 2100 leaves
+Sun Jun  2 12:10:19 2013: Testing ... 
+Sun Jun  2 12:10:22 2013: Writing model: seq#=21
+Sun Jun  2 12:14:04 2013: Calling optimizer with 368 trees and 2200 leaves
+Sun Jun  2 12:14:13 2013: Testing ... 
+Sun Jun  2 12:14:16 2013: Writing model: seq#=22
+Sun Jun  2 12:18:04 2013: Calling optimizer with 380 trees and 2300 leaves
+Sun Jun  2 12:18:13 2013: Testing ... 
+Sun Jun  2 12:18:17 2013: Writing model: seq#=23
+Sun Jun  2 12:22:00 2013: Calling optimizer with 392 trees and 2400 leaves
+Sun Jun  2 12:22:10 2013: Testing ... 
+Sun Jun  2 12:22:13 2013: Writing model: seq#=24
+Sun Jun  2 12:25:53 2013: Calling optimizer with 404 trees and 2501 leaves
+Sun Jun  2 12:26:03 2013: Testing ... 
+Sun Jun  2 12:26:06 2013: Writing model: seq#=25
