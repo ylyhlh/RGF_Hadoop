@@ -49,12 +49,15 @@ protected:
   float *wy_sum_array_a;
   float *w_sum_array_a;
   float *size_array_a;
+  Az_forFindSplit *info_a;
+  int newed;
+
   AzIntArr ia_feats; 
   const AzIntArr *ia_fx; 
 
 public:
   AzFindSplit() : target(NULL), data(NULL), tree(NULL), ia_fx(NULL), 
-                  min_size(-1), split_points_num(1000) {}
+                  min_size(-1), split_points_num(1000), newed(0) {}
   ~AzFindSplit() {}
   void reset() {
     target = NULL;

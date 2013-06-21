@@ -9,7 +9,7 @@ SPAN_F = $(words $(shell ps aux | grep '[s]panning_tree' | grep $(ME) ))
 RGF_F = $(words $(shell ps aux | grep '[r]gf' ))
 #DATA1 = ctslices_01
 #DATA2 = ctslices_02
-DATA1 = ct.01_01
+DATA1 = ct.01_01 
 DATA2 = ct.01_02
 DATA3 = ctslices_03
 CLUSTER_DATA = /user/hl1283/RGF_Hadoop/test/sample/ctslices1.test.dat
@@ -77,8 +77,8 @@ artest: src/allreduce_test.cpp $(SPANNINGTREE) $(OBJECTS) | $(OBJDIR)
 run: kill all
 	mkdir -p test/output
 	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
-	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA1) localhost 1233 2 0 >log1.log  
-	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA2) localhost 1233 2 1 >log2.log 
+	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA1) localhost 1233 2 0 >log1.log   &  
+	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA2) localhost 1233 2 1 >log2.log 2> test/output/log2_vis.log
 	@killall spanning_tree
 
 run1: kill all

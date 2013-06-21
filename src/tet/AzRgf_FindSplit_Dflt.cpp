@@ -84,6 +84,7 @@ void AzRgf_FindSplit_Dflt::resetParam(AzParam &p)
 
   p.vInt(kw_split_points_num, &split_points_num); 
 
+  
   /*---  override ... ---*/
   p.vFloat(kw_s_lambda, &lambda); 
   p.vFloat(kw_s_sigma, &sigma); 

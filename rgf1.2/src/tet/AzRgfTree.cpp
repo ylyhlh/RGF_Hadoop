@@ -221,6 +221,7 @@ void AzRgfTree::printParam(const AzOut &out) const
   o.printV(kw_max_leaf_num, max_leaf_num); 
   o.printSw(kw_doUseInternalNodes, doUseInternalNodes); 
   o.printSw(kw_tree_beVerbose, beVerbose); 
+  printf("dfdf\n");
   o.ppEnd(); 
 }
 
