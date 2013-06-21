@@ -45,7 +45,10 @@ protected:
   const AzTrTree_ReadOnly *tree; 
   int min_size;
   int split_points_num;
-
+  float *split_points_a;
+  float *wy_sum_array_a;
+  float *w_sum_array_a;
+  float *size_array_a;
   AzIntArr ia_feats; 
   const AzIntArr *ia_fx; 
 
