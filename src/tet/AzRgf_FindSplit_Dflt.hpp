@@ -81,6 +81,20 @@ public:
     resetParam(param); 
     printParam(out); 
   }
+  virtual void set_upspace(float *fl, Az_forFindSplit *split){
+
+    int feat_num = 384;
+    std::cerr<<"here"<<std::endl;
+    split_points_a = fl;//new float[7*split_points_num*feat_num];
+
+    //double *wy_sum_array_a = new double[2*split_points_num*feat_num];
+    wy_sum_array_a = &split_points_a[split_points_num*feat_num];
+    //double *w_sum_array_a = new double[2*split_points_num*feat_num];
+    w_sum_array_a = &split_points_a[3*split_points_num*feat_num];
+    //double *size_array_a = new double[2*split_points_num*feat_num];
+    size_array_a = &split_points_a[5*split_points_num*feat_num];
+    info_a = split;//new Az_forFindSplit[2*split_points_num*feat_num];
+  }
 
   virtual void pickFeats(int pick_num, int f_num) {
     AzFindSplit::_pickFeats(pick_num, f_num); 
