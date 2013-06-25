@@ -12,7 +12,7 @@ evaluation_fn=test/output/ct.01_02.evaluation   # Where to write
 #---                                 output/sample.model-02,...
 model_fn_prefix=test/output/ctslices.model
 
-#---  training parameters. 
+#---  training parameters.e 
 reg_L2=1            # Regularization parameter. 
 algorithm=RGF       # RGF with L2 regularization with leaf-only models
 loss=LS             # Square loss
