@@ -47,10 +47,10 @@ rgf1.2/test/
 !test/sample/ct.01_02.inp
 !test/sample/ct.01_02.x
 !test/sample/ct.01_02.y
-!test/sample/ct.02_01.x
-!test/sample/ct.02_01.y
-!test/sample/ct.02_02.x
-!test/sample/ct.02_02.y
+!test/sample/ct_02_01.x
+!test/sample/ct_02_01.y
+!test/sample/ct_02_02.x
+!test/sample/ct_02_02.y
 !test/sample/ctslices_01.inp
 !test/sample/ctslices_02.inp
 !test/sample/ctslices_03.inp
