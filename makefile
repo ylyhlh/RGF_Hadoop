@@ -5,16 +5,18 @@ BIN_NAME = rgf
 TARGET = $(BIN_DIR)/$(BIN_NAME)
 CXXFLAGS = -Isrc/com -Isrc/tet -Isrc/allreduce -O2 -fopenmp
 SPANNINGTREE = $(BIN_DIR)/spanning_tree
+SPEEDTEST = $(BIN_DIR)/speedTest
 ME=$(shell whoami)
 SPAN_F = $(words $(shell ps aux | grep '[s]panning_tree' | grep $(ME) ))
 RGF_F = $(words $(shell ps aux | grep '[r]gf' ))
+SPEEDTEST_F = $(words $(shell ps aux | grep '[s]speedTest' ))
 #DATA1 = ctslices_01
 #DATA2 = ctslices_02
 DATA1 = ctslices_01
 DATA2 = ctslices_02
 DATA3 = ctslices_03
 CLUSTER_DATA = /user/hl1283/RGF_Hadoop/test/sample/cts100.train.dat
-all:  $(TARGET) $(SPANNINGTREE)
+all:  $(TARGET) $(SPANNINGTREE) $(SPEEDTEST)
 MAP_NUM=8
 
 OBJ=obj
@@ -26,7 +28,7 @@ SUFFIXES += .d
 #We don't need to clean up when we're making these targets
 NODEPS:=clean
 
-MAINS:=src/spanning_tree.cpp src/allreduce_test.cpp
+MAINS:=src/spanning_tree.cpp src/allreduce_test.cpp src/speedTest.cpp
 #Find all the C++ files in the src/ directory
 SOURCES:=$(filter-out $(MAINS),$(shell find src -name "*.cpp"))
 #Objects we'd like to build
@@ -63,6 +65,9 @@ $(TARGET): $(OBJECTS)
 $(SPANNINGTREE): src/spanning_tree.cpp | $(OBJDIR)
 	$(CXX) $(CXXFLAGS) -o $@ $+
 
+$(SPEEDTEST): src/speedTest.cpp  $(SPANNINGTREE) $(OBJECTS) | $(OBJDIR)
+	$(CXX) $(CXXFLAGS) -o $@ src/speedTest.cpp $(OBJ)/allreduce/*.o
+
 .PHONY: clean kill all
 
 clean:
@@ -96,6 +101,13 @@ run3: kill all
 	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA3) localhost 1233 3 2 >log3.log  2> test/output/log3_vis.log
 	@killall spanning_tree
 
+SPEEDTEST_NTIMES=100000
+SPEEDTEST_LEN=100
+speedtest: all kill
+	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
+	$(BIN_DIR)/speedTest --$(SPEEDTEST_LEN) 100 --times $(SPEEDTEST_NTIMES) --master localhost --unique_id 1233 --total 2 --node_id 0 &
+	$(BIN_DIR)/speedTest --$(SPEEDTEST_LEN) 100 --times $(SPEEDTEST_NTIMES) --master localhost --unique_id 1233 --total 2 --node_id 1
+	killall spanning_tree
 
 kill:
 ifneq (0, $(SPAN_F))
@@ -103,6 +115,9 @@ ifneq (0, $(SPAN_F))
 endif
 ifneq (0, $(RGF_F))
 	@killall rgf
+endif
+ifneq (0, $(SPEEDTEST_F))
+	@killall speedTest
 endif
 
 # Marco for hadoop cluster

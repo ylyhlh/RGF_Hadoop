@@ -130,6 +130,7 @@ int main(int argc, const char *argv[])
       help(argc, argv);
       return -1;
     }
+
   }
   catch (AzException *e) {
     stat = e;
