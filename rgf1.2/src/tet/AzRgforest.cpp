@@ -221,7 +221,7 @@ AzTETrainer_Ret AzRgforest::proceed_until()
     /*---  optimize weights  ---*/
     if (opt_timer.ringing(false, l_num)) {
       vis_timer.end();
-      std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" opt"<<std::endl;
+      //std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" opt"<<std::endl;
       optimize_resetTarget(); 
       show_tree_info(); 
     }
@@ -294,7 +294,7 @@ bool AzRgforest::growForest()
   double w_inc; //weight increase
   int leaf_nx[2] = {-1,-1}; 
   const AzRgfTree *tree = splitNode(&best_split, &w_inc, leaf_nx); 
-  printForVis(&best_split, leaf_nx);
+  //printForVis(&best_split, leaf_nx);
 
   if (lmax_timer.reachedMax(l_num, "AzRgforest: #leaf", out)) { 
     return true; /* #leaf reached max; exit */

@@ -1,4 +1,6 @@
 #include "timer.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include "accumulate.h"
 #include <map>
 #include "utils.h"
@@ -24,8 +26,8 @@ int main(int argc, const char *argv[])
   Timer allreduce_wait_timer;
   if (argc < 4) 
   {
-  	std::cerr<<"NO enough parameters!"<<std::endl;
-  	abort();
+   std::cerr<<"NO enough parameters!"<<std::endl;
+   return 1;
   }
   //int length = atoi(argv[1]);
   //int num_of_allreduce = atoi(argv[2]);
@@ -60,8 +62,8 @@ int main(int argc, const char *argv[])
 	for (int i=0; i < times; ++i)
 	{
 		Hadoop::accumulate_avg(data,length);
-		//std::cerr << "time: " << Hadoop::all_reduce_watch.get_total() << "data(bytes): " << Hadoop::all_reduce_data_amount << "count: " << Hadoop::all_reduce_counter << std::endl;
-	}
+  }
+		std::cerr << "time: " << Hadoop::all_reduce_watch.get_total() << "data(bytes): " << Hadoop::all_reduce_data_amount << "count: " << Hadoop::all_reduce_counter << std::endl;
 	//
 	std::cerr << "speed(Gips)" << double(Hadoop::all_reduce_data_amount)/Hadoop::all_reduce_watch.get_total()/1E9<<std::endl;
 }

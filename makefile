@@ -106,7 +106,7 @@ SPEEDTEST_LEN=200
 speedtest: all kill
 	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
 	$(BIN_DIR)/speedTest --length $(SPEEDTEST_LEN) --times $(SPEEDTEST_NTIMES) --master localhost --unique_id 1233 --total 2 --node_id 0 &
-	$(BIN_DIR)/speedTest --length $(SPEEDTEST_LEN) --times $(SPEEDTEST_NTIMES) --master localhost --unique_id 1233 --total 2 --node_id 1
+	$(BIN_DIR)/speedTest --length $(SPEEDTEST_LEN) --times $(SPEEDTEST_NTIMES) --master localhost --unique_id 1233 --total 2 --node_id 1 2>/dev/null
 	killall spanning_tree
 
 kill:
