@@ -109,6 +109,14 @@ speedtest: all kill
 	$(BIN_DIR)/speedTest --length $(SPEEDTEST_LEN) --times $(SPEEDTEST_NTIMES) --master localhost --unique_id 1233 --total 2 --node_id 1 2>/dev/null
 	killall spanning_tree
 
+speedtestHD: all kill
+	$(BIN_DIR)/spanning_tree
+	$(hjs) -D mapred.job.name=$(JOBNAME) -D mapred.job.map.memory.mb=6000 -D mapred.map.tasks=$(MAP_NUM) -D mapred.reduce.tasks=0 \
+		-input $(CLUSTER_DATA) -output rgfout_$(JOBNAME) -mapper runspeedTest.sh -reducer cat \
+		-file cluster/runspeedTest.sh bin/rgf test/call_exe.pl cluster/long.inp
+	killall spanning_tree
+	mkdir ~/$(JOBNAME)
+
 kill:
 ifneq (0, $(SPAN_F))
 	@killall spanning_tree
