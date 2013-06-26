@@ -113,7 +113,7 @@ speedtestHD: all kill
 	$(BIN_DIR)/spanning_tree
 	$(hjs) -D mapred.job.name=$(JOBNAME) -D mapred.job.map.memory.mb=6000 -D mapred.map.tasks=$(MAP_NUM) -D mapred.reduce.tasks=0 \
 		-input $(CLUSTER_DATA) -output rgfout_$(JOBNAME) -mapper runspeedTest.sh -reducer cat \
-		-file cluster/runspeedTest.sh bin/rgf test/call_exe.pl cluster/long.inp
+		-file cluster/runspeedTest.sh bin/speedTest test/call_exe.pl cluster/long.inp 
 	killall spanning_tree
 	mkdir ~/$(JOBNAME)
 
