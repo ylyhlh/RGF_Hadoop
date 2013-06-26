@@ -224,17 +224,16 @@ AzTETrainer_Ret AzRgforest::proceed_until()
         vis_timer.end();
         //std::cerr<<"@VIS: "<<vis_timer.elapsed()<<" opt"<<std::endl;
       }
-      optimize_resetTarget(); 
+      cerr << "preoptAllreduce time: " << Hadoop::all_reduce_watch.get_total() << "data(bytes): " << Hadoop::all_reduce_data_amount << "count: " << Hadoop::all_reduce_counter << endl; 
+      optimize_resetTarget();
+      cerr << "postoptAllreduce time: " << Hadoop::all_reduce_watch.get_total() << "data(bytes): " << Hadoop::all_reduce_data_amount << "count: " << Hadoop::all_reduce_counter << endl; 
       show_tree_info(); 
     }
 
     /*---  time to test?  ---*/
     bool doTestNow = test_timer.ringing(false, l_num); 
-    if (doTestNow) {  
-      ret = AzTETrainer_Ret_TestNow; 
-        cerr << "Allreduce time: " << Hadoop::all_reduce_watch.get_total() << endl;
-        cerr << "Allreduce data(bytes): " << Hadoop::all_reduce_data_amount << endl;
-        cerr << "Allreduce count: " << Hadoop::all_reduce_counter << endl;
+    if (doTestNow) { 
+        ret = AzTETrainer_Ret_TestNow; 
       break; /* time to test */
     }
   }
