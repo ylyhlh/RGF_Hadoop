@@ -142,7 +142,7 @@ int main(int argc, const char *argv[])
   cerr << "Allreduce time: " << Hadoop::all_reduce_watch.get_total() << endl;
   cerr << "Allreduce data(bytes): " << Hadoop::all_reduce_data_amount << endl;
   cerr << "Allreduce count: " << Hadoop::all_reduce_counter << endl;
-
+  std::cerr << "speed(GiBps)" << double(Hadoop::all_reduce_data_amount)/Hadoop::all_reduce_watch.get_total()/1E9<<std::endl;
   return 0;
 }
 

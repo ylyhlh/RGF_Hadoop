@@ -63,5 +63,5 @@ int main(int argc, const char *argv[])
 		//std::cerr << "time: " << Hadoop::all_reduce_watch.get_total() << "data(bytes): " << Hadoop::all_reduce_data_amount << "count: " << Hadoop::all_reduce_counter << std::endl;
 	}
 	//
-	std::cerr << "speed(Gips)" << double(Hadoop::all_reduce_data_amount)/Hadoop::all_reduce_watch.get_total()/1E9<<std::endl;
+	std::cerr << "speed(GiBps)" << double(Hadoop::all_reduce_data_amount)/Hadoop::all_reduce_watch.get_total()/1E9<<std::endl;
 }
