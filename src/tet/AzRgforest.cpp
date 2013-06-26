@@ -232,6 +232,9 @@ AzTETrainer_Ret AzRgforest::proceed_until()
     bool doTestNow = test_timer.ringing(false, l_num); 
     if (doTestNow) {  
       ret = AzTETrainer_Ret_TestNow; 
+        cerr << "Allreduce time: " << Hadoop::all_reduce_watch.get_total() << endl;
+        cerr << "Allreduce data(bytes): " << Hadoop::all_reduce_data_amount << endl;
+        cerr << "Allreduce count: " << Hadoop::all_reduce_counter << endl;
       break; /* time to test */
     }
   }
