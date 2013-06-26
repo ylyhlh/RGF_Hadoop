@@ -48,7 +48,8 @@ protected:
   AzRgf_Optimizer *opt;
   AzRegDepth dflt_reg_depth;  /*@L2 regularizor*/
   AzRegDepth *reg_depth; 
-
+  int split_points_num;
+  
   AzDataForTrTree dflt_data; /*@?the feature data for tree */
   const AzDataForTrTree *data; /* This should be set in setInput */
   

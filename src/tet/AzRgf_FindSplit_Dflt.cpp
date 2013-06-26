@@ -29,7 +29,7 @@ void AzRgf_FindSplit_Dflt::begin(
   /*@ Like a construtor just put the value of */
   AzFindSplit::_begin(inp_tree, inp.data, inp.target, inp_min_size); 
 
-
+  
   nlam = inp.nn*lambda; 
   nsig = inp.nn*sigma; 
   if (inp.lam_scale != 1) {  /* for numerical stability for expo loss */

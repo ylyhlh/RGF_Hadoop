@@ -73,7 +73,9 @@ void AzFindSplit::_findBestSplit(int nx,
   //double split_points_num_float = dxs_num /10;
   //Hadoop::accumulate_avg(&split_points_num_float, 1);
   //split_points_num = split_points_num_float>10? split_points_num_float:split_points_num_float*10;
-#if 1
+
+#define ALLOC_E
+#ifdef ALLOC_E
   
     split_points_a = new float[7*split_points_num*feat_num];
     //double *wy_sum_array_a = new double[2*split_points_num*feat_num];
@@ -218,8 +220,10 @@ void AzFindSplit::_findBestSplit(int nx,
     }
   }
   //printf("%s The best split is%d %d %d\n", eyec, nx, best_split->fx,best_split->nx);
+#ifdef ALLOC_E
   delete[] split_points_a;
   delete[] info_a;
+#endif
   //delete[] wy_sum_array_a;
   //delete[] w_sum_array_a;
   //delete[] size_array_a;

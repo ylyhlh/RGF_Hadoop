@@ -42,7 +42,12 @@ void AzRgforest::cold_start(const char *param,
   initTarget(v_y, v_fixed_dw); //@ set AzTrTtarget target; Targets and data point weights for node split search.  
   initEnsemble(az_param, max_tree_num); /* initialize tree ensemble *///@Ensemble is an array of trees in the forest
   fs->reset(az_param, reg_depth, out); /* initialize node search *///
-  
+  int feat_num = data->featNum();
+  float *fl = new float[7*split_points_num*feat_num];
+
+  Az_forFindSplit *split = new Az_forFindSplit[2*split_points_num*feat_num];
+  fs->set_upspace(fl, split);
+
   az_param.check(out);//@find out the unknown parameters and output
   l_num = 0; /* initialize leaf node counter */
 
@@ -213,6 +218,8 @@ Timer vis_timer;
 AzTETrainer_Ret AzRgforest::proceed_until()
 {
   AzTETrainer_Ret ret = AzTETrainer_Ret_Exit; //@ from test
+  //Set up the sapce needed to find split
+  
   for ( ; ; ) {
     /*---  grow the forest  ---*/
     bool doExit = growForest(); 
@@ -669,6 +676,8 @@ int AzRgforest::resetParam(AzParam &p)
   /*---  for storing data indexes in the trees to disk  ---*///?
   /*---  this must be called before adjustTestInterval. ---*///?
   p.vStr(kw_temp_for_trees, &s_temp_for_trees); 
+
+  p.vInt(kw_split_points_num, &split_points_num); 
 
   /*---  loss function   ---*/
   p.vLoss(kw_loss, &loss_type); 

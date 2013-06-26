@@ -45,12 +45,7 @@ protected:
   const AzTrTree_ReadOnly *tree; 
   int min_size;
   int split_points_num;
-  float *split_points_a;
-  float *wy_sum_array_a;
-  float *w_sum_array_a;
-  float *size_array_a;
-  Az_forFindSplit *info_a;
-  int newed;
+
 
   AzIntArr ia_feats; 
   const AzIntArr *ia_fx; 
@@ -84,6 +79,12 @@ public:
   virtual void _pickFeats(int pick_num, int f_num); 
 
 protected: 
+  float *split_points_a;
+  float *wy_sum_array_a;
+  float *w_sum_array_a;
+  float *size_array_a;
+  Az_forFindSplit *info_a;
+  int newed;
   /*----------------------------------------------------------------*/
   virtual double getBestGain(double w_sum, 
                              double wy_sum, 

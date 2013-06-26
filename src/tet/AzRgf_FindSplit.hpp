@@ -19,6 +19,7 @@
 #ifndef _AZ_RGF_FIND_SPLIT_HPP_
 #define _AZ_RGF_FIND_SPLIT_HPP_
 
+#include "AzFindSplit.hpp"
 #include "AzTrTree_ReadOnly.hpp"
 #include "AzTrTsplit.hpp"
 #include "AzTrTtarget.hpp"
@@ -60,6 +61,8 @@ public:
   virtual void reset(AzParam &param, 
                      const AzRegDepth *reg_depth,
                      const AzOut &out) = 0; 
+  virtual void set_upspace(float *fl, 
+                  Az_forFindSplit *split) = 0;
 
   virtual void begin(const AzTrTree_ReadOnly *tree, 
                    const AzRgf_FindSplit_input &inp, 
