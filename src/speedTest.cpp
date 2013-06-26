@@ -54,6 +54,7 @@ int main(int argc, const char *argv[])
     int total = atoi(arg_map["total"].c_str());
     Hadoop::Cluster::init_cluster(node, total, unique_id, arg_map["master"]);
   }
+  std::cerr<< "test"<<std::endl;
   printf("length=%d\n", length);
   printf("num_of_allreduce=%d\n",times);
 
