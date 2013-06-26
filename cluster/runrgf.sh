@@ -50,7 +50,7 @@ then
     exit 1
   fi 
   hadoop fs -put train.evaluation $output_dir/train.evaluation
-  hadoop fs -put mapperout $output_dir/mapperout
+  #hadoop fs -put mapperout $output_dir/mapperout
 else
   $rgfcmd > /dev/stderr
 fi

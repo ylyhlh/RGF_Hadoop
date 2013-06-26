@@ -1,3 +1,4 @@
+JOBNAME="double_noalloc_50"
 CXX=g++
 BIN_DIR = bin
 BIN_NAME = rgf
@@ -127,4 +128,6 @@ endif
 		-input $(CLUSTER_DATA) -output rgfout -mapper runrgf.sh -reducer cat \
 		-file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
 	killall spanning_tree
+	mkdir ~/$(JOBNAME)
+	$(hjs) -copyTolocal rgfout/train.evaluation ~/$(JOBNAME)/ 
 
