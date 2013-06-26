@@ -1,4 +1,4 @@
-JOBNAME="fl_50"
+JOBNAME="fl_noalloc_50"
 CXX=g++
 BIN_DIR = bin
 BIN_NAME = rgf
@@ -129,5 +129,5 @@ endif
 		-file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
 	killall spanning_tree
 	mkdir ~/$(JOBNAME)
-	hfs -copyToLocal rgfout/train.evaluation ~/$(JOBNAME)/
+	$(hfs) -copyToLocal rgfout/train.evaluation ~/$(JOBNAME)/
 

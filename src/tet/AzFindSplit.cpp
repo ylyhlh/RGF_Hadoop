@@ -74,7 +74,7 @@ void AzFindSplit::_findBestSplit(int nx,
   //Hadoop::accumulate_avg(&split_points_num_float, 1);
   //split_points_num = split_points_num_float>10? split_points_num_float:split_points_num_float*10;
 
-//#define ALLOC_E
+#define ALLOC_E
 #ifdef ALLOC_E
   
     split_points_a = new float[7*split_points_num*feat_num];
