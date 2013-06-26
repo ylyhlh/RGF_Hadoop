@@ -9,7 +9,7 @@ SPEEDTEST = $(BIN_DIR)/speedTest
 ME=$(shell whoami)
 SPAN_F = $(words $(shell ps aux | grep '[s]panning_tree' | grep $(ME) ))
 RGF_F = $(words $(shell ps aux | grep '[r]gf' ))
-SPEEDTEST_F = $(words $(shell ps aux | grep '[s]speedTest' ))
+SPEEDTEST_F = $(words $(shell ps aux | grep '[s]peedTest' ))
 #DATA1 = ctslices_01
 #DATA2 = ctslices_02
 DATA1 = ctslices_01
@@ -102,11 +102,11 @@ run3: kill all
 	@killall spanning_tree
 
 SPEEDTEST_NTIMES=100000
-SPEEDTEST_LEN=100
+SPEEDTEST_LEN=200
 speedtest: all kill
 	$(BIN_DIR)/spanning_tree > /dev/null 2>&1 < /dev/null
-	$(BIN_DIR)/speedTest --$(SPEEDTEST_LEN) 100 --times $(SPEEDTEST_NTIMES) --master localhost --unique_id 1233 --total 2 --node_id 0 &
-	$(BIN_DIR)/speedTest --$(SPEEDTEST_LEN) 100 --times $(SPEEDTEST_NTIMES) --master localhost --unique_id 1233 --total 2 --node_id 1
+	$(BIN_DIR)/speedTest --length $(SPEEDTEST_LEN) --times $(SPEEDTEST_NTIMES) --master localhost --unique_id 1233 --total 2 --node_id 0 &
+	$(BIN_DIR)/speedTest --length $(SPEEDTEST_LEN) --times $(SPEEDTEST_NTIMES) --master localhost --unique_id 1233 --total 2 --node_id 1
 	killall spanning_tree
 
 kill:
