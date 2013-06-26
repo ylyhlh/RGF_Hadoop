@@ -128,5 +128,5 @@ endif
 		-file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
 	killall spanning_tree
 	mkdir ~/$(JOBNAME)
-	$(hjs) -copyToLocal rgfout/train.evaluation ~/$(JOBNAME)/ 
+	$(hjs) -copyToLocal rgfout_$(JOBNAME)/* ~/$(JOBNAME)/ 
 
