@@ -31,6 +31,14 @@ echo $submit_host > /dev/stderr
 echo 'Starting training' > /dev/stderr
 
 # Prepare training data
+echo 'Starting training' > /dev/stderr
+
+# Prepare training data
+TRAINFILE=train.dat
+cat > $TRAINFILE
+
+cut -f1 $TRAINFILE > $TRAINFILE.y
+cut -f2- $TRAINFILE > $TRAINFILE.x
 
 rgfcmd="./speedTest --length $(SPEEDTEST_LEN) --times  $(SPEEDTEST_NTIMES) --master localhost --unique_id 1245 --total $nmappers --node_id $mapper"
 #perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_03 localhost 1233 1 0
