@@ -1,4 +1,4 @@
-JOBNAME="fl_noalloc_50"
+JOBNAME="fl_noalloc_50_cts100_8"
 CXX=g++
 BIN_DIR = bin
 BIN_NAME = rgf
@@ -13,9 +13,9 @@ RGF_F = $(words $(shell ps aux | grep '[r]gf' ))
 DATA1 = ct.01_01 
 DATA2 = ct.01_02
 DATA3 = ctslices_03
-CLUSTER_DATA = /user/hl1283/RGF_Hadoop/test/sample/ctslices1.test.dat
+CLUSTER_DATA = /user/hl1283/RGF_Hadoop/test/sample/cts100.train.dat
 all:  $(TARGET) $(SPANNINGTREE)
-MAP_NUM=2
+MAP_NUM=8
 
 OBJ=obj
 OBJDIR:=$(OBJ)/tet $(OBJ)/com $(OBJ)/allreduce
@@ -125,9 +125,9 @@ ifneq (0, $(words $(shell $(hfs) -ls | grep rgfout )))
 	$(hfs) -rmr rgfout
 endif
 	$(hjs) -D mapred.job.name=$(JOBNAME) -D mapred.job.map.memory.mb=6000 -D mapred.map.tasks=$(MAP_NUM) -D mapred.reduce.tasks=0 \
-		-input $(CLUSTER_DATA) -output rgfout -mapper runrgf.sh -reducer cat \
+		-input $(CLUSTER_DATA) -output rgfout_$(JOBNAME) -mapper runrgf.sh -reducer cat \
 		-file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
 	killall spanning_tree
 	mkdir ~/$(JOBNAME)
-	$(hfs) -copyToLocal rgfout/train.evaluation ~/$(JOBNAME)/
+	$(hjs) -copyToLocal rgfout_$(JOBNAME)/* ~/$(JOBNAME)/
 
