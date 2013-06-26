@@ -3,9 +3,8 @@
 train_x_fn=train.dat.x  # Training data points
 train_y_fn=train.dat.y  # Training targets
 
-test_x_fn=train.dat.x    # Test data points
-test_y_fn=train.dat.y    # Test targets
-
+test_x_fn=/user/hl1283/RGF_Hadoop/test/sample/cts.test.x    # Test data points
+test_y_fn=/user/hl1283/RGF_Hadoop/test/sample/cts.test.y    # Test targets
 
 evaluation_fn=train.evaluation   # Where to write 
 

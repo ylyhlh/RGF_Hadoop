@@ -41,5 +41,9 @@ all:
 	/bin/rm -f $(TARGET)
 	g++ $(CPP_FILES) $(CFLAGS) -o $(TARGET)
 
+DATA=cts
+run: 
+	perl test/call_exe.pl ./bin/rgf train_test test/sample/$(DATA) >log_$(DATA).log 2>&1
+
 clean: 
 	/bin/rm -f $(TARGET)
