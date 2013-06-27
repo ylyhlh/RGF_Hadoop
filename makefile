@@ -1,4 +1,4 @@
-JOBNAME="double_cts200_8_ntimer"
+JOBNAME="double_time_test_1by1"
 CXX=g++
 BIN_DIR = bin
 BIN_NAME = rgf
