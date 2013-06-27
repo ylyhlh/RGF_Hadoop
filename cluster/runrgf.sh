@@ -37,6 +37,8 @@ cat > $TRAINFILE
 cut -f1 $TRAINFILE > $TRAINFILE.y
 cut -f2- $TRAINFILE > $TRAINFILE.x
 
+hadoop fs -copyToLocal /user/hl1283/RGF_Hadoop/test/sample/cts.test.x ./test.x
+hadoop fs -copyToLocal /user/hl1283/RGF_Hadoop/test/sample/cts.test.y ./test.y
 
 rgfcmd="perl ./call_exe.pl ./rgf train_test ./long $submit_host 1245 $nmappers $mapper"
 #perl test/call_exe.pl ./bin/rgf train_test test/sample/msd_03 localhost 1233 1 0
