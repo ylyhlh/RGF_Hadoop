@@ -1,4 +1,4 @@
-JOBNAME="double_speedtest"
+JOBNAME="double_cts200_8_ntimer"
 CXX=g++
 BIN_DIR = bin
 BIN_NAME = rgf
@@ -15,9 +15,9 @@ SPEEDTEST_F = $(words $(shell ps aux | grep '[s]peedTest' ))
 DATA1 = ctslices_01
 DATA2 = ctslices_02
 DATA3 = ctslices_03
-CLUSTER_DATA = /user/hl1283/RGF_Hadoop/test/sample/cts100.train.dat
+CLUSTER_DATA = /user/hl1283/RGF_Hadoop/test/sample/cts200.train.dat
 all:  $(TARGET) $(SPANNINGTREE) $(SPEEDTEST)
-MAP_NUM=3
+MAP_NUM=8
 
 OBJ=obj
 OBJDIR:=$(OBJ)/tet $(OBJ)/com $(OBJ)/allreduce
@@ -148,7 +148,8 @@ endif
 
 clusterCT: kill $(TARGET) $(SPANNINGTREE)
 	$(BIN_DIR)/spanning_tree
-ifneq (0, $(words $(shell $(hfs) -ls | grep rgfout )))
+ifneq (0, $(words $(shell $(hfs) -ls | grep rgfout_$(JOBNAME))))
+	$(hfs) -rmr rgfout_$(JOBNAME)
 endif
 	$(hjs) -D mapred.job.name=$(JOBNAME) -D mapred.job.map.memory.mb=6000 -D mapred.map.tasks=$(MAP_NUM) -D mapred.reduce.tasks=0 \
 		-input $(CLUSTER_DATA) -output rgfout_$(JOBNAME) -mapper runrgf.sh -reducer cat \
