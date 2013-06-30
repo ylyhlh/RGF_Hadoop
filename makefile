@@ -1,4 +1,4 @@
-JOBNAME="fl_noalloc_50_cts200_8_ntimer"
+JOBNAME="fl_speedtest_1"
 
 CXX=g++
 BIN_DIR = bin
