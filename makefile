@@ -1,4 +1,4 @@
-JOBNAME="double_time_test_1by1"
+JOBNAME="double_speedtesst_2"
 CXX=g++
 BIN_DIR = bin
 BIN_NAME = rgf
@@ -15,7 +15,7 @@ SPEEDTEST_F = $(words $(shell ps aux | grep '[s]peedTest' ))
 DATA1 = ctslices_01
 DATA2 = ctslices_02
 DATA3 = ctslices_03
-CLUSTER_DATA = /user/hl1283/RGF_Hadoop/test/sample/cts200.train.dat
+CLUSTER_DATA = /user/hl1283/RGF_Hadoop/test/sample/cts400.train.dat
 all:  $(TARGET) $(SPANNINGTREE) $(SPEEDTEST)
 MAP_NUM=8
 
