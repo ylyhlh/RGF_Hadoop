@@ -176,6 +176,7 @@ void AzOptOnTree::iterate(int inp_ite_num,
   if (AzDvect::isNull(&v_fixed_dw)) nn = v_y.rowNum(); 
   else                              nn = v_fixed_dw.sum(); 
   double nlam = lambda * nn; 
+
   if (lam >= 0) {
     nlam = lam * nn; 
   }
@@ -187,6 +188,8 @@ void AzOptOnTree::iterate(int inp_ite_num,
   bool doExit = false; 
   int ite_chk = MIN(5, ite_num); 
   int ite; 
+
+  Hadoop::accumulate_sum(&nlam, 1);
   for (ite = 0; ite < ite_num; ++ite) {
 
     double delta = update(nlam, nsig); 
@@ -298,7 +301,8 @@ void AzOptOnTree::_update_with_features(
                       AzRgf_forDelta *for_del) /* updated */
 {
   int fx; 
-  int f_num = tree_feat->featNum(); 
+  int f_num = tree_feat->featNum();
+  double *deltas = new double[f_num];
   for (fx = 0; fx < f_num; ++fx) {
     //std::cout<<"@Allreduce"<<f_num<<std::endl; 
 
@@ -309,10 +313,19 @@ void AzOptOnTree::_update_with_features(
     const int *dxs = data_points(fx, &dxs_num); 
     double my_nlam = reg_depth->apply(nlam, node(fx)->depth); 
     double my_nsig = reg_depth->apply(nsig, node(fx)->depth); 
-    double delta = getDelta(dxs, dxs_num, w, my_nlam, my_nsig, py_avg, for_del); 
-    v_w.set(fx, w+delta); 
-    updatePred(dxs, dxs_num, delta, &v_p); 
+    //double delta = getDelta(dxs, dxs_num, w, my_nlam, my_nsig, py_avg, for_del); 
+    //save the delta for final descent
+    deltas[fx] = getDelta(dxs, dxs_num, w, my_nlam, my_nsig, py_avg, for_del); 
   }
+  Hadoop::accumulate_avg(deltas,f_num);
+  for (fx = 0; fx < f_num; ++fx) {
+    int dxs_num; 
+    const int *dxs = data_points(fx, &dxs_num);
+    double w = v_w.get(fx); 
+    v_w.set(fx, w+deltas[fx]); 
+    updatePred(dxs, dxs_num, deltas[fx], &v_p); 
+  }
+  delete(deltas);
 }
 
 /*--------------------------------------------------------*/
@@ -403,7 +416,7 @@ const
   
 
     //throw new AzException(eyec, "no data indexes"); 
-  Hadoop::accumulate_sum(&nlam, 1);
+
   const double *fixed_dw = NULL; 
   if (!AzDvect::isNull(&v_fixed_dw)) fixed_dw = v_fixed_dw.point(); 
 
@@ -419,8 +432,8 @@ const
     AzLoss::sum_deriv_weighted(loss_type, dxs, dxs_num, p, y, fixed_dw, py_avg, 
                       nega_dL, ddL); 
   }//@check wether the dxs_num is devided -> no. 
-  Hadoop::accumulate_sum(&nega_dL, 1);
-  Hadoop::accumulate_sum(&ddL, 1);
+  //Hadoop::accumulate_sum(&nega_dL, 1);
+  //Hadoop::accumulate_sum(&ddL, 1);
   double ddL_nlam = ddL + nlam; //@allreduce here dL/dw, ddL/ddw
   if (ddL_nlam == 0) ddL_nlam = 1;  /* this shouldn't happen, though */
   if (dxs_num == 0) {      
