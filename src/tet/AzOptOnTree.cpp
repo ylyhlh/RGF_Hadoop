@@ -189,8 +189,8 @@ void AzOptOnTree::iterate(int inp_ite_num,
   int ite_chk = MIN(5, ite_num); 
   int ite; 
 
-  Hadoop::accumulate_sum(&nlam, 1);
-  for (ite = 0; ite < ite_num; ++ite) {
+  //Hadoop::accumulate_sum(&nlam, 1);
+  for (ite = 0; ite < ite_num*5; ++ite) {
 
     double delta = update(nlam, nsig); 
     if (exit_delta > 0 && 
@@ -315,17 +315,24 @@ void AzOptOnTree::_update_with_features(
     double my_nsig = reg_depth->apply(nsig, node(fx)->depth); 
     //double delta = getDelta(dxs, dxs_num, w, my_nlam, my_nsig, py_avg, for_del); 
     //save the delta for final descent
+    
     deltas[fx] = getDelta(dxs, dxs_num, w, my_nlam, my_nsig, py_avg, for_del); 
+    //Hadoop::accumulate_avg(&deltas[fx],1);
+    //v_w.set(fx, w+deltas[fx]); 
+    //updatePred(dxs, dxs_num, deltas[fx], &v_p);   
   }
   Hadoop::accumulate_avg(deltas,f_num);
+  ///*
   for (fx = 0; fx < f_num; ++fx) {
     int dxs_num; 
     const int *dxs = data_points(fx, &dxs_num);
     double w = v_w.get(fx); 
-    v_w.set(fx, w+deltas[fx]); 
-    updatePred(dxs, dxs_num, deltas[fx], &v_p); 
+    v_w.set(fx, w+deltas[fx]/100); 
+    updatePred(dxs, dxs_num, deltas[fx]/100, &v_p); 
   }
+  //*/
   delete(deltas);
+
 }
 
 /*--------------------------------------------------------*/
