@@ -74,7 +74,7 @@ AzRgf_Optimizer_Dflt::update(const AzDataForTrTree *data,
                   AzDvect *v_p) /* prediction */
 {
   AzIntArr ia_removed_fx; 
-  int f_num_delta = feat1.update_with_ens(ens, &ia_removed_fx); 
+  int f_num_delta = feat1.update_with_ens(ens, &ia_removed_fx); //@??
 
   if (f_num_delta > 0 || ens->size() == 0) {
     trainer->optimize(ens, &feat1); 

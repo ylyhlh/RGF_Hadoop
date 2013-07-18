@@ -203,7 +203,7 @@ void AzOptOnTree::iterate(int inp_ite_num,
     if (doExit) {
       AzTimeLog::print("Reached exiting criteria", out); 
       break; 
-    }
+    }//@PutAllreduce HERE!
   }
   dumpWeights(my_dmp_out); 
 }
@@ -275,11 +275,11 @@ double AzOptOnTree::update(double inp_nlam,
   }
 
   AzRgf_forDelta for_delta; 
+  
+  update_with_features(nlam, nsig, py_avg, &for_delta); //
+  update_intercept(nlam, nsig, py_avg, &for_delta); //@not work
 
-  update_with_features(nlam, nsig, py_avg, &for_delta); 
-  update_intercept(nlam, nsig, py_avg, &for_delta); //@?
-
-  if (for_delta.truncated > 0 && !out.isNull()) {
+  if (for_delta.truncated > 0 && !out.isNull()) {//@not work
     AzPrint o(out); 
     o.printBegin("", ""); 
     o.print("AzOptOnTree::update,truncated=", for_delta.truncated); 
@@ -310,7 +310,7 @@ void AzOptOnTree::_update_with_features(
     double my_nlam = reg_depth->apply(nlam, node(fx)->depth); 
     double my_nsig = reg_depth->apply(nsig, node(fx)->depth); 
     double delta = getDelta(dxs, dxs_num, w, my_nlam, my_nsig, py_avg, for_del); 
-    v_w.set(fx, w+delta); //@All reduce this point is better?
+    v_w.set(fx, w+delta); 
     updatePred(dxs, dxs_num, delta, &v_p); 
   }
 }
@@ -356,6 +356,7 @@ void AzOptOnTree::update_with_features(
                       AzRgf_forDelta *for_del) /* updated */
 {
   if (ens->usingTempFile()) {
+
     _update_with_features_TempFile(nlam, nsig, py_avg, for_del); 
   }
   else {
@@ -424,7 +425,7 @@ const
   if (ddL_nlam == 0) ddL_nlam = 1;  /* this shouldn't happen, though */
   if (dxs_num == 0) {      
     //
-}
+  }
   double delta = (nega_dL-nlam*w)*eta/ddL_nlam; 
   
 
@@ -512,6 +513,7 @@ void AzOptOnTree::updateTreeWeights(AzRgfTreeEnsemble *ens) const
 
   int num = tree_feat->featNum(); 
   int fx; 
+  
   for (fx = 0; fx < num; ++fx) {
     if (weight[fx] != 0) {
       const AzTrTreeFeatInfo *fp = tree_feat->featInfo(fx); 
