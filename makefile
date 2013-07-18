@@ -1,4 +1,4 @@
-JOBNAME="double_speedtest"
+JOBNAME?="noname"
 CXX=g++
 BIN_DIR = bin
 BIN_NAME = rgf
@@ -18,6 +18,7 @@ DATA3 = ctslices_03
 CLUSTER_DATA = /user/hl1283/RGF_Hadoop/test/sample/cts100.train.dat
 all:  $(TARGET) $(SPANNINGTREE) $(SPEEDTEST)
 MAP_NUM=3
+
 
 OBJ=obj
 OBJDIR:=$(OBJ)/tet $(OBJ)/com $(OBJ)/allreduce
