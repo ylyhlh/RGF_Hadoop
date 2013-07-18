@@ -17,7 +17,7 @@ DATA2 = ctslices_02
 DATA3 = ctslices_03
 CLUSTER_DATA = /user/hl1283/RGF_Hadoop/test/sample/cts100.train.dat
 all:  $(TARGET) $(SPANNINGTREE) $(SPEEDTEST)
-MAP_NUM=3
+MAP_NUM?=3
 
 
 OBJ=obj
@@ -149,7 +149,8 @@ endif
 
 clusterCT: kill $(TARGET) $(SPANNINGTREE)
 	$(BIN_DIR)/spanning_tree
-ifneq (0, $(words $(shell $(hfs) -ls | grep rgfout )))
+ifneq (0, $(words $(shell $(hfs) -ls | grep rgfout_$(JOBNAME) )))
+	$(hfs) -rmr rgfout_$(JOBNAME)
 endif
 	$(hjs) -D mapred.job.name=$(JOBNAME) -D mapred.job.map.memory.mb=6000 -D mapred.map.tasks=$(MAP_NUM) -D mapred.reduce.tasks=0 \
 		-input $(CLUSTER_DATA) -output rgfout_$(JOBNAME) -mapper runrgf.sh -reducer cat \

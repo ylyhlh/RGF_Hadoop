@@ -191,7 +191,7 @@ void AzOptOnTree::iterate(int inp_ite_num,
 
   //Hadoop::accumulate_sum(&nlam, 1);
   for (ite = 0; ite < ite_num*5; ++ite) {
-
+    std::cerr<<"@here:"<<ite_num<<std::endl
     double delta = update(nlam, nsig); 
     if (exit_delta > 0 && 
         delta < exit_delta) {
