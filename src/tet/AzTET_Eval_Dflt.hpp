@@ -106,6 +106,7 @@ public:
     o.print("#leaf", info->leaf_num); 
     o.print("acc", result.acc, 4); 
     o.print("rmse", result.rmse, 4); 
+    std::cerr<<"rmse: "<< result.rmse<<std::endl;//@output error
     o.print("sqerr", result.rmse*result.rmse, 6); 
     o.print(loss_str[loss_type]); 
     o.print("loss", result.loss, 6); 
