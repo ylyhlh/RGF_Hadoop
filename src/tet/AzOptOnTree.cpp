@@ -290,7 +290,7 @@ double AzOptOnTree::update(double inp_nlam,
   }
 
   double abs_delta_avg = for_delta.avg_delta(); 
-  return abs_delta_avg; 
+  return abs_delta_avg/100; 
 }
 
 /*--------------------------------------------------------*/
