@@ -47,13 +47,13 @@ echo $rgfcmd > /dev/stderr
 
 if [ "$mapper" == '000000' ]
 then
-  $rgfcmd > /dev/stderr #> mapperout 2>&1
+  $rgfcmd > mapperout 2>&1
   if [ $? -ne 0 ] 
   then
     exit 1
   fi 
   hadoop fs -put train.evaluation $output_dir/train.evaluation
-  #hadoop fs -put mapperout $output_dir/mapperout
+  hadoop fs -put mapperout $output_dir/mapperout
 else
   $rgfcmd > /dev/stderr
 fi

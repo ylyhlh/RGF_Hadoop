@@ -189,10 +189,11 @@ void AzOptOnTree::iterate(int inp_ite_num,
   int ite_chk = MIN(5, ite_num); 
   int ite; 
 
+  double Adelta = 0;
   //Hadoop::accumulate_sum(&nlam, 1);
   for (ite = 0; ite < ite_num*5; ++ite) {
-    std::cerr<<"@here:"<<ite_num<<std::endl
     double delta = update(nlam, nsig); 
+    Adelta = MAX(Adelta,abs(delta));
     if (exit_delta > 0 && 
         delta < exit_delta) {
       doExit = true; 
@@ -208,6 +209,7 @@ void AzOptOnTree::iterate(int inp_ite_num,
       break; 
     }//@PutAllreduce HERE!
   }
+  fprintf(stderr,"The max delta Is: %e",Adelta);
   dumpWeights(my_dmp_out); 
 }
 
@@ -290,7 +292,7 @@ double AzOptOnTree::update(double inp_nlam,
   }
 
   double abs_delta_avg = for_delta.avg_delta(); 
-  return abs_delta_avg; 
+  return abs_delta_avg/100.0; 
 }
 
 /*--------------------------------------------------------*/
@@ -300,9 +302,12 @@ void AzOptOnTree::_update_with_features(
                       double py_avg, 
                       AzRgf_forDelta *for_del) /* updated */
 {
+  max_delta = 10;
   int fx; 
   int f_num = tree_feat->featNum();
   double *deltas = new double[f_num];
+  double *deltas1 = new double[f_num];
+  
   for (fx = 0; fx < f_num; ++fx) {
     //std::cout<<"@Allreduce"<<f_num<<std::endl; 
 
@@ -317,6 +322,10 @@ void AzOptOnTree::_update_with_features(
     //save the delta for final descent
     
     deltas[fx] = getDelta(dxs, dxs_num, w, my_nlam, my_nsig, py_avg, for_del); 
+     deltas1[fx] =  deltas[fx];
+      if(!isfinite(deltas[fx])){
+          std::cerr<<fx<<"delta"<<deltas[fx]<<std::endl;
+      }
     //Hadoop::accumulate_avg(&deltas[fx],1);
     //v_w.set(fx, w+deltas[fx]); 
     //updatePred(dxs, dxs_num, deltas[fx], &v_p);   
@@ -324,11 +333,18 @@ void AzOptOnTree::_update_with_features(
   Hadoop::accumulate_avg(deltas,f_num);
   ///*
   for (fx = 0; fx < f_num; ++fx) {
+      if(!isfinite(deltas[fx])){
+          std::cerr<<"@:"<<fx<<"delta"<<deltas[fx]
+              <<"  original delta"<<deltas1[fx]<<" "<<max_delta
+              <<std::endl;
+      }
+      if(!isfinite(deltas[fx]))
+        deltas[fx]=0;
     int dxs_num; 
     const int *dxs = data_points(fx, &dxs_num);
     double w = v_w.get(fx); 
-    v_w.set(fx, w+deltas[fx]/100); 
-    updatePred(dxs, dxs_num, deltas[fx]/100, &v_p); 
+    v_w.set(fx, w+deltas[fx]/100.0); 
+    updatePred(dxs, dxs_num, deltas[fx]/100.0, &v_p); 
   }
   //*/
   delete(deltas);
@@ -447,7 +463,6 @@ const
     //
   }
   double delta = (nega_dL-nlam*w)*eta/ddL_nlam; 
-  
 
   if (nsig > 0) {
     double del1; 
@@ -475,7 +490,7 @@ void AzOptOnTree::checkParam() const
   }
   if (eta <= 0) {
     throw new AzException(AzInputNotValid, eyec, kw_eta, "must be positive"); 
-  }
+ }
 }
 
 /*--------------------------------------------------------*/
@@ -628,6 +643,7 @@ void AzRgf_forDelta::check_delta(double *delta, /* inout */
   if (max_delta > 0) {
     double org_delta = *delta; 
     *delta = MAX(-max_delta, MIN(max_delta, *delta)); 
+
     if (*delta != org_delta) {
       ++truncated; 
     }

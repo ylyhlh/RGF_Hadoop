@@ -36,6 +36,8 @@ void accumulate_avg(double* array, size_t length) {
   double total = cluster.total;
   for (int i = 0; i < length; ++i)
   {
+    if(!isfinite(array[i]))
+        std::cerr<<"bug"<<std::endl;
     array[i] /= total;
   }
 }

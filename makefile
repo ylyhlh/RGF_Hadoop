@@ -135,7 +135,7 @@ endif
 		-input $(CLUSTER_DATA) -output rgfout_$(JOBNAME) -mapper runspeedTest.sh -reducer cat \
 		-file cluster/runspeedTest.sh bin/speedTest test/call_exe.pl cluster/long.inp 
 	killall spanning_tree
-	mkdir ~/$(JOBNAME)
+	mkdir -p ~/$(JOBNAME)
 
 cluster: kill $(TARGET) $(SPANNINGTREE)
 	$(BIN_DIR)/spanning_tree
@@ -156,6 +156,6 @@ endif
 		-input $(CLUSTER_DATA) -output rgfout_$(JOBNAME) -mapper runrgf.sh -reducer cat \
 		-file cluster/runrgf.sh bin/rgf test/call_exe.pl cluster/long.inp
 	killall spanning_tree
-	mkdir ~/$(JOBNAME)
-	$(hjs) -copyToLocal rgfout_$(JOBNAME)/* ~/$(JOBNAME)/ 
+	mkdir -p ~/$(JOBNAME)
+	#$(hjs) -copyToLocal rgfout_$(JOBNAME)/* ~/$(JOBNAME)/ 
 
